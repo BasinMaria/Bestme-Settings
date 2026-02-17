@@ -163,13 +163,6 @@ Control who can see your content and interact with you
 │   │   ├── 👥 Friends / Друзьям ✅ (default)
 │   │   └── 🔒 Only Me / Только мне
 │   │
-│   ├── Who can see your stories / Кто видит ваши истории
-│   │   ├── 🌍 Public / Всем
-│   │   ├── 👥 Friends / Друзьям ✅ (default)
-│   │   └── 🔒 Only Me / Только мне
-│   │   └── Hide stories from... / Скрыть истории от...
-│   │       [Custom list] / [Выборочный список]
-│   │
 │   └── Who can see your friends list / Кто видит список друзей
 │       ├── 🌍 Public / Всем
 │       ├── 👥 Friends / Друзьям ✅ (default)
@@ -303,8 +296,8 @@ Manage what alerts you receive
 │   │       [Toggle ON/OFF] / [Вкл/Выкл]
 │   │
 │   └── Newsletter / Новостная рассылка
-│       └── Tips, stories, and inspiration
-│           Советы, истории и вдохновение
+│       └── Tips and inspiration
+│           Советы и вдохновение
 │           [Toggle ON/OFF] / [Вкл/Выкл]
 │
 └── In-App Settings / Настройки в приложении
@@ -438,8 +431,8 @@ Manage your account settings and preferences
 ## 💬 5. Content & Interactions / Контент и взаимодействия
 
 **Purpose / Цель:**  
-Manage your posts, stories, and saved content  
-Управление постами, историями и сохраненным контентом
+Manage your posts and saved content  
+Управление постами и сохраненным контентом
 
 **Icon:** 💬  
 **Color:** Green #27AE60 / Зеленый
@@ -466,40 +459,11 @@ Manage your posts, stories, and saved content
 │           Скрыть количество лайков на ваших постах
 │           [Toggle ON/OFF] / [Вкл/Выкл]
 │
-├── Stories Settings / Настройки историй
-│   ├── Allow Story Sharing / Разрешить делиться историями
-│   │   └── Let others share your stories to their stories
-│   │       Позволить другим делиться вашими историями
-│   │       [Toggle ON/OFF] / [Вкл/Выкл]
-│   │
-│   ├── Hide Stories From / Скрыть истории от
-│   │   └── Choose specific people who won't see your stories
-│   │       Выбрать людей, которые не увидят ваши истории
-│   │       [Select users] / [Выбрать пользователей]
-│   │
-│   ├── Save to Archive / Сохранять в архив
-│   │   └── Automatically save stories to your private archive
-│   │       Автоматически сохранять истории в личный архив
-│   │       [Toggle ON/OFF] ✅ (default ON)
-│   │
-│   └── Story Duration / Длительность истории
-│       └── How long stories stay visible (24 hours default)
-│           Как долго видны истории (24 часа по умолчанию)
-│
-├── Saved & Collections / Сохраненное и коллекции
-│   ├── Saved Posts / Сохраненные посты
-│   │   └── Posts you've bookmarked
-│   │       Посты, которые вы сохранили
-│   │       [View saved] / [Просмотреть сохраненное]
-│   │
-│   ├── Collections / Коллекции
-│   │   └── Organize saved posts into collections
-│   │       Организовать сохраненное в коллекции
-│   │       [Manage collections] / [Управлять коллекциями]
-│   │
-│   └── Saved Stories / Сохраненные истории
-│       └── Stories you've saved from others
-│           Истории, которые вы сохранили от других
+├── Saved Content / Сохраненный контент
+│   └── Saved Posts / Сохраненные посты
+│       └── Posts you've bookmarked for later
+│           Посты, которые вы сохранили на потом
+│           [View saved] / [Просмотреть сохраненное]
 │
 ├── Media Settings / Настройки медиа
 │   ├── Upload Quality / Качество загрузки
@@ -539,7 +503,6 @@ Manage your posts, stories, and saved content
 
 ### Key Changes from v1.0 / Ключевые изменения с v1.0:
 
-✅ Stories settings added (essential for modern social networks!)  
 ✅ Feed preferences added (control what you see)  
 ✅ Media settings for data usage  
 ✅ Saved content organized here (was scattered)  
@@ -600,7 +563,6 @@ Manage your posts, stories, and saved content
 | **Language** | English only | English + Russian | Better understanding |
 | **Organization** | System-centric | User task-centric | More intuitive |
 | **Mobile UX** | Not prioritized | Mobile-first | Better on phones |
-| **Stories** | Not mentioned | Full support | Modern social network |
 | **Feed Control** | Limited | Full control | Better UX |
 
 ---
@@ -613,7 +575,6 @@ Manage your posts, stories, and saved content
 Privacy defaults:
 - Account: Private ✅
 - Posts: Friends ✅
-- Stories: Friends ✅
 - Messages: Friends ✅
 - Comments: Friends ✅
 - Sharing: Everyone ✅
@@ -661,7 +622,7 @@ Privacy → Who can message you
 | Account & Profile → Contact info | Profile / Профиль | Direct mapping |
 | Account & Profile → Personal links | Profile / Профиль | Under Contact Info |
 | Interests & Goals | Profile / Профиль | Under Interests |
-| Content & Activity | Content / Контент | Expanded with Stories |
+| Content & Activity | Content / Контент | Enhanced features |
 | Visibility (all 13 settings) | Privacy / Приватность | Consolidated |
 | Preferences | Account / Аккаунт | Under App Preferences |
 | Security & Login | Account / Аккаунт | Under Login & Security |
