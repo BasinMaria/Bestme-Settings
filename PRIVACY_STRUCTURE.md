@@ -7,166 +7,247 @@
 
 ## 🔒 Privacy / Приватность
 
-Complete privacy settings structure with legal compliance.
+Complete privacy settings structure with legal compliance based on access table.
 
 ---
 
 ```
 🔒 Privacy / Приватность
 │
-├── Profile Visibility / Видимость профиля
+├── Account Privacy / Приватность аккаунта
 │   ├── Profile Page / Страница профиля
 │   │   └── Default: PUBLIC
+│   │       Variable: profile_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │       ⚠️ Legal: Minimum metadata visible (GDPR Art. 15)
+│   │       Visibility:
+│   │       • PUBLIC: ✅ Full profile to everyone
+│   │       • FRIENDS_ONLY: ⚠️ Name + avatar only to non-friends
+│   │       • PRIVATE: ⚠️ Minimal info only
 │   │
 │   ├── Name / Имя
 │   │   └── Default: PUBLIC
+│   │       Variable: name_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
-│   │       ⚠️ Legal: Minimum "First name + Initial" must be visible (GDPR transparency)
+│   │       ⚠️ Legal: Minimum "First name + Initial" must be visible (GDPR)
 │   │       Visibility:
-│   │       • PUBLIC: Full name to everyone
-│   │       • FRIENDS_ONLY: Full name to friends, First+Initial to others
-│   │       • PRIVATE: First name only to everyone
+│   │       • PUBLIC: ✅ Full name to everyone
+│   │       • FRIENDS_ONLY: ✅ Full name to friends, ⚠️ First+Initial to others
+│   │       • PRIVATE: ⚠️ First name only to everyone
 │   │
 │   ├── Avatar Photo / Фото профиля
 │   │   └── Default: PUBLIC
+│   │       Variable: avatar_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │       Visibility:
-│   │       • PUBLIC: Show to everyone
-│   │       • FRIENDS_ONLY: Placeholder to non-friends
-│   │       • PRIVATE: Placeholder to non-friends
+│   │       • PUBLIC: ✅ Show to everyone
+│   │       • FRIENDS_ONLY: ⚠️ Placeholder to non-friends
+│   │       • PRIVATE: ⚠️ Placeholder to non-friends
 │   │
 │   ├── Cover Photo / Обложка
 │   │   └── Default: PUBLIC
+│   │       Variable: cover_photo_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │       Visibility:
-│   │       • PUBLIC: Show to everyone
-│   │       • FRIENDS_ONLY: Placeholder to non-friends
-│   │       • PRIVATE: Placeholder to non-friends
+│   │       • PUBLIC: ✅ Show to everyone
+│   │       • FRIENDS_ONLY: ⚠️ Placeholder to non-friends
+│   │       • PRIVATE: ⚠️ Placeholder to non-friends
 │   │
 │   ├── Bio / About / О себе
 │   │   └── Default: PUBLIC
+│   │       Variable: bio_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │
 │   ├── Description / Описание
 │   │   └── Default: PUBLIC
+│   │       Variable: description_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │
 │   ├── Birthday / День рождения
-│   │   └── Default: PRIVATE
+│   │   └── Default: PRIVATE ⚠️
+│   │       Variable: birthday_visibility
 │   │       Options: PUBLIC_FULL, PUBLIC_AGE, FRIENDS_FULL, FRIENDS_AGE, PRIVATE
 │   │       ⚠️ Legal: GDPR Art. 9 - Must default to PRIVATE
 │   │       ⚠️ Always stored in DB for COPPA age check (13+)
 │   │       Visibility:
-│   │       • PUBLIC_FULL: Full date to everyone
-│   │       • PUBLIC_AGE: Age only to everyone
-│   │       • FRIENDS_FULL: Full date to friends only
-│   │       • FRIENDS_AGE: Age only to friends
-│   │       • PRIVATE: Hidden from everyone
+│   │       • PUBLIC_FULL: ✅ Full date to everyone
+│   │       • PUBLIC_AGE: ⚠️ Age only to everyone
+│   │       • FRIENDS_FULL: ✅ Full date to friends, ❌ Hide from others
+│   │       • FRIENDS_AGE: ⚠️ Age to friends, ❌ Hide from others
+│   │       • PRIVATE: ❌ Hidden from everyone
 │   │
-│   └── Gender / Пол
-│       └── Default: PRIVATE
-│           Options: PUBLIC, FRIENDS_ONLY, PRIVATE
-│           ⚠️ Legal: GDPR Art. 9 - Sensitive personal data
-│
-├── Contact Visibility / Видимость контактов
+│   ├── Gender / Пол
+│   │   └── Default: PRIVATE ⚠️
+│   │       Variable: gender_visibility
+│   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
+│   │       ⚠️ Legal: GDPR Art. 9 - Sensitive personal data
+│   │
 │   ├── Email / Электронная почта
-│   │   └── Default: PRIVATE
-│   │       Options: FRIENDS_ONLY, PRIVATE (NO PUBLIC option)
+│   │   └── Default: PRIVATE ⚠️
+│   │       Variable: email_visibility
+│   │       Options: FRIENDS_ONLY, PRIVATE (❌ NO PUBLIC option)
 │   │       ⚠️ Legal: GDPR + CAN-SPAM (USA) + CASL (Canada)
 │   │       ⚠️ FORBIDDEN to make PUBLIC
 │   │
 │   ├── Phone / Телефон
-│   │   └── Default: PRIVATE
-│   │       Options: FRIENDS_ONLY, PRIVATE (NO PUBLIC option)
+│   │   └── Default: PRIVATE ⚠️
+│   │       Variable: phone_visibility
+│   │       Options: FRIENDS_ONLY, PRIVATE (❌ NO PUBLIC option)
 │   │       ⚠️ Legal: GDPR + TCPA (USA) + PIPEDA (Canada)
 │   │       ⚠️ FORBIDDEN to make PUBLIC
 │   │
 │   ├── Location / Местоположение
 │   │   └── Default: FRIENDS_ONLY
+│   │       Variable: location_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │       ⚠️ Legal: GDPR Art. 9 - Location data
 │   │
-│   └── Address / Адрес
-│       └── Default: PRIVATE
-│           Options: PUBLIC, FRIENDS_ONLY, PRIVATE
-│           ⚠️ Legal: GDPR Art. 9 - Precise location = sensitive data
-│
-├── Content & Links Visibility / Видимость контента и ссылок
-│   ├── Media Gallery / Галерея медиа
-│   │   └── Default: FRIENDS_ONLY
+│   ├── Address / Адрес
+│   │   └── Default: PRIVATE
+│   │       Variable: address_visibility (implied, not in table)
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
-│   │       ⚠️ Legal: GDPR Art. 9 - Photos can contain faces, children, locations
+│   │       ⚠️ Legal: GDPR Art. 9 - Precise location = sensitive data
 │   │
 │   ├── Personal Links / Личные ссылки
 │   │   └── Default: PUBLIC
+│   │       Variable: personal_links_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │
 │   ├── Social Media Links / Ссылки на соцсети
 │   │   └── Default: PUBLIC
+│   │       Variable: social_links_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │
 │   ├── Blog Link / Ссылка на блог
 │   │   └── Default: PUBLIC
+│   │       Variable: show_blog_link
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │
-│   ├── Business Link / Ссылка на бизнес
-│   │   └── Default: PRIVATE
-│   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
-│   │       ⚠️ Legal: GDPR Art. 6 - Business ownership = personal data
-│   │
-│   └── Default Post Visibility / Видимость постов по умолчанию
-│       └── Default: PUBLIC
+│   └── Business Link / Ссылка на бизнес
+│       └── Default: PRIVATE
+│           Variable: show_business_link
 │           Options: PUBLIC, FRIENDS_ONLY, PRIVATE
-│           ⚠️ Note: User MUST control each post individually (GDPR)
+│           ⚠️ Legal: GDPR Art. 6 - Business ownership = personal data
 │
-├── Friends & Community / Друзья и сообщество
-│   ├── Friends List / Список друзей
+├── Content Visibility / Видимость контента
+│   ├── Who can see your posts / Кто видит ваши посты
+│   │   └── Default: PUBLIC
+│   │       Variable: default_post_visibility
+│   │       ├── 🌍 Public / Всем
+│   │       ├── 👥 Friends / Друзьям ✅
+│   │       └── 🔒 Only Me / Только мне
+│   │       ⚠️ Note: User MUST control each post individually (GDPR)
+│   │
+│   ├── Media Gallery / Галерея медиа
 │   │   └── Default: FRIENDS_ONLY
+│   │       Variable: media_gallery_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
+│   │       ⚠️ Legal: GDPR Art. 9 - Photos can contain faces, children, locations
+│   │
+│   ├── Who can see your friends list / Кто видит список друзей
+│   │   └── Default: FRIENDS_ONLY
+│   │       Variable: friends_list_visibility
+│   │       ├── 🌍 Public / Всем
+│   │       ├── 👥 Friends / Друзьям ✅ (default)
+│   │       └── 🔒 Only Me / Только мне (⚠️ Mutual friends still visible)
 │   │       ⚠️ Legal: Mutual friends MUST always be visible
 │   │       Visibility:
-│   │       • PUBLIC: Full list to everyone
-│   │       • FRIENDS_ONLY: Full list to friends, Mutual only to others
-│   │       • PRIVATE: Mutual friends only to everyone
+│   │       • PUBLIC: ✅ Full list to everyone
+│   │       • FRIENDS_ONLY: ✅ Full list to friends, ⚠️ Mutual only to others
+│   │       • PRIVATE: ⚠️ Mutual friends only to everyone
 │   │
 │   ├── Categories / Интересы (категории)
 │   │   └── Default: FRIENDS_ONLY
+│   │       Variable: categories_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │       ⚠️ Legal: GDPR Art. 9 - Can reveal religion, politics, orientation
 │   │
 │   ├── Subscribed Blogs / Подписки на блоги
 │   │   └── Default: FRIENDS_ONLY
+│   │       Variable: subscribed_blogs_visibility
 │   │       Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │   │       ⚠️ Legal: GDPR Art. 9 - Can reveal political/religious views
 │   │
 │   └── Subscribed Communities / Подписки на сообщества
 │       └── Default: FRIENDS_ONLY
+│           Variable: subscribed_communities_visibility
 │           Options: PUBLIC, FRIENDS_ONLY, PRIVATE
 │           ⚠️ Legal: GDPR Art. 9 - Can reveal sensitive interests
 │
-├── Activity & Status / Активность и статус
-│   ├── Online Status / Онлайн статус
+├── Interactions / Взаимодействия
+│   ├── Who can send you messages / Кто может писать вам
+│   │   └── Default: FRIENDS_ONLY ✅
+│   │       Variable: who_can_message
+│   │       ├── Everyone / Все
+│   │       ├── Friends / Друзья ✅ (default)
+│   │       ├── Friends of Friends / Друзья друзей
+│   │       └── No one / Никто
+│   │       ⚠️ Legal: ePrivacy Directive (EU) + GDPR
+│   │       ⚠️ Recommended: FRIENDS_ONLY (Privacy by Default)
+│   │
+│   ├── Who can tag you in posts / Кто может отмечать в постах
+│   │   └── Default: FRIENDS_ONLY ✅
+│   │       Variable: who_can_tag (implied, not in table)
+│   │       ├── Everyone / Все
+│   │       ├── Friends / Друзья ✅ (default)
+│   │       └── No one / Никто
+│   │       └── Review tags before posting / Проверка перед публикацией ☑️
+│   │
+│   ├── Who can comment on your posts / Кто может комментировать
+│   │   └── Default: FRIENDS_ONLY ✅
+│   │       Variable: who_can_comment (implied, not in table)
+│   │       ├── Everyone / Все
+│   │       ├── Friends / Друзья ✅ (default)
+│   │       ├── Friends of friends / Друзья друзей
+│   │       └── No one / Никто
+│   │
+│   ├── Who can share your posts / Кто может делиться постами
+│   │   └── Default: EVERYONE ✅
+│   │       Variable: who_can_share (implied, not in table)
+│   │       ├── Everyone / Все ✅ (default)
+│   │       ├── Friends / Друзья
+│   │       └── No one / Никто
+│   │
+│   └── Who can send friend request / Кто может отправлять запросы в друзья
+│       └── Default: EVERYONE
+│           Variable: who_can_send_friend_request
+│           ├── Everyone / Все ✅ (default)
+│           ├── Friends of Friends / Друзья друзей
+│           └── No one / Никто
+│
+├── Activity Status / Статус активности
+│   ├── Show online status / Показывать онлайн статус
 │   │   └── Default: FRIENDS_ONLY
+│   │       Variable: show_online_status
 │   │       Options: EVERYONE, FRIENDS_ONLY, NOBODY
 │   │       ⚠️ Legal: GDPR Art. 9 - Behavioral tracking data
+│   │       Toggle: ON ✅ / OFF
 │   │
-│   └── Last Seen / Последний раз в сети
+│   └── Show last seen / Показывать когда был онлайн
 │       └── Default: FRIENDS_ONLY
+│           Variable: show_last_seen
 │           Options: EVERYONE, FRIENDS_ONLY, NOBODY
 │           ⚠️ Legal: GDPR Art. 9 - Activity tracking data
+│           Toggle: ON ✅ / OFF
 │
-└── Interactions / Взаимодействия
-    ├── Who Can Send Messages / Кто может писать сообщения
-    │   └── Default: FRIENDS_ONLY
-    │       Options: EVERYONE, FRIENDS_ONLY, FRIENDS_OF_FRIENDS, NOBODY
-    │       ⚠️ Legal: ePrivacy Directive + GDPR
-    │       ⚠️ Recommended: FRIENDS_ONLY (Privacy by Default)
+└── Blocking & Muting / Блокировка и скрытие
+    ├── Blocked Accounts / Заблокированные аккаунты
+    │   └── [List of blocked users]
+    │       [Список заблокированных пользователей]
+    │       Users you've blocked can't see your profile or contact you
+    │       Заблокированные не видят профиль и не могут связаться
     │
-    └── Who Can Send Friend Request / Кто может отправлять запросы в друзья
-        └── Default: EVERYONE
-            Options: EVERYONE, FRIENDS_OF_FRIENDS, NOBODY
+    ├── Muted Accounts / Скрытые аккаунты
+    │   └── Hide posts without unfollowing
+    │       Скрыть посты без отписки
+    │       You still follow them, but don't see their posts
+    │       Вы подписаны, но не видите их посты
+    │
+    └── Restricted Accounts / Ограниченные аккаунты
+        └── Limit interactions without blocking
+            Ограничить взаимодействие без блокировки
+            They can see public posts but with limited interaction
+            Видят публичные посты но с ограниченным взаимодействием
 ```
 
 ---
