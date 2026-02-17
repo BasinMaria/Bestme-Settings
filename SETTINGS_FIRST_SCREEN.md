@@ -25,8 +25,8 @@
 │       Контролировать, кто видит ваш контент
 │
 ├── 👥 Friends & Community / Друзья и сообщество
-│   └── Manage friends and communities
-│       Управление друзьями и сообществами
+│   └── Friends, followers, subscriptions, communities
+│       Друзья, подписчики, подписки, сообщества
 │
 ├── 🔔 Notifications / Уведомления
 │   └── Manage alerts and reminders
@@ -77,7 +77,7 @@
 #### 3. 👥 Friends & Community / Друзья и сообщество
 **Icon:** People/group icon  
 **Label:** Friends & Community / Друзья и сообщество  
-**Subtitle:** Manage friends and communities / Управление друзьями и сообществами  
+**Subtitle:** Friends, followers, subscriptions, communities / Друзья, подписчики, подписки, сообщества  
 **Badge:** 245 friends, 23 online  
 **Action:** Navigate to Friends & Community settings →
 
