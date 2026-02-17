@@ -203,5 +203,39 @@ Home Screen → Settings Icon → FIRST SCREEN (this) → Specific Settings
 
 ---
 
+---
+
+## Detailed Structures / Детальные структуры
+
+### 👤 Profile Structure / Структура профиля
+
+```
+👤 Profile / Профиль
+│
+├── Edit Profile / Редактировать профиль
+│   ├── Avatar Photo / Фото профиля
+│   ├── Status
+│   ├── Cover Photo / Обложка
+│   ├── Name (нельзя менять / cannot change)
+│   ├── Last Name
+│   ├── Bio / About
+│   ├── Birthday / День рождения [Privacy toggle]
+│   └── Gender / Пол [Privacy toggle]
+│
+├── Contact Info / Контактная информация
+│   ├── Phone / Телефон [Privacy toggle]
+│   ├── Email / Электронная почта [Privacy toggle]
+│   ├── Location / Местоположение [Privacy toggle]
+│   └── Address [Privacy toggle]
+│
+└── Interests / Интересы
+    ├── Categories / Категории интересов
+    └── Goals / Цели
+```
+
+**See detailed Privacy structure in:** `PRIVACY_STRUCTURE.md`
+
+---
+
 *This is the simple first screen structure as requested.*  
 *Это простая структура первого экрана, как было запрошено.*
