@@ -1,0 +1,27 @@
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
+.vs/
+
+# Draw.io backup files
+*.drawio.bkp
+*.drawio~
+
+# Build artifacts (if any are added in future)
+dist/
+build/
+node_modules/
+*.log
