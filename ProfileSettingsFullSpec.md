@@ -111,10 +111,12 @@
 |---|---|---|---|---|
 | Profile in search results | `profile_searchable` | `true` | ⚖️ | GDPR Art.17 — право на забвение (opt-out) |
 | SEO indexing (Google) | `seo_indexable` | **`false`** | ⚖️ | GDPR Art.25 — выключен по умолчанию |
-| Content recommendations | `recommendations_opt_out` | `false` (opt-in) | ⚖️ | GDPR Art.22 — opt-out от автоматизированных решений |
+| Content recommendations | `recommendations_opt_out` | `false` (opt-in) | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
+| Algorithm explanation link | `show_recommendation_info` | `true` | ⚖️ | DSA Art.27 — объяснение принципов рекомендаций |
 
 > ⚠️ `seo_indexable` **ОБЯЗАН быть OFF по умолчанию** (GDPR Art.25 Privacy by Default)
-> ⚠️ `recommendations_opt_out` = пользователь должен иметь возможность **отказаться** от рекомендаций
+> ⚠️ `recommendations_opt_out` = пользователь должен иметь возможность **отказаться** от рекомендаций (GDPR Art.22, DSA Art.29)
+> ⚠️ `show_recommendation_info` = ссылка / поп-ап «почему мне рекомендуют этот контент» обязательна по DSA Art.27 (ЕС)
 
 ---
 
@@ -262,18 +264,24 @@
 
 | Пункт | Описание | ⚖️ | Закон |
 |---|---|---|---|
-| **Download my data** | Скачать копию всех данных | ⚖️ | GDPR Art.15 — право на доступ |
-| **Request data deletion** | Удалить все данные | ⚖️ | GDPR Art.17 — право на удаление |
-| **Data portability** | Перенос данных | ⚖️ | GDPR Art.20 — право на перенос |
-| **View consent history** | История согласий | ⚖️ | GDPR Art.7 |
-| **Withdraw consent** | Отозвать согласие | ⚖️ | GDPR Art.7 |
-| **Privacy Policy** | Ссылка на политику | ⚖️ | App Store / Google Play — обязательно |
-| **Terms of Use** | Ссылка на условия | ⚖️ | App Store / Google Play — обязательно |
-| **Cookie settings** | Управление cookies | ⚖️ | GDPR / ePrivacy |
-| **Ad preferences** | Рекламные предпочтения | ⚖️ | GDPR Art.22 — право на отказ |
+| **Download my data** | Скачать копию всех данных (JSON/CSV) | ⚖️ | GDPR Art.15 · PIPEDA Pr.9 · CCPA §1798.100 |
+| **Request data deletion** | Удалить все данные | ⚖️ | GDPR Art.17 · Quebec L25 Art.12 · CCPA §1798.105 |
+| **Data portability** | Перенос данных | ⚖️ | GDPR Art.20 · Quebec L25 Art.27 |
+| **Restrict processing** | Ограничить обработку данных (не удалять, но заморозить) | ⚖️ | GDPR Art.18 |
+| **View consent history** | История согласий (дата, что согласовано, версия) | ⚖️ | GDPR Art.7 · CASL · PIPEDA Pr.3 |
+| **Withdraw consent** | Отозвать согласие | ⚖️ | GDPR Art.7 · CASL |
+| **Do Not Sell My Personal Information** | Запрет продавать / передавать данные для рекламы | ⚖️ | CCPA/CPRA §1798.120 |
+| **Ad preferences** | Рекламные предпочтения + opt-out профилирования | ⚖️ | GDPR Art.21/22 · DSA Art.29 · CCPA §1798.121 |
+| **Privacy Policy** | Ссылка на политику конфиденциальности | ⚖️ | App Store · Google Play · GDPR Art.13 |
+| **Terms of Use** | Ссылка на условия использования | ⚖️ | App Store · Google Play |
+| **Cookie settings** | Управление cookies и трекерами | ⚖️ | GDPR / ePrivacy Art.5(3) |
+| **Contact Privacy Officer** | Связаться с DPO / CPO | ⚖️ | Quebec L25 Art.5 · GDPR Art.38 |
 
 > ⚠️ **App Store**: ссылки на Privacy Policy и Terms обязательны в настройках
 > ⚠️ **GDPR**: экспорт данных и удаление аккаунта — юридическое требование
+> ⚠️ **CCPA/CPRA**: кнопка «Do Not Sell My Personal Information» обязательна для аудитории Калифорнии
+> ⚠️ **Google Play**: удаление аккаунта должно быть доступно также через **веб-сайт** (не только in-app)
+> ⚠️ **Quebec Law 25**: контакт Privacy Officer должен быть публично виден
 
 ---
 
@@ -326,26 +334,35 @@
 
 ---
 
-## СВОДНАЯ ТАБЛИЦА: Что обязательно для публикации в магазинах
+## СВОДНАЯ ТАБЛИЦА: Что обязательно для публикации
+
+> Полный юридический анализ по всем юрисдикциям — см. `LegalComplianceSpec.md`
 
 | Требование | Где в настройках | Закон / Правило |
 |---|---|---|
-| Удаление аккаунта | Account → Delete account | App Store 5.1.1 + GDPR Art.17 |
-| Ссылка Privacy Policy | Your Data + Help | App Store / Google Play |
-| Ссылка Terms of Use | Your Data + Help | App Store / Google Play |
-| Sign in with Apple | Login & Security | App Store (если есть вход через соцсети) |
+| Удаление аккаунта | Account → Delete account | App Store 5.1.1 · GDPR Art.17 · CCPA §1798.105 |
+| Веб-форма удаления аккаунта | Сайт / веб-версия | Google Play (обязательно отдельно от app) |
+| Ссылка Privacy Policy | Your Data + Help | App Store · Google Play · GDPR Art.13 |
+| Ссылка Terms of Use | Your Data + Help | App Store · Google Play |
+| Sign in with Apple | Login & Security | App Store 5.1.3 (обязательно если есть Google/Facebook) |
 | Push: системный запрос | Notifications | iOS App Store |
-| Accessibility раздел | Раздел 8 | App Store / Google Play |
+| Accessibility раздел | Раздел 8 | App Store · Google Play |
 | Форма поддержки | Help & Support | App Store |
-| SEO indexing = OFF по умолчанию | Privacy → Discoverability | GDPR Art.25 |
-| Opt-out от рекомендаций | Privacy → Discoverability | GDPR Art.22 |
-| Экспорт данных | Your Data | GDPR Art.15 |
-| Управление согласием (cookies) | Your Data | GDPR / ePrivacy |
-| Уведомления о безопасности (нельзя выключить) | Notifications → Account & Security | GDPR Art.32 |
+| SEO indexing = OFF по умолчанию | Privacy → Discoverability | GDPR Art.25 · Quebec L25 Art.8 |
+| Opt-out от рекомендаций | Privacy → Discoverability | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
+| Объяснение алгоритма рекомендаций | Privacy → Discoverability | DSA Art.27 (ЕС) |
+| Экспорт данных | Your Data | GDPR Art.15 · PIPEDA Pr.9 · CCPA §1798.100 |
+| Ограничение обработки | Your Data | GDPR Art.18 |
+| «Do Not Sell My Personal Information» | Your Data | CCPA/CPRA §1798.120 (Калифорния) |
+| Управление согласием (cookies) | Your Data | GDPR / ePrivacy Art.5(3) |
+| Opt-out от профилирования для рекламы | Your Data → Ad preferences | DSA Art.29 · GDPR Art.21 |
+| Контакт Privacy Officer | Your Data + Help | Quebec Law 25 Art.5 · GDPR Art.38 |
+| Уведомления о безопасности (нельзя выключить) | Notifications → Account & Security | GDPR Art.33 · Israel PPL Sec.17C · PIPEDA |
 | Уведомления о модерации (нельзя выключить) | Notifications → Content & Moderation | DSA Art.17–20 |
-| Email/телефон не PUBLIC по умолчанию | Privacy → Contact Info | GDPR + CAN-SPAM + TCPA |
-| 2FA доступна | Login & Security | GDPR Art.32 |
-| Возраст проверяется | Account → Date of birth | COPPA (< 13 лет) |
+| Email/телефон не PUBLIC по умолчанию | Privacy → Contact Info | GDPR Art.25 · CAN-SPAM · TCPA · Israel PPL |
+| 2FA доступна | Login & Security | GDPR Art.32 · Israel Data Security Regs |
+| Возраст проверяется · блок < 13 | Account → Date of birth + Onboarding | COPPA · DSA Art.28 |
+| Pre-checked boxes = пустые | Onboarding / Notifications | CASL · ePrivacy |
 
 ---
 
@@ -367,4 +384,4 @@
 
 ---
 
-*Файл: `ProfileSettingsFullSpec.md` | Версия 1.0 | Только таблицы | Не редактировать другие файлы*
+*Файл: `ProfileSettingsFullSpec.md` | Версия 2.0 | Юрисдикции: EU/EEA · Canada · Israel · California · USA · App Stores | Полный анализ → `LegalComplianceSpec.md`*
