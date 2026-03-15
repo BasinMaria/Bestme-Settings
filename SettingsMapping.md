@@ -4,107 +4,137 @@
 > Маппинг дизайнерских экранов к вкладкам.  
 > ⚖️ = по закону обязательно · ✅ = Privacy by Default · 📱 = требование App Store
 
-> **Новый файл с диаграммой:** `PersonalProfileSettings.drawio.html` — полная 3-уровневая иерархия L1→L2→L3
+> **Диаграмма v2:** `PersonalProfileSettings.drawio.html` — полная 3-уровневая иерархия L1→L2→L3 (260 cells, 9 L1, 46 L2, 182 L3)  
+> **Полная спецификация полей:** `PrivacyFieldsSpec.md` — все 35 privacy-полей с variable names, defaults, visibility matrix, legal
 
 ---
 
-## Обзор: 9 вкладок
+## Обзор: 9 вкладок (L1 главного экрана)
 
-| # | Вкладка | Что внутри (кратко) | Почему / Закон |
+| # | Вкладка (L1) | Что внутри (кратко) | Почему / Закон |
 |---|---|---|---|
-| 1️⃣ | **Account & Profile** | Avatar, bio, birthday, contact info, personal links, interests, profile switch | Identity |
-| 2️⃣ | **Privacy & Visibility ⚖️** | Who sees what — profile, content, network, activity, blocking | GDPR Art.25 |
-| 3️⃣ | **Security & Login ⚖️** | Password, 2FA, sessions, biometrics, Sign in with Apple | GDPR + App Store |
-| 4️⃣ | **Data & Privacy ⚖️** | Download/view/delete data, GDPR all rights, CCPA, consents, app permissions | GDPR + CCPA + App Store |
-| 5️⃣ | **Notifications** | Push, email, in-app, quiet hours, security alerts | CAN-SPAM / CASL |
-| 6️⃣ | **Content & Blog** | Feed algorithm, post defaults, blog settings, site/page, media | Social network |
-| 7️⃣ | **Business Profile 💼** | Business info, verification, analytics, monetization (IAP), tools | Business law + App Store |
-| 8️⃣ | **App Preferences** | Theme, language, accessibility (required by App Store), storage | UX + App Store |
-| 9️⃣ | **Help & Legal ⚖️** | Privacy Policy, ToS, Cookies, ATT framework, Google Play Data Safety | All stores + law |
+| 1️⃣ | **👤 Account** | Avatar, bio, about, status, goal, birthday, gender, contacts, links, interests | Identity |
+| 2️⃣ | **👥 Friends** | Friends management, people you may know, recommendations opt-out | GDPR Art.22 |
+| 3️⃣ | **🔒 Privacy** | Account Privacy, Contact Info, Content Visibility, Interactions, Discoverability, Activity, Blocked | GDPR Art.25 |
+| 4️⃣ | **🔐 Login & Security** | Password, 2FA, sessions, login activity, authorized apps | GDPR + App Store |
+| 5️⃣ | **🔔 Notifications** | Push, email (+ In-App settings), quiet hours | CAN-SPAM / CASL |
+| 6️⃣ | **📝 Content** | Feed, post defaults, sensitive content, blog, muted keywords, autoplay | GDPR Art.22/25 |
+| 7️⃣ | **📊 Your Data** | Download/view/correct/delete data, consents, app permissions | GDPR + CCPA + App Store |
+| 8️⃣ | **♿ Accessibility** | Theme, language, motion, screen reader, storage | App Store required |
+| 9️⃣ | **❓ Help & Support** | Help centre, report a problem, terms & privacy policy | EU DSA Art.16 + Stores |
 
 ---
 
-## 1️⃣ Account & Profile — Аккаунт и профиль
+## 1️⃣ Account — Аккаунт и профиль
 
-| Пункт | Обязательно / Опционально | По закону ⚖️ |
-|---|---|---|
-| Аватар / Фото профиля | Опционально | — |
-| Обложка профиля | Опционально | — |
-| Полное имя | Нужно для функции | — |
-| @хендл / Username | Нужно для функции | — |
-| Биография / О себе | Опционально | — |
-| Статус (текст / эмодзи) | Опционально | — |
-| Дата рождения | **Обязательно** (верификация возраста) | ⚖️ GDPR Art.8 — 13+ / 16+ |
-| Пол | Опционально (Private по умолчанию) | ⚖️ GDPR — чувствительная категория |
-| Местоположение / Город | Опционально | — |
-| Вебсайт / Personal links | Опционально | — |
-| Интересы / Категории | Опционально | — |
-| Жизненная цель | Опционально | — |
-| Переключение профиля (обычный / бизнес) | Нужно для функции | — |
+| Пункт | Variable | Default | Обязательно / Опционально | По закону ⚖️ |
+|---|---|---|---|---|
+| Аватар / Фото профиля | `avatar_visibility` | PUBLIC | Опционально | — |
+| Обложка профиля | `cover_photo_visibility` | PUBLIC | Опционально | — |
+| Полное имя | `name_visibility` | PUBLIC | Нужно для функции | ⚖️ GDPR — мин. имя+инициал всегда виден |
+| @хендл / Username | — | — | Нужно для функции | — |
+| Bio (биография) | `bio_visibility` | PUBLIC | Опционально | — |
+| About Profile (о себе) | `about_visibility` | PUBLIC | Опционально | — |
+| Status / Mood (статус) | `status_visibility` | **FRIENDS_ONLY** ✅ | Опционально | ⚖️ GDPR data minimization |
+| Life Goal (жизненная цель) | `goal_visibility` | **FRIENDS_ONLY** ✅ | Опционально | ⚖️ GDPR Art.9 |
+| Дата рождения | `birthday_visibility` | **PRIVATE** ✅ | **Обязательно** (age check) | ⚖️ GDPR Art.9, COPPA |
+| Пол | `gender_visibility` | **PRIVATE** ✅ | Опционально | ⚖️ GDPR Art.9 — чувствительная категория |
+| Местоположение / Город | `location_visibility` | **FRIENDS_ONLY** ✅ | Опционально | ⚖️ GDPR Art.9 — геоданные |
+| Personal links (вебсайт) | `personal_links_visibility` | PUBLIC | Опционально | — |
+| Social media links | `social_links_visibility` | PUBLIC | Опционально | — |
+| Blog link | `show_blog_link` | PUBLIC | Опционально | — |
+| Business link | `show_business_link` | **PRIVATE** ✅ | Опционально | ⚖️ GDPR Art.6 |
+| Интересы / Категории | `categories_visibility` | **FRIENDS_ONLY** ✅ | Опционально | ⚖️ GDPR Art.9 |
+| Переключение в бизнес-профиль | — | — | Опционально | — |
 
 ---
 
-## 2️⃣ Privacy & Visibility ⚖️ — Приватность и видимость
+## 2️⃣ Friends — Друзья и сообщество
 
-> **Все 4 дизайнерских экрана находятся здесь ↓**
-
-### 📌 Экран 1: Account Privacy (из дизайна)
-
-| Пункт | Опции | По закону ⚖️ |
-|---|---|---|
-| Profile page | Public / Friends only / **Private** ✅ | ⚖️ GDPR Art.25 — Privacy by Default |
-| Full name | Public / Friends only / **Private** ✅ | ⚖️ GDPR Art.25 |
-| Avatar photo | Public / Friends only / **Private** ✅ | — |
-| Cover photo | Public / Friends only / **Private** ✅ | — |
-| Bio / About | Public / Friends only / **Private** ✅ | — |
-| Birthday | Public / Friends only / **Private** ✅ | ⚖️ GDPR — чувствительная дата |
-| Gender | Public / Friends only / **Private** ✅ | ⚖️ GDPR — чувствительная категория |
-| Interests | Public / Friends only / **Private** ✅ | — |
-
-### 📌 Экран 2: Contact Info Privacy (из дизайна)
-
-| Пункт | Опции | По закону ⚖️ |
-|---|---|---|
-| Email | Friends only / **Private** ✅ (не может быть Public) | ⚖️ GDPR Art.5 — минимизация данных; **юридическое ограничение** |
-| Phone | Friends only / **Private** ✅ | ⚖️ GDPR Art.5 |
-| Location / City | Friends only / **Private** ✅ | ⚖️ GDPR — геоданные чувствительные |
-| Address | Friends only / **Private** ✅ | ⚖️ GDPR Art.5 |
-| Personal links | Public / Friends only / **Private** ✅ | — |
-| Blog link | Public / Friends only / **Private** ✅ | — |
-| Business link | Public / Friends only / **Private** ✅ | — |
-
-### 📌 Экран 3: Interactions (из дизайна)
-
-| Пункт | Опции | По закону ⚖️ |
-|---|---|---|
-| Who can message you | Everyone / Friends of friends / **Friends only** ✅ / Nobody | — |
-| Who can tag you | Everyone / Friends of friends / **Friends only** ✅ | — |
-| Who can comment on your posts | Everyone / Friends of friends / **Friends only** ✅ / Nobody | — |
-| Who can share your posts | Everyone / Friends only / **Nobody** ✅ | — |
-| Who can send friend requests | Everyone / **Friends of friends** ✅ | — |
-
-### 📌 Экран 4: Content Visibility (из дизайна)
-
-| Пункт | Опции | По закону ⚖️ |
-|---|---|---|
-| Default post visibility | **Public** / Friends only / Private | ⚖️ GDPR Art.25 — нужен выбор по умолчанию |
-| Media gallery | Public / Friends only / **Private** ✅ | — |
-| Friends list | Public / Friends only / **Private** ✅ | — |
-| Categories (followed) | Public / Friends only / **Private** ✅ | — |
-| Subscribed blogs | Public / Friends only / **Private** ✅ | — |
-| Subscribed communities | Public / Friends only / **Private** ✅ | — |
-
-### Остальные пункты Privacy & Visibility
+> **Из дизайнерского экрана:** Friends & Community → Friends management
 
 | Пункт | Обязательно / Опционально | По закону ⚖️ |
 |---|---|---|
-| Видимость профиля (публичный / приватный) | **Обязательно** | ⚖️ GDPR Art.25 — Private by Default |
-| Профиль в поиске | **Обязательно** | ⚖️ GDPR Art.17 — право на забвение |
-| SEO-индексация профиля | Нужно (выкл по умолчанию) | ⚖️ GDPR |
-| Активный статус (онлайн) | Опционально | — |
-| Последний раз в сети | Опционально | — |
-| Заблокированные аккаунты | Нужно для функции | — |
-| Ограниченные / Заглушённые | Нужно для функции | — |
+| Friends list (список друзей) | Нужно для функции | — |
+| Add friends (добавить) | Нужно для функции | — |
+| Remove friends (удалить) | **Обязательно** | ⚖️ GDPR — право прекратить связь |
+| Friend requests (заявки) | Нужно для функции | — |
+| Friend suggestions (People you may know) | Опционально | — |
+| Opt-out от рекомендаций | **Обязательно** | ⚖️ GDPR Art.22 — право отказаться от алгоритмических решений |
+
+---
+
+## 3️⃣ Privacy — Приватность и видимость ⚖️
+
+> **Все 4 дизайнерских экрана + новый Discoverability ↓**
+
+### 📌 Account Privacy (Экран 1 дизайна)
+
+| Пункт | Variable | Default | Опции | По закону ⚖️ |
+|---|---|---|---|---|
+| Profile page | `profile_visibility` | PUBLIC | Public / Friends / **Private** ✅ | ⚖️ GDPR Art.15 — мин. имя+аватар видны |
+| Full name | `name_visibility` | PUBLIC | Public / Friends / Private | ⚖️ GDPR — мин. имя+инициал всегда виден |
+| Avatar | `avatar_visibility` | PUBLIC | Public / Friends / Private | — |
+| Cover photo | `cover_photo_visibility` | PUBLIC | Public / Friends / Private | — |
+| Bio | `bio_visibility` | PUBLIC | Public / Friends / Private | — |
+| About Profile | `about_visibility` | PUBLIC | Public / Friends / Private | — |
+| Status / Mood | `status_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR data minimization; авто-истечение 24ч |
+| Life Goal | `goal_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
+| Birthday | `birthday_visibility` | **PRIVATE** ✅ | PUBLIC_FULL / PUBLIC_AGE / FRIENDS_FULL / FRIENDS_AGE / **PRIVATE** | ⚖️ GDPR Art.9, COPPA |
+| Gender | `gender_visibility` | **PRIVATE** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 — чувствительная категория |
+
+### 📌 Contact Info Privacy (Экран 2 дизайна)
+
+| Пункт | Variable | Default | Опции в UI | По закону ⚖️ |
+|---|---|---|---|---|
+| Email | `email_visibility` | **PRIVATE** ✅ | Friends / **Private** (PUBLIC запрещён!) | ⚖️ GDPR+CAN-SPAM+CASL |
+| Phone | `phone_visibility` | **PRIVATE** ✅ | Friends / **Private** (PUBLIC запрещён!) | ⚖️ GDPR+TCPA+PIPEDA |
+| Location / City | `location_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 — геоданные |
+| Address | — | PRIVATE | Private only | ⚖️ GDPR Art.5 |
+| Personal links | `personal_links_visibility` | PUBLIC | Public / Friends / Private | — |
+| Social media links | `social_links_visibility` | PUBLIC | Public / Friends / Private | — |
+| Blog link | `show_blog_link` | PUBLIC | Public / Friends / Private | — |
+| Business link | `show_business_link` | **PRIVATE** ✅ | Public / Friends / Private | ⚖️ GDPR Art.6 |
+
+### 📌 Interactions (Экран 3 дизайна) + дополнения
+
+| Пункт | Variable | Default | Опции | По закону ⚖️ |
+|---|---|---|---|---|
+| Who can message | `who_can_message` | **FRIENDS_ONLY** ✅ | Everyone / FoF / Friends / Nobody | ⚖️ ePrivacy+GDPR — нежелательные сообщения |
+| Who can send friend request | `who_can_send_friend_request` | EVERYONE | Everyone / FoF / Nobody | — |
+| Who can tag me | `who_can_tag` | **FRIENDS_ONLY** ✅ | Everyone / Friends / Nobody | ⚖️ GDPR Art.4/9 — биометрия |
+| Tag approval | `tag_approval_required` | false | true (manual) / false (auto) | ⚖️ GDPR Art.7/9 — рекомендуется если `who_can_tag=EVERYONE` |
+| Who can comment | `who_can_comment` | EVERYONE | Everyone / FoF / Friends / Nobody | ⚖️ EU DSA Art.14 |
+| Comment moderation | `comment_moderation` | AUTO_FILTER | Disabled / **Auto-filter** ✅ / Manual | ⚖️ EU DSA Art.14 |
+| Who can share/repost | `who_can_share` | **FRIENDS_ONLY** ✅ | Everyone / Friends / Nobody | — |
+
+### 📌 Content Visibility (Экран 4 дизайна)
+
+| Пункт | Variable | Default | Опции | По закону ⚖️ |
+|---|---|---|---|---|
+| Default post visibility | `default_post_visibility` | PUBLIC | Public / Friends / Private | ⚖️ GDPR Art.25 — per-post override обязателен |
+| Media gallery | `media_gallery_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 — биометрия, дети |
+| Friends list | `friends_list_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ Mutual friends ОБЯЗАНЫ быть видимы |
+| Interest categories | `categories_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
+| Subscribed blogs | `subscribed_blogs_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
+| Subscribed communities | `subscribed_communities_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
+
+### 📌 Discoverability (НОВЫЙ — требуется по GDPR)
+
+| Пункт | Variable | Default | Опции | По закону ⚖️ |
+|---|---|---|---|---|
+| Profile in search results | `profile_searchable` | EVERYONE | Everyone / FoF / **Nobody** | ⚖️ GDPR Art.17 — право на забвение |
+| SEO indexing | `seo_indexable` | **false** ✅ | On / **Off** | ⚖️ GDPR Art.25 — выключен по умолчанию |
+| Content recommendations opt-out | `recommendations_opt_out` | false (on) | On / Off (opt-out) | ⚖️ GDPR Art.22 — право отказа от алгоритма |
+
+### 📌 Activity Status
+
+| Пункт | Variable | Default | Опции | По закону ⚖️ |
+|---|---|---|---|---|
+| Online / active status | `show_online_status` | **FRIENDS_ONLY** ✅ | Everyone / Friends / Nobody | ⚖️ GDPR Art.9 — поведенческие данные |
+| Last seen | `show_last_seen` | **FRIENDS_ONLY** ✅ | Everyone / Friends / Nobody | ⚖️ GDPR Art.9 |
+| Read receipts | — | on | On / Off | — |
+| Typing indicators | — | on | On / Off | — |
 
 ---
 
@@ -187,19 +217,48 @@
 
 ## 5️⃣ Notifications — Уведомления
 
+> **Из дизайнерского экрана (6d404521):** 3 вкладки — Push notifications / Email notifications / In-App settings
+
+### Push Notifications (из дизайна)
+
 | Пункт | Обязательно / Опционально | По закону ⚖️ |
 |---|---|---|
-| Push-уведомления (вкл/выкл) | **Обязательно** (системный диалог iOS/Android) | 📱 App Store |
-| Новые сообщения | Опционально | — |
-| Лайки / Комментарии | Опционально | — |
-| Новые подписчики / запросы в друзья | Опционально | — |
-| Теги и упоминания | Опционально | — |
-| Обновления бизнеса | Опционально (только бизнес-аккаунт) | — |
-| Оповещения безопасности | **Обязательно** | ⚖️ GDPR Art.33 |
-| Тихие часы | Опционально | — |
-| Email-рассылка / дайджест | Нужно с opt-in | ⚖️ CAN-SPAM / CASL |
-| Email-оповещения безопасности | **Обязательно** | ⚖️ GDPR Art.33/34 |
-| Звук / вибрация | Опционально | — |
+| Enable push notifications  (toggle) | **Обязательно** (системный диалог iOS/Android) | 📱 App Store / Google Play |
+| Likes and Reactions | Опционально | — |
+| Comments | Опционально | — |
+| New followers | Опционально | — |
+| Messages | Опционально | — |
+| Mentions and tags | Опционально | — |
+| Friend requests | Опционально | — |
+| Live videos | Опционально | — |
+| Security & account alerts | **Обязательно (always on)** | ⚖️ GDPR Art.33 |
+
+### Email Notifications (из дизайна)
+
+| Пункт | Default | Обязательно / Опционально | По закону ⚖️ |
+|---|---|---|---|
+| Activity summary | Weekly | Опционально (opt-in) | ⚖️ CAN-SPAM / CASL |
+| Reminder emails | On | Опционально | — |
+| Product updates | On | Опционально | — |
+| Newsletter | **Off** ✅ | Нужно с явным opt-in | ⚖️ CAN-SPAM / CASL |
+| Security alerts | **On (always)** | **Обязательно** | ⚖️ GDPR Art.33 |
+| Unsubscribe link в каждом письме | — | **Обязательно** | ⚖️ CAN-SPAM |
+
+### In-App Settings (из дизайна)
+
+| Пункт | Обязательно / Опционально | По закону ⚖️ |
+|---|---|---|
+| Sound | Опционально | — |
+| Vibration | Опционально | — |
+| Badge count | Опционально | — |
+
+### Quiet Hours (дополнение к дизайну)
+
+| Пункт | Обязательно / Опционально | По закону ⚖️ |
+|---|---|---|
+| Enable quiet hours | Опционально | — |
+| From / To (time picker) | Опционально | — |
+| Allow urgent security alerts (always on) | **Обязательно** | ⚖️ GDPR Art.33 |
 
 ---
 
