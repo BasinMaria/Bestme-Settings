@@ -27,8 +27,13 @@
 | 12 | **CAN-SPAM Act** (2003) | 🇺🇸 США (федерально) | Email-маркетинг | $51 744 за письмо |
 | 13 | **TCPA** — Telephone Consumer Protection Act | 🇺🇸 США (федерально) | SMS, звонки, push | $1 500 за сообщение |
 | 14 | **COPPA** — Children's Online Privacy Protection Act | 🇺🇸 США (федерально) | Дети до 13 лет | $51 744 за нарушение |
-| 15 | **Apple App Store Guidelines** 5.1.x | 🌍 Везде (iOS) | Конфиденциальность, данные, удаление аккаунта | Удаление из магазина |
+| 15 | **Apple App Store Guidelines** 5.1.x + 2.5.4 | 🌍 Везде (iOS) | Конфиденциальность, данные, удаление аккаунта, доступность | Удаление из магазина |
 | 16 | **Google Play Developer Policy** | 🌍 Везде (Android) | Конфиденциальность, данные, доступность | Удаление из магазина |
+| 17 | **EAA** — European Accessibility Act (Directive 2019/882) | 🇪🇺 ЕС + ЕЭЗ (с 28 июня 2025) | Доступность мобильных приложений (WCAG 2.1 AA) | по нац. законам ЕС |
+| 18 | **ADA** — Americans with Disabilities Act + Section 508 | 🇺🇸 США | Цифровая доступность (WCAG 2.1 AA) | Судебные иски |
+| 19 | **Israel Disability Law** 5758-1998 + Regulations 5763-2003 | 🇮🇱 Израиль | Равные права, доступность цифровых услуг | Административные + иски |
+| 20 | **AODA** (Accessibility for Ontarians) + **Accessible Canada Act** 2019 | 🇨🇦 Канада | Доступность цифровых продуктов | до 100 000 CAD |
+| 21 | **California Unruh Civil Rights Act** §51 Civil Code | 🇺🇸 Калифорния | Цифровая доступность как гражданское право | до $4 000 за нарушение |
 
 ---
 
@@ -250,6 +255,36 @@
 
 ---
 
+### 2.14 ♿ Законы о доступности (Accessibility)
+
+> ⚠️ Accessibility — это НЕ только требование магазинов. В ЕС это закон с 28 июня 2025 года.
+
+| Закон | Юрисдикция | Требование | Раздел настроек | Статус |
+|---|---|---|---|---|
+| **EAA** Directive 2019/882, Art.4 | 🇪🇺 ЕС + ЕЭЗ (с 28.06.2025) | WCAG 2.1 AA: текст масштабируемый, контраст ≥4.5:1, субтитры, screen reader | Accessibility (8.1–8.3) | ✅ |
+| **EAA** Art.4(2) | 🇪🇺 ЕС | Alt-text для изображений | Accessibility → alt_text_enabled = ON | ✅ |
+| **EAA** Art.4(3) | 🇪🇺 ЕС | Возможность отключить анимации (reduce motion) | Accessibility → reduce_motion | ✅ |
+| **ADA** + **Section 508** | 🇺🇸 США | WCAG 2.1 AA для веб/мобильных сервисов, субтитры, keyboard nav | Accessibility (все настройки) | ✅ |
+| **Israel Disability Law** 5758-1998 + Reg. 5763-2003, § 19i | 🇮🇱 Израиль | Интернет-сервисы: WCAG 2.0 AA (обязательно для бизнесов > 5 сотрудников) | Accessibility | ✅ |
+| **AODA** IASR + **Accessible Canada Act** S.C. 2019 | 🇨🇦 Канада | WCAG 2.0 AA (организации > 50 сотрудников) | Accessibility | ✅ |
+| **California Unruh Civil Rights Act** §51 | 🇺🇸 Калифорния | Цифровые продукты = места общественного пользования (судебная практика: ADA WCAG) | Accessibility | ✅ |
+| **Apple App Store** 2.5.4 | 📱 iOS | VoiceOver совместимость, масштаб текста | Accessibility → Screen reader info | ✅ |
+| **Google Play** Accessibility | 🤖 Android | TalkBack совместимость, минимальный размер tappable area (48×48 dp) | Accessibility | ✅ |
+
+**WCAG 2.1 AA — основные критерии, влияющие на настройки:**
+
+| WCAG Критерий | Описание | Настройка в приложении | Закон |
+|---|---|---|---|
+| 1.1.1 Non-text Content | Alt-text для всех изображений | `alt_text_enabled` = ON | EAA · ADA · Israel |
+| 1.2.2 Captions | Субтитры для видео | `captions_enabled` | EAA · ADA · AODA |
+| 1.4.3 Contrast | Минимум 4.5:1 для текста | `high_contrast_enabled` | EAA · ADA |
+| 1.4.4 Resize Text | До 200% без потери контента | `text_size` slider | EAA · ADA |
+| 2.1.1 Keyboard | Вся функциональность через клавиатуру | Keyboard navigation info | EAA · ADA |
+| 2.3.1 Seizures | Нет контента > 3 вспышки/сек | `reduce_motion_enabled` | EAA · ADA |
+| 2.4.7 Focus Visible | Видимый фокус при навигации | Focus indicators info | EAA · ADA |
+
+---
+
 ## ЧАСТЬ 3. СВОДНАЯ ТАБЛИЦА — настройка × закон
 
 | Настройка / Экран | GDPR | DSA | ePrivacy | PIPEDA | CASL | Quebec L25 | Israel PPL | CCPA/CPRA | CAN-SPAM | COPPA | App Store | Google Play |
@@ -276,7 +311,8 @@
 | Notifications: moderation (non-disable) | — | Art.17/18 | — | — | — | — | — | — | — | — | — | — |
 | Report a problem | — | Art.14 | — | Pr.10 | — | — | — | — | — | — | ⚖️ | ⚖️ |
 | Help & Support contact | — | Art.14 | — | Pr.10 | — | Art.5 CPO | — | ⚖️ | — | — | ⚖️ | ⚖️ |
-| Accessibility section | — | — | — | — | — | — | — | — | — | — | ⚖️ 2.5.4 | ⚖️ |
+| Accessibility section (text size, contrast, captions, alt-text) | — | — | — | — | — | — | Israel Dis.Law | — | — | — | ⚖️ 2.5.4 | ⚖️ |
+| Accessibility (EAA — мобильные приложения) | — | — | — | — | AODA | — | ⚖️ Dis.5758 | — | ⚖️ ADA | — | — | — |
 | Terms of Use link | — | — | — | — | — | — | — | — | — | — | ⚖️ | ⚖️ |
 
 ---
@@ -360,26 +396,39 @@
 - [ ] ❌ Human review права (Quebec Art.8.1)
 - [ ] ❌ Pre-checked boxes = пустые (CASL)
 
-### ✅ Израиль (PPL + Data Security Regs)
+### ✅ Израиль (PPL + Data Security Regs + Disability Law)
 - [x] email_visibility = ONLY_ME
 - [x] Уведомления об утечке
 - [x] 2FA
 - [x] Login activity log
+- [x] Accessibility раздел (Israel Disability Law 5758-1998 + Regs 5763-2003)
 - [ ] ❌ Регистрация БД в реестре (юридический процесс)
 
-### ✅ Калифорния (CCPA / CPRA)
+### ✅ Калифорния (CCPA / CPRA + Unruh Civil Rights Act)
 - [x] Download my data (Right to Know)
 - [x] Delete account (Right to Delete)
 - [x] Correct data (Right to Correct)
+- [x] Accessibility раздел (California Unruh Civil Rights Act §51)
 - [ ] ❌ «Do Not Sell My Personal Information» кнопка
 - [ ] ❌ Объяснение автоматических решений
 
-### ✅ США (CAN-SPAM + TCPA + COPPA)
+### ✅ США (CAN-SPAM + TCPA + COPPA + ADA)
 - [x] email_visibility = ONLY_ME default
 - [x] phone_visibility = ONLY_ME default
 - [x] Date of birth field
+- [x] Accessibility раздел (ADA — WCAG 2.1 AA)
 - [ ] ❌ Блок регистрации < 13 лет (COPPA)
 - [ ] ❌ Opt-out из каждого email (CAN-SPAM)
+
+### ✅ Канада (PIPEDA + CASL + Quebec L25 + AODA)
+- [x] Download my data
+- [x] Consent history
+- [x] Email opt-in
+- [x] Accessibility раздел (AODA + Accessible Canada Act)
+- [ ] ❌ One-click unsubscribe в каждом письме (CASL)
+- [ ] ❌ CPO контакт публичный (Quebec Art.5)
+- [ ] ❌ Human review права (Quebec Art.8.1)
+- [ ] ❌ Pre-checked boxes = пустые (CASL)
 
 ---
 
@@ -391,23 +440,24 @@
 2. **Блок регистрации для < 13** — COPPA, отказ App Store без этого
 3. **«Do Not Sell My Personal Information»** — CCPA/CPRA (если аудитория Калифорния)
 4. **Pre-checked boxes = пустые** во всех формах opt-in
+5. **Accessibility раздел** — EAA (с 28.06.2025 ЕС), ADA (США), Israel Disability Law, AODA (Канада) + App Store + Google Play
 
 ### 🟡 ВАЖНО (сделать до первого значительного роста)
 
-5. **Ограничение обработки** (Restrict Processing) — GDPR Art.18
-6. **One-click unsubscribe** в каждом email — CASL + ePrivacy
-7. **Объяснение алгоритма рекомендаций** — DSA Art.27
-8. **CPO контакт** публично — Quebec Law 25
-9. **Физический адрес** в footer emails — CAN-SPAM
+6. **Ограничение обработки** (Restrict Processing) — GDPR Art.18
+7. **One-click unsubscribe** в каждом email — CASL + ePrivacy
+8. **Объяснение алгоритма рекомендаций** — DSA Art.27
+9. **CPO контакт** публично — Quebec Law 25
+10. **Физический адрес** в footer emails — CAN-SPAM
 
 ### 🟢 РЕКОМЕНДАЦИИ (до масштабирования)
 
-10. Privacy Nutrition Labels (App Store Connect)
-11. Data Safety Form (Google Play Console)
-12. Privacy Impact Assessment процесс
-13. DPO назначение
-14. Регистрация БД Израиль
+11. Privacy Nutrition Labels (App Store Connect)
+12. Data Safety Form (Google Play Console)
+13. Privacy Impact Assessment процесс
+14. DPO назначение
+15. Регистрация БД Израиль
 
 ---
 
-*Файл: `LegalComplianceSpec.md` | Версия 1.0 | Юрисдикции: EU/EEA · Canada · Israel · California · USA · App Stores*
+*Файл: `LegalComplianceSpec.md` | Версия 2.0 | Юрисдикции: EU/EEA · Canada · Israel · California · USA · App Stores | 21 закон*

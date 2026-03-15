@@ -16,7 +16,7 @@
 | 5 | 👥 | Friends | Друзья | 💡 | UX-норма соцсети |
 | 6 | 📝 | Content | Контент | ⚖️/💡 | DSA Art.14 — GDPR Art.25 |
 | 7 | 📦 | Your Data | Ваши данные | ⚖️ | GDPR Art.15–17 — право доступа и удаления |
-| 8 | ♿ | Accessibility | Доступность | ⚖️ | App Store / Google Play — обязательно |
+| 8 | ♿ | Accessibility | Доступность | ⚖️ | **EAA** Directive 2019/882 (ЕС, с 28.06.2025) · **ADA** (США) · **Israel Disability Law** 5758-1998 · **AODA** (Канада) · California Unruh Act · App Store 2.5.4 · Google Play |
 | 9 | ❓ | Help & Support | Помощь | ⚖️ | App Store — обязательная ссылка на поддержку |
 
 ---
@@ -287,7 +287,13 @@
 
 ## 8. ♿ ACCESSIBILITY — Доступность
 
-> ⚠️ **App Store и Google Play**: раздел Accessibility **обязателен** для публикации
+> ⚠️ **Accessibility — это не только требование магазинов, это ЗАКОН:**
+> - 🇪🇺 **EAA** (European Accessibility Act, Directive 2019/882) — мобильные приложения, **вступает в силу 28 июня 2025**
+> - 🇺🇸 **ADA** (Americans with Disabilities Act) + **Section 508** — применяется сейчас
+> - 🇮🇱 **Israel Equal Rights for Persons with Disabilities Law** 5758-1998 + Regulations 5763-2003
+> - 🇨🇦 **AODA** (Accessibility for Ontarians with Disabilities Act) + **Accessible Canada Act** 2019
+> - 🇺🇸 **California Unruh Civil Rights Act** §51 — цифровая доступность
+> - 📱 **App Store** Guidelines 2.5.4 · **Google Play** Accessibility guidelines
 
 ### 8.1 Текст и отображение
 
@@ -346,7 +352,7 @@
 | Ссылка Terms of Use | Your Data + Help | App Store · Google Play |
 | Sign in with Apple | Login & Security | App Store 5.1.3 (обязательно если есть Google/Facebook) |
 | Push: системный запрос | Notifications | iOS App Store |
-| Accessibility раздел | Раздел 8 | App Store · Google Play |
+| Accessibility раздел (текст, контраст, субтитры, screen reader) | Раздел 8 | **EAA 2019/882** (ЕС, с 28.06.2025) · **ADA** (США) · **Israel Disability Law** 5758-1998 · **AODA** (Канада) · App Store 2.5.4 · Google Play |
 | Форма поддержки | Help & Support | App Store |
 | SEO indexing = OFF по умолчанию | Privacy → Discoverability | GDPR Art.25 · Quebec L25 Art.8 |
 | Opt-out от рекомендаций | Privacy → Discoverability | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
