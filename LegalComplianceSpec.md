@@ -43,6 +43,8 @@
 
 ### 2.1 🇪🇺 GDPR (Европа)
 
+> **Детальный аудит GDPR Art.25 и Art.17 (пункт за пунктом)** → `GDPRArt25Art17AuditSpec.md`
+
 | Статья GDPR | Требование | Раздел настроек | Статус |
 |---|---|---|---|
 | Art. 5 | Принцип минимизации данных — собирать только нужное | Account | ✅ |
@@ -51,12 +53,17 @@
 | Art. 12–14 | Уведомление об обработке данных (Privacy Notice) | Help → Privacy Policy | ✅ |
 | Art. 15 | Право на доступ к своим данным | Your Data → Download my data | ✅ |
 | Art. 16 | Право на исправление неточных данных | Account → Edit fields | ✅ |
-| Art. 17 | Право на удаление («право на забвение») | Account → Delete account | ✅ |
+| Art. 17(1) | Право на удаление: основания (a)–(d) | Account → Delete account | ✅ |
+| Art. 17(2) | **Де-индексация**: при публичных данных — уведомить Google/Yandex/Bing об удалении | Backend: Search Console API при Delete account + при `seo_indexable OFF` | ❌ **КРИТИЧЕСКИЙ ПРОБЕЛ — нужен backend-процесс** |
+| Art. 17(1)(f) | Удаление данных несовершеннолетних (Art.8) | Your Data → родительский запрос | ❌ **нужен механизм для родителей** |
 | Art. 18 | Право на ограничение обработки | Your Data → Restrict processing | ❌ **нужно добавить** |
 | Art. 20 | Право на переносимость данных (JSON/CSV) | Your Data → Data portability | ✅ |
 | Art. 21 | Право на возражение против обработки (opt-out from profiling) | Your Data → Ad preferences | ✅ |
 | Art. 22 | Право на отказ от автоматизированных решений / профилирования | Privacy → Discoverability → recommendations_opt_out | ✅ |
-| Art. 25 | Privacy by Design and by Default | Privacy (все поля с default = FRIENDS/PRIVATE) | ✅ |
+| Art. 25(1) | Privacy by Design: технические меры, псевдонимизация, минимизация | Privacy defaults + Login & Security | ✅ (псевдонимизация → Backend Spec) |
+| Art. 25(2) | Privacy by Default: `seo_indexable=OFF`, `email/phone=ONLY_ME`, posts=`FRIENDS` | Privacy → все defaults | ✅ |
+| Art. 25(2) | Privacy by Default: **onboarding disclosure** для открытого профиля 18+ | Onboarding UX | ❌ **нужно добавить уведомление при регистрации** |
+| Art. 25(2) | Privacy by Default: **storage period** — срок хранения данных | Your Data | ❌ **нужна политика хранения** |
 | Art. 32 | Технические меры безопасности | Login & Security → 2FA, sessions | ✅ |
 | Art. 33 | Уведомление об утечке (72 часа) | Notifications → security (non-disable) | ✅ |
 | Art. 37–39 | DPO (Data Protection Officer) — если >250 сотрудников или >5000 субъектов | Внутренний процесс | 💡 |
@@ -65,7 +72,9 @@
 - `seo_indexable` = **OFF** по умолчанию (Art. 25)
 - `recommendations_opt_out` должен быть доступен (Art. 22)
 - Удаление аккаунта + удаление данных — отдельные действия (Art. 17)
+- **Art.17(2) де-индексация** — ❌ при Delete account → автоматический запрос в Google/Yandex Search Console API
 - **Ограничение обработки** (Art. 18) — ❌ нет в текущей спеке → нужно добавить в Your Data
+- **Onboarding disclosure** — ❌ явное уведомление о публичном профиле при регистрации взрослых
 
 ---
 
@@ -289,7 +298,8 @@
 
 | Настройка / Экран | GDPR | DSA | ePrivacy | PIPEDA | CASL | Quebec L25 | Israel PPL | CCPA/CPRA | CAN-SPAM | COPPA | App Store | Google Play |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| Delete account | Art.17 | — | — | Pr.9 | — | Art.12 | Sec.14 | §1798.105 | — | — | 5.1.1(v) | ⚖️ |
+| Delete account | Art.17(1) | — | — | Pr.9 | — | Art.12 | Sec.14 | §1798.105 | — | — | 5.1.1(v) | ⚖️ |
+| **De-indexing on delete** ❌ | **Art.17(2)** | — | — | — | — | Art.12 | — | — | — | — | — | — |
 | Download my data | Art.15 | — | — | Pr.9 | — | Art.27 | Sec.11 | §1798.100 | — | — | — | ⚖️ |
 | Data portability | Art.20 | — | — | — | — | Art.27 | — | — | — | — | — | — |
 | Withdraw consent | Art.7 | — | — | Pr.3 | ⚖️ | Art.3.2 | — | — | — | — | — | — |
@@ -298,9 +308,11 @@
 | **Do Not Sell** button | — | — | — | — | — | — | — | §1798.120 ❌ | — | — | — | — |
 | Consent history | Art.7 | — | — | Pr.3 | ⚖️ | — | — | — | — | — | — | — |
 | Privacy Policy link | Art.13 | — | — | Pr.8 | — | — | — | ⚖️ | — | — | 5.1.1 | ⚖️ |
-| email_visibility = ONLY_ME | Art.25 | — | Art.13 | — | — | Art.8 | — | — | ⚖️ | — | — | — |
-| phone_visibility = ONLY_ME | Art.25 | — | — | — | — | Art.8 | — | — | — | ⚖️ TCPA | — | — |
-| seo_indexable = false | Art.25/17 | — | — | — | — | Art.8 | — | — | — | — | — | — |
+| email_visibility = ONLY_ME | Art.25(2) | — | Art.13 | — | — | Art.8 | — | — | ⚖️ | — | — | — |
+| phone_visibility = ONLY_ME | Art.25(2) | — | — | — | — | Art.8 | — | — | — | ⚖️ TCPA | — | — |
+| seo_indexable = false | Art.25(2)/17(2) | — | — | — | — | Art.8 | — | — | — | — | — | — |
+| **Onboarding disclosure (open profile)** ❌ | **Art.25(2)** | — | — | — | — | Art.8 | — | — | — | — | — | — |
+| **Storage period policy** ❌ | **Art.25(2)** | — | — | — | — | — | — | — | — | — | — | — |
 | recommendations_opt_out | Art.22 | Art.27/29 | — | — | — | Art.8.1 | — | §1798.121 | — | — | — | — |
 | Date of birth (age gate) | Art.8 | Art.28 | — | — | — | — | — | — | — | ⚖️ COPPA | — | — |
 | 2FA | Art.32 | — | — | Pr.7 | — | — | Data Sec. | — | — | — | — | — |
@@ -330,29 +342,34 @@
 | 5 | **Право на ограничение обработки** (Restrict Processing) | Your Data | GDPR Art.18 |
 | 6 | Объяснение алгоритма рекомендаций (краткое описание) | Privacy → Discoverability | DSA Art.27 |
 | 7 | **Opt-out from profiling for ads** без штрафа для пользователя | Your Data → Ad preferences | DSA Art.29 |
+| 8 | **Art.17(2) де-индексация**: при Delete account — автоматический запрос удаления URL в Google Search Console API + Yandex.Webmaster API + Bing | Backend | GDPR Art.17(2) |
+| 9 | **Art.17(2) де-индексация**: при `seo_indexable OFF` — аналогичный процесс | Backend | GDPR Art.17(2) |
+| 10 | **Onboarding disclosure**: явное уведомление о публичном профиле при регистрации взрослых (18+) | Onboarding UX | GDPR Art.25(2) |
 
 ### ⚠️ Важно для соответствия (может привести к штрафам)
 
 | # | Что добавить | Где | Закон |
 |---|---|---|---|
-| 8 | **Unsubscribe (one-click)** из каждого email-уведомления | Email-шаблоны + Notifications | ePrivacy Art.13(2) + CASL |
-| 9 | **«Почему я вижу эту рекламу»** — ссылка/объяснение | Your Data + Ad preferences | DSA Art.26 |
-| 10 | **Chief Privacy Officer** контакт публично виден | Help & Support | Quebec Law 25 Art.5 |
-| 11 | **Право на пересмотр автоматического решения** (human review) | Your Data | GDPR Art.22 + Quebec Art.8.1 + CPRA |
-| 12 | Pre-checked boxes = запрещены для opt-in | Onboarding + Notifications | CASL |
-| 13 | Физический адрес организации в footer каждого email | Email-шаблоны | CAN-SPAM |
-| 14 | Регистрация базы данных в Израиле | Юридический отдел | Israel PPL Sec.8 |
+| 11 | **Unsubscribe (one-click)** из каждого email-уведомления | Email-шаблоны + Notifications | ePrivacy Art.13(2) + CASL |
+| 12 | **«Почему я вижу эту рекламу»** — ссылка/объяснение | Your Data + Ad preferences | DSA Art.26 |
+| 13 | **Chief Privacy Officer** контакт публично виден | Help & Support | Quebec Law 25 Art.5 |
+| 14 | **Право на пересмотр автоматического решения** (human review) | Your Data | GDPR Art.22 + Quebec Art.8.1 + CPRA |
+| 15 | Pre-checked boxes = запрещены для opt-in | Onboarding + Notifications | CASL |
+| 16 | Физический адрес организации в footer каждого email | Email-шаблоны | CAN-SPAM |
+| 17 | Регистрация базы данных в Израиле | Юридический отдел | Israel PPL Sec.8 |
+| 18 | **Storage period policy**: срок хранения данных при деактивации / после удаления | Your Data + Privacy Policy | GDPR Art.25(2) |
+| 19 | **Delete account UX**: пояснение о де-индексации в модальном окне («до 30 дней») | Account → Delete account modal | GDPR Art.17(2) |
 
 ### 💡 Рекомендации (не обязательно, но повышают доверие)
 
 | # | Что добавить | Где | Закон |
 |---|---|---|---|
-| 15 | Privacy Nutrition Labels заполнены в App Store Connect | App Store Connect | Apple Guidelines |
-| 16 | Data Safety Form заполнена в Google Play Console | Google Play Console | Google Play Policy |
-| 17 | DPO (Data Protection Officer) назначен | Внутренний | GDPR Art.37 |
-| 18 | Privacy Impact Assessment для новых функций | Внутренний | Quebec Art.3.2 |
-| 19 | Audit log доступа к данным | Login & Security | Israel Data Security |
-| 20 | Ссылка на Privacy Policy в каждом email-письме | Email-шаблоны | PIPEDA + GDPR |
+| 20 | Privacy Nutrition Labels заполнены в App Store Connect | App Store Connect | Apple Guidelines |
+| 21 | Data Safety Form заполнена в Google Play Console | Google Play Console | Google Play Policy |
+| 22 | DPO (Data Protection Officer) назначен | Внутренний | GDPR Art.37 |
+| 23 | Privacy Impact Assessment для новых функций | Внутренний | Quebec Art.3.2 |
+| 24 | Audit log доступа к данным | Login & Security | Israel Data Security |
+| 25 | Ссылка на Privacy Policy в каждом email-письме | Email-шаблоны | PIPEDA + GDPR |
 
 ---
 
@@ -377,12 +394,16 @@
 ### ✅ Европа (GDPR + DSA + ePrivacy)
 - [x] Согласие (consent) и отзыв согласия
 - [x] Экспорт данных (Art.15)
-- [x] Удаление данных (Art.17)
+- [x] Удаление данных (Art.17(1))
 - [x] Переносимость (Art.20)
 - [x] Opt-out от рекомендаций (Art.22)
 - [x] Privacy by Default (Art.25) — все defaults = FRIENDS/PRIVATE
+- [x] seo_indexable = OFF (Art.25(2))
 - [x] 2FA и безопасность (Art.32)
 - [x] Cookie consent
+- [ ] ❌ **Art.17(2) де-индексация Google/Yandex при Delete account** (backend)
+- [ ] ❌ **Art.25(2) onboarding disclosure** (открытый профиль 18+)
+- [ ] ❌ **Art.25(2) storage period** — политика хранения данных
 - [ ] ❌ Ограничение обработки (Art.18)
 - [ ] ❌ Объяснение алгоритма рекомендаций (DSA Art.27)
 - [ ] ❌ «Do Not Share» для рекламы (DSA Art.29)
