@@ -238,17 +238,36 @@
 
 ### 2.12 📱 Apple App Store Guidelines
 
-| Правило | Требование | Раздел настроек | Статус |
+> **Детальный аудит всех применимых пунктов App Store Review Guidelines (Feb 2026)** → `AppStoreAuditSpec.md`
+
+| Правило | Требование | Раздел в Bestme | Статус |
 |---|---|---|---|
-| **5.1.1(v)** | Ссылка на удаление аккаунта ПРЯМО в настройках | Account → Delete account | ✅ |
-| **5.1.1** | Privacy Policy ссылка | Help + Your Data | ✅ |
-| **5.1.2** | Запрашивать только нужные разрешения | Системные диалоги iOS | 💡 |
-| **5.1.3** | Если есть вход через Google/Facebook → **Sign in with Apple обязателен** | Login & Security → Login methods | ✅ |
-| **5.1.4** | Push-уведомления: системный диалог iOS (не bypass) | Notifications → Push | ✅ |
-| **5.1.5** | Location data: только с явного согласия | Не актуально / Account | 💡 |
-| **2.5.4** | **Accessibility**: VoiceOver совместимость | Accessibility → Screen reader | ✅ |
-| **3.1.3** | Нет скрытых покупок без явного согласия | — | 💡 |
-| **Privacy Nutrition Labels** | App Store Connect: заполнить все категории данных | App Store Connect | ❌ **административный процесс** |
+| **§1.2** | UGC: фильтрация неприемлемого контента до публикации | Content moderation | ⚠️ Нужна документация в App Review Notes |
+| **§1.2** | UGC: механизм жалоб на контент + своевременный ответ | Help → Report a problem | ✅ |
+| **§1.2** | UGC: **блокировка агрессивных пользователей** | Privacy → Blocked Accounts | ✅ |
+| **§1.2** | UGC: опубликованные контакты для пользователей | Help & Support → Contact | ✅ |
+| **§1.3 / §5.1.4** | Дети: нет 3rd-party analytics/ads для несовершеннолетних | Age-gated routing по date of birth | ⚠️ SDK audit нужен |
+| **§2.3.6** | Честный возрастной рейтинг (UGC → скорее 17+) | App Store Connect metadata | 🔄 При подаче |
+| **§4.5.4** | Push: opt-in только, не обязательны для работы | Notifications settings | ✅ |
+| **§4.8** | Если есть Google/Facebook login → **Sign in with Apple обязателен** | Login & Security | ✅ |
+| **§5.1.1(i)** | Privacy Policy: data **retention/deletion** policy обязательна | Your Data + Privacy Policy | ❌ **ПРОБЕЛ** |
+| **§5.1.1(i)** | Privacy Policy: список всех 3rd-party получателей данных | Privacy Policy | ⚠️ Проверить полноту |
+| **§5.1.1(ii)** | **Pre-permission screen** перед запросом разрешений iOS | Onboarding | ❌ **ПРОБЕЛ** |
+| **§5.1.1(iii)** | Data minimization: только необходимые permissions | iOS implementation | ⚠️ Проверить |
+| **§5.1.1(v)** | Удаление аккаунта **изнутри приложения** обязательно | Account → Delete account | ✅ |
+| **§5.1.1(v)** | **Кнопка отключения каждого 3rd-party login** (Google/Facebook) | Login & Security | ❌ **ПРОБЕЛ** |
+| **§5.1.2(i) ATT** | **App Tracking Transparency** dialog (iOS 14.5+) — если любая аналитика/реклама | iOS codebase | ❌ **Нужна проверка** |
+| **§5.1.2(i)** | Согласие перед передачей данных в **3rd-party AI** | Your Data / onboarding | ❌ **ПРОБЕЛ если используется AI** |
+| **§5.1.5** | Location Services — только если напрямую нужно | N/A | — |
+| **Privacy Nutrition Labels** | Заполнить все Data Types в App Store Connect | App Store Connect | 🔄 Административный |
+
+**Ключевые требования App Store к настройкам:**
+- **§1.2 (4 пункта)** — все 4 обязательны для UGC/соцсети: filter + report + block + contact
+- **§4.8** — Sign in with Apple при наличии любого 3rd-party login ✅
+- **§5.1.1(i)** — Privacy Policy обязана содержать data retention policy ❌ нет
+- **§5.1.1(ii)** — Pre-permission screen перед каждым iOS-разрешением ❌ нет
+- **§5.1.1(v)** — Кнопка отключения Google/Facebook login ❌ нет
+- **§5.1.2(i) ATT** — App Tracking Transparency если используется tracking ❌ проверить
 
 ---
 
