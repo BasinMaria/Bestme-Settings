@@ -59,13 +59,21 @@
 
 ### 2.2 Account Privacy (Приватность аккаунта)
 
-| Настройка | variable_name | Тип | Default | ⚖️ | Закон |
-|---|---|---|---|---|---|
-| Profile visibility | `profile_visibility` | ENUM: Public / Friends / Private | `FRIENDS` | ⚖️ | GDPR Art.25 |
-| Show online status | `online_status_visible` | ENUM: Everyone / Friends / Nobody | `FRIENDS` | 💡 | — |
-| Show last seen | `last_seen_visible` | ENUM: Everyone / Friends / Nobody | `FRIENDS` | 💡 | — |
-| Show age | `birthday_visibility` | ENUM: 5 значений | `FRIENDS_AGE` | ⚖️ | COPPA + GDPR |
-| Show relationship status | `relationship_visible` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+> ⚠️ **Возрастные развилки**: для несовершеннолетних 13–17 дефолты строже по DSA Art.28(3)(g). Подробно → `AccountPrivacySpec.md`
+
+| Настройка | variable_name | Тип | Default 18+ | Default 13–17 | ⚖️ | Закон |
+|---|---|---|---|---|---|---|
+| Private account | `account_private` | Toggle On/Off | `OFF` (открытый) | **`ON`** (закрытый) | ⚖️ | GDPR Art.25 · **DSA Art.28(3)(g)** |
+| Profile in search results | `profile_searchable` | Toggle On/Off | `ON` | `ON` | ⚖️ | GDPR Art.17 — право на забвение (opt-out) |
+| SEO indexing | `seo_indexable` | Toggle On/Off | **`OFF`** | **`OFF`** | ⚖️ | GDPR Art.25 — **СТРОГО OFF** |
+| Activity status | `online_status_visible` | Toggle On=Friends / Off=Nobody | `ON` (=Friends) | `OFF` | ⚖️ | GDPR Art.25 · ePrivacy |
+| Show age | `birthday_visibility` | ENUM: 5 значений | `FRIENDS_AGE` | `ONLY_ME` | ⚖️ | COPPA + GDPR + DSA Art.28 |
+| Show relationship status | `relationship_visible` | ENUM: Everyone / Friends / Only me | `FRIENDS` | `ONLY_ME` | 💡 | — |
+
+> ✅ `account_private = OFF` для 18+ **законно** — открытый профиль для взрослых соответствует GDPR Art.25 (подтверждено CNIL, ICO)
+> ⚖️ `account_private = ON` для 13–17 **обязателен** по DSA Art.28(3)(g)
+> ⚠️ `seo_indexable = OFF` — нельзя ставить ON по умолчанию (GDPR Art.25, штраф до 10 млн €)
+> ⚠️ `online_status_visible`: тумблер ON = видят ТОЛЬКО ДРУЗЬЯ (не все пользователи)
 
 ---
 

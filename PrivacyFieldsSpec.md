@@ -1,6 +1,7 @@
 # Bestme — Privacy Fields Specification
 > **Только для личного профиля** (Personal Profile). Бизнес-профиль — отдельный документ.  
 > Полная спецификация всех privacy-полей: variable name, type, default, legal, visibility matrix.
+> **Юридический анализ Account Privacy block (defaults, возрастные развилки) → `AccountPrivacySpec.md`**
 
 ---
 
@@ -28,6 +29,29 @@
 ---
 
 ## 1. Поля профиля — видимость
+
+### 1.0 Private Account (закрытый аккаунт)
+
+> Подробный юридический анализ → `AccountPrivacySpec.md`
+
+| Атрибут | Значение |
+|---|---|
+| **Variable** | `account_private` |
+| **Type** | boolean (Toggle On/Off) |
+| **Default 18+** | `false` (открытый) — ✅ законно для взрослых |
+| **Default 13–17** | `true` (закрытый) — ⚖️ обязательно по DSA Art.28(3)(g) |
+| **Legal** | ⚖️ 🇪🇺 GDPR Art.25 · DSA Art.28(3)(g) |
+| **Влияние** | Если `true` — Content Visibility автоматически → FRIENDS для всех контентных полей |
+
+| Аудитория | account_private = false | account_private = true |
+|---|---|---|
+| Owner | ✅ Full profile | ✅ Full profile |
+| Friends | ✅ согласно настройкам | ✅ Full profile |
+| Everyone | ✅ согласно настройкам | ⚠️ Name + avatar + bio only |
+| Unauth | ⚠️ Limited (no contact info) | ⚠️ Name + avatar only |
+| Blocked | 🚫 Hidden | 🚫 Hidden |
+
+---
 
 ### 1.1 Profile Page (общая видимость профиля)
 
