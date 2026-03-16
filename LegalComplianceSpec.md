@@ -215,12 +215,24 @@
 
 ### 2.10 🇺🇸 TCPA (США, SMS/телефон)
 
-| Требование | Раздел настроек | Статус |
+> **Полный текст**: Telephone Consumer Protection Act 47 U.S.C. §227
+
+| Требование TCPA | Раздел настроек | Статус |
 |---|---|---|
-| **Prior Express Written Consent** для SMS-маркетинга | Onboarding → SMS opt-in | ❌ **если есть SMS — проверить** |
-| Opt-out через STOP | SMS-система | 💡 |
-| `phone_visibility` не может быть PUBLIC | Privacy → Contact Info | ✅ |
-| Запрет automated calls без согласия | Не актуально для соцсети | — |
+| **Prior Express Written Consent** для SMS-маркетинга — письменная галочка с явным текстом | Onboarding / Account → Add phone → чекбокс | ❌ **нужен SMS consent checkbox** |
+| **Prior Express Written Consent** для OTP/транзакционных SMS — отдельное согласие | Account → Phone → форма | ❌ **нужна формулировка** |
+| **STOP opt-out**: в каждом SMS обязательно упоминание «Reply STOP to unsubscribe» | SMS-шаблоны | ⚠️ Проверить шаблоны |
+| **`phone_visibility` никогда не PUBLIC** — телефон нельзя раскрывать без явного действия пользователя | Privacy → Contact Info → `phone_visibility` = ONLY_ME | ✅ |
+| Запрет automated dialing без согласия (ATDS) | Не применяется для соцсети | — |
+| Штраф: **$500–$1 500** за каждое SMS без согласия (§227(b)(3)) | — | ⚠️ Критически высокий риск |
+
+**Что нужно добавить в UI** (Account → Phone number):
+```
+[ ] Я соглашаюсь получать SMS от Bestme для подтверждения аккаунта
+    и уведомлений безопасности. Частота: по необходимости.
+    Стандартные тарифы оператора. Для отписки ответьте STOP.
+    [Политика SMS-коммуникации →]
+```
 
 ---
 
@@ -273,13 +285,37 @@
 
 ### 2.13 🤖 Google Play Developer Policy
 
-| Правило | Требование | Раздел настроек | Статус |
+> **Детальный аудит всех применимых пунктов Google Play Developer Program Policies** → `GooglePlayAuditSpec.md` *(в разработке)*
+
+| Правило | Требование | Раздел в Bestme | Статус |
 |---|---|---|---|
-| **Data Safety section** | Заполнить Data Safety Form в Play Console | Play Console | ❌ **административный процесс** |
-| **Prominent Disclosure** | Объяснить сбор данных до запроса разрешений | Onboarding / Privacy Notice | ❌ **нужен pre-permission screen** |
-| **Account Deletion** | Удаление аккаунта из настроек + из web (не только в app) | Account → Delete + веб-форма | ❌ **нужна веб-форма удаления** |
-| **Sensitive Permissions** | Доступ к контактам, микрофону, камере — только когда нужно | Системные диалоги | 💡 |
-| **Accessibility** | AccessibilityService только с явным обоснованием | — | 💡 |
+| **UGC: ToS acceptance** | Принятие Terms of Use перед первым созданием контента | Onboarding-модаль перед первым постом | ❌ **КРИТИЧЕСКИЙ ПРОБЕЛ** |
+| **UGC: Objectionable content definition** | Terms of Use содержат явный перечень запрещённого | Terms of Use / Community Guidelines | ❌ **нужно добавить** |
+| **UGC: In-app report** | Жалоба на контент и пользователя без выхода из приложения | Help → Report a problem | ✅ |
+| **UGC: Block users** | Блокировка пользователей (DM + tagging) | Privacy → Blocked Accounts | ✅ |
+| **UGC: AI content reporting** | Если есть AI-генерация — in-app жалоба на offensive AI output | Report a problem → AI content | ⚠️ Если AI используется |
+| **Child Safety Standards** | (1) CSAE в Terms of Use | Terms of Use | ❌ |
+| **Child Safety Standards** | (2) In-app CSAE report механизм | Report → Child Safety category | ❌ |
+| **Child Safety Standards** | (3) Процесс удаления CSAM + уведомление NCMEC | Backend SLA | ❌ |
+| **Child Safety Standards** | (4) Соответствие child safety законам | Юридический процесс | ❌ |
+| **Child Safety Standards** | (5) Child Safety Point of Contact | Help & Support → childsafety@ | ❌ |
+| **Prominent Disclosure** | In-app экран объяснения сбора данных ДО запроса разрешений | Onboarding | ❌ **ПРОБЕЛ** |
+| **Consent** | Affirmative user action (tap to accept), не auto-dismiss | Все согласия | ⚠️ Проверить UI |
+| **Account Deletion in-app** | Удаление аккаунта изнутри приложения | Account → Delete account | ✅ |
+| **Account Deletion web** | Веб-форма удаления аккаунта + URL в Play Console | bestme.com/account/delete | ❌ **ПРОБЕЛ** |
+| **Data Safety Form** | Заполнить в Play Console все вопросы (deadline прошёл) | Play Console | ❌ **административный** |
+| **Privacy Policy** | Содержит: developer info, privacy contact, SDK list, retention policy | Privacy Policy | ❌ **data retention + SDK list missing** |
+| **No pre-checked boxes** | Все opt-in чекбоксы по умолчанию пустые | Onboarding forms | ❌ **проверить** |
+| **SDK compliance** | Все сторонние SDK должны соответствовать Google Play | Tech review | ⚠️ SDK audit |
+| **EU Personal Information** | Data Privacy Framework: если данные из ЕС через Google → соблюдать DPF принципы | Backend / DPA | ⚠️ |
+| **Incidental sexual content** | Если есть UGC сексуального характера — 2-action filter + age gate | Content filter | ⚠️ При необходимости |
+
+**Ключевые требования Google Play к настройкам:**
+- **UGC ToS acceptance** — ❌ нет экрана принятия правил перед созданием контента
+- **Child Safety (5 пунктов)** — ❌ все пять отсутствуют
+- **Prominent Disclosure** — ❌ нет pre-permission screen
+- **Account deletion web URL** — ❌ нет веб-формы
+- **Data Safety Form** — ❌ не заполнена в Play Console
 
 ---
 

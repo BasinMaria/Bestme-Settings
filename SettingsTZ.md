@@ -23,6 +23,12 @@
 | 🔴 5 | **Accessibility раздел** в настройках (текст, контраст, субтитры, screen reader) | EAA Directive 2019/882 (ЕС, с 28 июня 2025) · ADA (США) · Israel Disability Law 5758-1998 · AODA (Канада) · App Store 2.5.4 · Google Play |
 | 🔴 6 | **Art.17(2) де-индексация**: при Delete account — автоматический запрос удаления URL в Google Search Console + Yandex.Webmaster + Bing (если был seo_indexable = ON) | GDPR Art.17(2) (ЕС) — штраф до 20 млн € |
 | 🔴 7 | **Onboarding disclosure**: при регистрации взрослых (18+) — явное уведомление о том, что профиль будет публичным | GDPR Art.25(2) (ЕС) — условие законности открытого профиля по умолчанию |
+| 🔴 8 | **UGC ToS acceptance**: модаль «Принять правила сообщества» при первом создании контента (пост, комментарий, загрузка фото) | Google Play UGC Policy · Apple App Store §1.2 |
+| 🔴 9 | **Child Safety Standards**: (a) запрет CSAE в Terms of Use/Community Guidelines; (b) категория «Child Safety» в Report a problem; (c) публичный email childsafety@bestme.com в Help & Support | Google Play Child Safety Standards Policy (5 обязательных пунктов) · COPPA |
+| 🔴 10 | **App Tracking Transparency (ATT) диалог** (iOS 14.5+) — если используются аналитические или рекламные SDK | Apple App Store §5.1.2(i) — без этого автоматический отказ в ревью |
+| 🔴 11 | **Prominent Disclosure**: in-app экран объяснения сбора данных ДО запроса Push / Camera / Photos (не только в Privacy Policy) | Google Play User Data Policy — Prominent Disclosure & Consent |
+| 🔴 12 | **SMS consent checkbox** (при добавлении телефона): явный текст «Я соглашаюсь получать SMS от Bestme... Для отписки ответьте STOP» | TCPA 47 U.S.C. §227 — штраф $1 500 за каждое SMS без письменного согласия |
+| 🔴 13 | **Кнопка «Отключить»** для каждого 3rd-party login-провайдера (Google, Facebook и т.д.) в Login & Security | Apple App Store §5.1.1(v) |
 
 ### 🟡 Важно — до первого значительного роста аудитории
 
