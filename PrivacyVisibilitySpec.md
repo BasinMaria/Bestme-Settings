@@ -16,9 +16,10 @@
 1. [Раздел 1: Account (Аккаунт)](#1-account)
 2. [Раздел 2: Privacy & Visibility (Приватность и видимость)](#2-privacy--visibility)
    - [2.1 Account Privacy](#21-account-privacy)
-   - [2.2 Contact Info Privacy](#22-contact-info-privacy)
-   - [2.3 Content Visibility](#23-content-visibility)
-   - [2.4 Interactions](#24-interactions)
+   - [2.2 Profile Visibility](#22-profile-visibility)
+   - [2.3 Contact Info Privacy](#23-contact-info-privacy)
+   - [2.4 Content Visibility](#24-content-visibility)
+   - [2.5 Interactions](#25-interactions)
 3. [Карта пропущенных полей](#3-карта-пропущенных-полей)
 4. [Вопрос: куда поместить Subscribed Communities?](#4-subscribed-communities)
 5. [Итоговая ASCII-структура](#5-ascii-структура)
@@ -102,37 +103,40 @@
 
 **Путь:** Settings → Privacy & Visibility → Account Privacy
 
-> Приложение **только для 18+** — единый набор дефолтов без возрастных развилок.
+> Настройки, управляющие тем, **как аккаунт находят и индексируют**.
 
 | Настройка | variable_name | Тип | Default | ⚖️ | Закон |
 |---|---|---|---|---|---|
 | **Private account** | `account_private` | Toggle | `false` (открытый) | ⚖️ | GDPR Art.25 — открытый профиль законен для 18+ |
 | **Profile in search results** | `profile_searchable` | Toggle | `true` | ⚖️ | GDPR Art.17 — право на забвение (opt-out доступен) |
 | **SEO indexing** | `seo_indexable` | Toggle | **`false`** | ⚖️ | **GDPR Art.25 — СТРОГО OFF, нельзя делать ON по умолчанию** |
-| **Activity status (online)** | `online_status_visible` | Toggle | `true` → показывать только друзьям | ⚖️ | GDPR Art.25 · ePrivacy |
-| **Show age / birthday** | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE_ONLY` | ⚖️ | GDPR Art.9 |
-| **Show gender** | `gender_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
-| **Show interests** | `interests_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
-
-#### Видимость полей Profile Page (Account Privacy → Profile Page)
-
-| Поле профиля | variable_name | Default | ⚖️ | Комментарий |
-|---|---|---|---|---|
-| **Full name** | `name_visibility` | `EVERYONE` | 💡 | Имя = публичное (как в соцсети) |
-| **Avatar** | `avatar_visibility` | `EVERYONE` | 💡 | Аватар = публичный |
-| **Cover** | `cover_visibility` | `EVERYONE` | 💡 | Обложка = публичная |
-| **Bio** | `bio_visibility` | `EVERYONE` | 💡 | Открытый профиль → bio публичный |
-| **Birthday** | `birthday_visibility` | `FRIENDS_AGE_ONLY` | ⚖️ | Только возраст друзьям (не дата) |
-| **Gender** | `gender_visibility` | `EVERYONE` | 💡 | — |
-| **Interests** | `interests_visibility` | `FRIENDS` | 💡 | — |
 
 > ✅ `account_private = false` — **законно** для 18+, открытый профиль соответствует GDPR Art.25 (подтверждено CNIL, ICO)  
-> ❌ `seo_indexable` нельзя делать `true` по умолчанию — штраф до 10 млн € (GDPR Art.25)  
-> ⚠️ `online_status_visible = true` → видят только ДРУЗЬЯ (не все пользователи!)
+> ❌ `seo_indexable` нельзя делать `true` по умолчанию — штраф до 10 млн € (GDPR Art.25)
 
 ---
 
-### 2.2 Contact Info Privacy
+### 2.2 Profile Visibility
+
+**Путь:** Settings → Privacy & Visibility → Profile Visibility
+
+> Кто видит конкретные поля на странице профиля пользователя.
+
+| Поле профиля | variable_name | Тип | Default | ⚖️ | Закон |
+|---|---|---|---|---|---|
+| **Full name** | `name_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Имя = публичное (как в соцсети) |
+| **Avatar** | `avatar_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Аватар = публичный |
+| **Cover** | `cover_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Обложка = публичная |
+| **Bio** | `bio_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Открытый профиль → bio публичный |
+| **Birthday** | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE_ONLY` | ⚖️ | GDPR Art.9 — только возраст друзьям (не полная дата) |
+| **Gender** | `gender_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
+| **Interests** | `interests_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+
+> ⚠️ `birthday_visibility`: по умолчанию показывать **только возраст** друзьям — полная дата рождения = чувствительные данные (GDPR Art.9).
+
+---
+
+### 2.3 Contact Info Privacy
 
 **Путь:** Settings → Privacy & Visibility → Contact Info Privacy
 
@@ -151,7 +155,7 @@
 
 ---
 
-### 2.3 Content Visibility
+### 2.4 Content Visibility
 
 **Путь:** Settings → Privacy & Visibility → Content Visibility
 
@@ -169,7 +173,7 @@
 
 ---
 
-### 2.4 Interactions
+### 2.5 Interactions
 
 **Путь:** Settings → Privacy & Visibility → Interactions
 
@@ -181,18 +185,13 @@
 | **Who can comment my posts** | `who_can_comment` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | DSA Art.14 |
 | **Who can share my posts** | `share_permission` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | GDPR Art.25 — шеринг = распространение данных |
 | **Who can send friend requests** | `friend_request_permission` | ENUM: Everyone / Friends of Friends / No one | `EVERYONE` | 💡 | — |
-| **Active status (online indicator)** | `online_status_visible` | Toggle | `true` → только друзья | ⚖️ | GDPR Art.25 · ePrivacy |
+| **Activity status (online)** | `online_status_visible` | Toggle | `true` → только друзья | ⚖️ | GDPR Art.25 · ePrivacy |
 | **Last seen** | `last_seen_visible` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | GDPR Art.25 · ePrivacy — метаданные активности |
 | **Read receipts** | `read_receipts_visible` | Toggle | `true` | 💡 | — |
 
-> ⚠️ **`active_status` (online indicator):** ON = видят только ДРУЗЬЯ (не «все»). Это важно —  
-> «онлайн для всех» без согласия = нарушение ePrivacy Directive.
->
-> ⚠️ **`last_seen_visible`:** Default `FRIENDS` (не `EVERYONE`) — по GDPR Art.25 данные о  
-> времени активности = персональные данные.
->
-> ⚠️ **`share_permission`:** кто может делиться твоими постами вовне. Default `FRIENDS` —  
-> это Privacy by Default (GDPR Art.25). Пользователь может ослабить до `EVERYONE`.
+> ⚠️ **`online_status_visible`:** ON = видят только ДРУЗЬЯ (не «все»). «Онлайн для всех» без согласия = нарушение ePrivacy Directive.  
+> ⚠️ **`last_seen_visible`:** Default `FRIENDS` (не `EVERYONE`) — по GDPR Art.25 данные о времени активности = персональные данные.  
+> ⚠️ **`share_permission`:** кто может делиться твоими постами вовне. Default `FRIENDS` — Privacy by Default (GDPR Art.25). Пользователь может ослабить до `EVERYONE`.
 
 ---
 
@@ -301,19 +300,16 @@ Settings → Account → Account Management
     ├── Account Privacy  ⚖️
     │   ├── Private account         [OFF — открытый]  ⚖️ GDPR Art.25
     │   ├── Profile in search       [ON]  ⚖️ GDPR Art.17
-    │   ├── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
-    │   ├── Activity status         [ON = только друзья]  ⚖️ ePrivacy
-    │   ├── Show birthday           [FRIENDS_AGE_ONLY]  ⚖️ GDPR Art.9
-    │   ├── Show gender             [EVERYONE]
-    │   ├── Show interests          [FRIENDS]
-    │   └── Profile page fields:
-    │       ├── Full name           [EVERYONE]
-    │       ├── Avatar              [EVERYONE]
-    │       ├── Cover               [EVERYONE]
-    │       ├── Bio                 [EVERYONE]
-    │       ├── Birthday            [FRIENDS_AGE_ONLY]
-    │       ├── Gender              [EVERYONE]
-    │       └── Interests           [FRIENDS]
+    │   └── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
+    │
+    ├── Profile Visibility  💡
+    │   ├── Full name               [EVERYONE]
+    │   ├── Avatar                  [EVERYONE]
+    │   ├── Cover                   [EVERYONE]
+    │   ├── Bio                     [EVERYONE]
+    │   ├── Birthday                [FRIENDS_AGE_ONLY]  ⚖️ GDPR Art.9
+    │   ├── Gender                  [EVERYONE]
+    │   └── Interests               [FRIENDS]
     │
     ├── Contact Info Privacy  ⚖️ GDPR Art.5 — минимизация данных
     │   ├── Who sees email          [ONLY_ME]  ⚖️ GDPR Art.5 · CAN-SPAM
@@ -331,7 +327,7 @@ Settings → Account → Account Management
     │   ├── Subscribed blogs        [FRIENDS]
     │   └── Discussions             [FRIENDS]
     │
-    └── Interactions  ⚖️ DSA Art.14 · GDPR Art.25
+    └── Interactions  ⚖️ DSA Art.14 · GDPR Art.25 · ePrivacy
         ├── Who can message         [FRIENDS]  ⚖️ DSA Art.14
         ├── Who can tag me          [FRIENDS]  ⚖️ GDPR Art.25
         ├── Tag approval required   [ON]  ⚖️ GDPR Art.25
