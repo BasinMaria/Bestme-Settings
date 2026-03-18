@@ -66,6 +66,7 @@
 | **Location / Country / Region** | `location_country` | ENUM (страны) | пусто | ⚖️ | GDPR — применимое право |
 | **Address** | `address_text` | Текст | пусто | ⚖️ | GDPR — чувствительные данные |
 | **Personal link (профильная ссылка)** | `profile_link_url` | URL | пусто | 💡 | — |
+| **Blog link (ссылка на блог)** | `blog_link_url` | URL | пусто | 💡 | — |
 | **Business link** | `business_link_url` | URL | пусто | 💡 | — |
 
 > ⚠️ Телефон не является обязательным при регистрации — это влияет на 2FA  
@@ -150,6 +151,7 @@
 | **Location** | `location_visibility` | ENUM: Only me / Friends / Everyone | `FRIENDS` | ⚖️ | GDPR — локационные данные |
 | **Address** | `address_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.9** — адрес = чувствительные данные, строго ONLY_ME |
 | **Personal link** | `personal_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
+| **Blog link** | `blog_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
 | **Business link** | `business_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
 
 > ⚠️ **`email_visibility` и `phone_visibility` НИКОГДА не могут быть `EVERYONE` по умолчанию**  
@@ -214,6 +216,8 @@
 | Address visibility | `address_visibility` | 🆕 **Новое** | **Отсутствовало** в SettingsTZ Contact Info Privacy |
 | Personal link visibility | `personal_link_visibility` | 🆕 **Новое** | Только `website_visibility` в SettingsTZ |
 | Business link visibility | `business_link_visibility` | 🆕 **Новое** | Отсутствовало |
+| Blog link | `blog_link_url` | 🆕 Новое | Не было ни в одной спеке |
+| Blog link visibility | `blog_link_visibility` | 🆕 Новое | Не было ни в одной спеке |
 | Categories visibility | `categories_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility |
 | Subscribed blogs visibility | `subscribed_blogs_visibility` | 🆕 **Новое** | **Отсутствовало** |
 | Discussions visibility | `discussions_visibility` | 🆕 **Новое** | **Отсутствовало** |
@@ -294,6 +298,7 @@ Settings → Account → Account Management
 │   │   ├── Location / Country  ⚖️ GDPR
 │   │   ├── Address  ⚖️ GDPR (чувствительные)
 │   │   ├── Personal link
+│   │   ├── Blog link
 │   │   └── Business link
 │   │
 │   └── Account Management  ⚖️
@@ -326,6 +331,7 @@ Settings → Account → Account Management
     │   ├── Location                [FRIENDS]  ⚖️ GDPR
     │   ├── Address                 [ONLY_ME]  ⚖️ GDPR Art.9
     │   ├── Personal link           [EVERYONE]
+    │   ├── Blog link               [EVERYONE]
     │   └── Business link           [EVERYONE]
     │
     ├── Content Visibility  ⚖️ GDPR Art.25
