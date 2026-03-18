@@ -102,17 +102,17 @@
 
 **Путь:** Settings → Privacy & Visibility → Account Privacy
 
-> Полный юридический анализ с возрастными развилками → [AccountPrivacySpec.md](AccountPrivacySpec.md)
+> Приложение **только для 18+** — единый набор дефолтов без возрастных развилок.
 
-| Настройка | variable_name | Тип | Default 18+ | Default 13–17 | ⚖️ | Закон |
-|---|---|---|---|---|---|---|
-| **Private account** | `account_private` | Toggle | `false` (открытый) | `true` (закрытый) | ⚖️ | GDPR Art.25 · **DSA Art.28(3)(g)** |
-| **Profile in search results** | `profile_searchable` | Toggle | `true` | `true` | ⚖️ | GDPR Art.17 — право на забвение (opt-out доступен) |
-| **SEO indexing** | `seo_indexable` | Toggle | **`false`** | **`false`** | ⚖️ | **GDPR Art.25 — СТРОГО OFF, нельзя делать ON по умолчанию** |
-| **Activity status (online)** | `online_status_visible` | Toggle | `true` → показывать только друзьям | `false` | ⚖️ | GDPR Art.25 · ePrivacy |
-| **Show age / birthday** | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE_ONLY` | `ONLY_ME` | ⚖️ | GDPR Art.9 · COPPA · DSA Art.28 |
-| **Show gender** | `gender_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | `FRIENDS` | 💡 | — |
-| **Show interests** | `interests_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | `FRIENDS` | 💡 | — |
+| Настройка | variable_name | Тип | Default | ⚖️ | Закон |
+|---|---|---|---|---|---|
+| **Private account** | `account_private` | Toggle | `false` (открытый) | ⚖️ | GDPR Art.25 — открытый профиль законен для 18+ |
+| **Profile in search results** | `profile_searchable` | Toggle | `true` | ⚖️ | GDPR Art.17 — право на забвение (opt-out доступен) |
+| **SEO indexing** | `seo_indexable` | Toggle | **`false`** | ⚖️ | **GDPR Art.25 — СТРОГО OFF, нельзя делать ON по умолчанию** |
+| **Activity status (online)** | `online_status_visible` | Toggle | `true` → показывать только друзьям | ⚖️ | GDPR Art.25 · ePrivacy |
+| **Show age / birthday** | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE_ONLY` | ⚖️ | GDPR Art.9 |
+| **Show gender** | `gender_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
+| **Show interests** | `interests_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
 
 #### Видимость полей Profile Page (Account Privacy → Profile Page)
 
@@ -126,8 +126,7 @@
 | **Gender** | `gender_visibility` | `EVERYONE` | 💡 | — |
 | **Interests** | `interests_visibility` | `FRIENDS` | 💡 | — |
 
-> ✅ `account_private = false` для 18+ — **законно**, открытый профиль допустим по GDPR Art.25  
-> ⚖️ `account_private = true` для 13–17 — **обязательно** по DSA Art.28(3)(g)  
+> ✅ `account_private = false` — **законно** для 18+, открытый профиль соответствует GDPR Art.25 (подтверждено CNIL, ICO)  
 > ❌ `seo_indexable` нельзя делать `true` по умолчанию — штраф до 10 млн € (GDPR Art.25)  
 > ⚠️ `online_status_visible = true` → видят только ДРУЗЬЯ (не все пользователи!)
 
@@ -300,7 +299,7 @@ Settings → Account → Account Management
 └── 2️⃣ (или 3️⃣) 🔒 Privacy & Visibility  ⚖️ GDPR Art.25
     │
     ├── Account Privacy  ⚖️
-    │   ├── Private account         [18+: OFF · 13-17: ON]  ⚖️ GDPR Art.25 · DSA Art.28
+    │   ├── Private account         [OFF — открытый]  ⚖️ GDPR Art.25
     │   ├── Profile in search       [ON]  ⚖️ GDPR Art.17
     │   ├── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
     │   ├── Activity status         [ON = только друзья]  ⚖️ ePrivacy

@@ -242,7 +242,7 @@ Bestme использует данные для улучшения
 | Bio / About | `bio` | Текстовое поле | — | 💡 | — |
 | Website | `profile_website` | URL | — | 💡 | — |
 
-> **⚖️ Date of birth**: если пользователь указал возраст < 13 → **заблокировать регистрацию** с сообщением «К сожалению, Bestme доступен только с 13 лет». Перенаправить на helpline (**COPPA § 312.5**)
+> **⚖️ Date of birth**: если пользователь указал возраст < 18 → **заблокировать регистрацию** с сообщением «К сожалению, Bestme доступен только с 18 лет».
 
 ### L2: Управление аккаунтом
 
@@ -276,20 +276,19 @@ Bestme использует данные для улучшения
 
 ### 2.1 Account Privacy — Приватность аккаунта
 
-> **⚠️ Возрастные дефолты**: для 13–17 лет — строгие defaults по **DSA Art.28(3)(g)**
+> Приложение **только для 18+** — единый набор дефолтов без возрастных развилок.
 
-| Настройка | variable_name | Тип | Default 18+ | Default 13–17 | ⚖️ | Закон |
-|---|---|---|---|---|---|---|
-| Private account | `account_private` | Toggle ON/OFF | `OFF` (открытый) | **`ON`** (закрытый) | ⚖️ | GDPR Art.25 · **DSA Art.28(3)(g)** — закрытый для 13–17 ОБЯЗАТЕЛЕН |
-| Profile in search results | `profile_searchable` | Toggle ON/OFF | `ON` | `ON` | ⚖️ | GDPR Art.17 — право на забвение (opt-out) |
-| SEO indexing (Google/Yandex/Bing) | `seo_indexable` | Toggle ON/OFF | **`OFF`** | **`OFF`** | ⚖️ | **GDPR Art.25(2) — СТРОГО OFF, штраф до 10 млн €** |
-| Activity status / online status | `online_status_visible` | Toggle ON=Friends / OFF=Nobody | `ON` (=Friends) | `OFF` (=Nobody) | ⚖️ | GDPR Art.25 · ePrivacy |
-| Show age | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE` | `ONLY_ME` | ⚖️ | COPPA · GDPR Art.9 · DSA Art.28 |
-| Show relationship status | `relationship_visible` | ENUM: Everyone / Friends / Only me | `FRIENDS` | `ONLY_ME` | 💡 | — |
+| Настройка | variable_name | Тип | Default | ⚖️ | Закон |
+|---|---|---|---|---|---|
+| Private account | `account_private` | Toggle ON/OFF | `OFF` (открытый) | ⚖️ | GDPR Art.25 — открытый профиль законен для 18+ |
+| Profile in search results | `profile_searchable` | Toggle ON/OFF | `ON` | ⚖️ | GDPR Art.17 — право на забвение (opt-out) |
+| SEO indexing (Google/Yandex/Bing) | `seo_indexable` | Toggle ON/OFF | **`OFF`** | ⚖️ | **GDPR Art.25(2) — СТРОГО OFF, штраф до 10 млн €** |
+| Activity status / online status | `online_status_visible` | Toggle ON=Friends / OFF=Nobody | `ON` (=Friends) | ⚖️ | GDPR Art.25 · ePrivacy |
+| Show age | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE` | ⚖️ | GDPR Art.9 |
+| Show relationship status | `relationship_visible` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
 
 **Важные примечания:**
-> ✅ `account_private = OFF` для 18+ **законно** (открытый профиль для взрослых, CNIL/ICO подтвердили)  
-> ⚖️ `account_private = ON` для 13–17 **обязателен** по DSA Art.28(3)(g)  
+> ✅ `account_private = OFF` **законно** для 18+ (открытый профиль для взрослых, CNIL/ICO подтвердили)  
 > ⚠️ `seo_indexable`: нельзя ставить ON по умолчанию (GDPR Art.25(2)); пользователь может включить вручную  
 > ⚠️ `online_status_visible ON` = видят ТОЛЬКО ДРУЗЬЯ (не все пользователи платформы)
 
@@ -312,15 +311,15 @@ Bestme использует данные для улучшения
 
 ### 2.3 Content Visibility — Видимость контента
 
-| Настройка | variable_name | Default 18+ | Default 13–17 | ⚖️ | Закон |
-|---|---|---|---|---|---|
-| Default post audience | `default_post_audience` | `FRIENDS` | `FRIENDS` | ⚖️ | GDPR Art.25 Privacy by Default |
-| Who sees my photos/gallery | `photos_visibility` | `FRIENDS` | `FRIENDS` | ⚖️ | GDPR Art.25 |
-| Who sees my friends list | `friends_list_visibility` | `FRIENDS` | `ONLY_ME` | 💡 | — |
-| Who sees my activity feed | `activity_visibility` | `FRIENDS` | `ONLY_ME` | 💡 | — |
-| Who sees my likes/reactions | `likes_visibility` | `FRIENDS` | `ONLY_ME` | 💡 | — |
-| Who sees my challenges | `challenges_visibility` | `FRIENDS` | `ONLY_ME` | 💡 | — |
-| Who sees my rewards/badges | `rewards_visibility` | `FRIENDS` | `ONLY_ME` | 💡 | — |
+| Настройка | variable_name | Default | ⚖️ | Закон |
+|---|---|---|---|---|
+| Default post audience | `default_post_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 Privacy by Default |
+| Who sees my photos/gallery | `photos_visibility` | `FRIENDS` | ⚖️ | GDPR Art.25 |
+| Who sees my friends list | `friends_list_visibility` | `FRIENDS` | 💡 | — |
+| Who sees my activity feed | `activity_visibility` | `FRIENDS` | 💡 | — |
+| Who sees my likes/reactions | `likes_visibility` | `FRIENDS` | 💡 | — |
+| Who sees my challenges | `challenges_visibility` | `FRIENDS` | 💡 | — |
+| Who sees my rewards/badges | `rewards_visibility` | `FRIENDS` | 💡 | — |
 
 **ENUM-значения видимости (стандарт):**
 `EVERYONE` | `FRIENDS` | `FRIENDS_OF_FRIENDS` | `ONLY_ME`
@@ -697,7 +696,7 @@ RU:  МВД 102
 | **DSA Art.17–20** | Модерация + апелляции | Notifications (non-disable) · Content & Moderation |
 | **DSA Art.25–26** | Запрет на профилирование рекламы несовершеннолетних | age gate + Ad preferences |
 | **DSA Art.27** | Объяснение рекомендательного алгоритма | Privacy → Discoverability + label |
-| **DSA Art.28(3)(g)** | Закрытый профиль для 13–17 | `account_private=ON` для 13–17 |
+| **DSA Art.28(3)(g)** | Закрытый профиль для несовершеннолетних | Н/П — Bestme только 18+ |
 | **DSA Art.29** | Opt-out от рекомендаций | Privacy → Discoverability |
 | **ePrivacy Art.5(3)** | Cookies | Your Data → Cookie settings |
 | **ePrivacy Art.13** | Согласие на коммерческие сообщения | Notifications → Email Marketing (empty checkboxes) |
@@ -790,7 +789,7 @@ ENUM post audience:
   EVERYONE / FRIENDS / FRIENDS_OF_FRIENDS / ONLY_ME
 
 Profile:
-  account_private           bool   false (18+) / true (13–17)
+  account_private           bool   false (открытый — законно для 18+)
   seo_indexable             bool   false (СТРОГО)
   profile_searchable        bool   true
   online_status_visible     bool   true → Friends only / false → Nobody
@@ -799,16 +798,16 @@ Profile:
   city_visibility           ENUM   FRIENDS
   website_visibility        ENUM   PUBLIC
   social_links_visibility   ENUM   PUBLIC
-  birthday_visibility       ENUM   FRIENDS_AGE (18+) / ONLY_ME (13–17)
-  relationship_visible      ENUM   FRIENDS (18+) / ONLY_ME (13–17)
+  birthday_visibility       ENUM   FRIENDS_AGE
+  relationship_visible      ENUM   FRIENDS
   default_post_audience     ENUM   FRIENDS
   default_photo_audience    ENUM   FRIENDS
   photos_visibility         ENUM   FRIENDS
-  friends_list_visibility   ENUM   FRIENDS (18+) / ONLY_ME (13–17)
-  activity_visibility       ENUM   FRIENDS (18+) / ONLY_ME (13–17)
-  likes_visibility          ENUM   FRIENDS (18+) / ONLY_ME (13–17)
-  challenges_visibility     ENUM   FRIENDS (18+) / ONLY_ME (13–17)
-  rewards_visibility        ENUM   FRIENDS (18+) / ONLY_ME (13–17)
+  friends_list_visibility   ENUM   FRIENDS
+  activity_visibility       ENUM   FRIENDS
+  likes_visibility          ENUM   FRIENDS
+  challenges_visibility     ENUM   FRIENDS
+  rewards_visibility        ENUM   FRIENDS
   who_can_message           ENUM   FRIENDS
   who_can_comment           ENUM   FRIENDS
   who_can_react             ENUM   EVERYONE

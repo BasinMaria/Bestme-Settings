@@ -38,14 +38,14 @@
 
 ### §1.3 Kids Category — Детская категория
 
-> Bestme — НЕ приложение категории Kids, но обслуживает 13–17 летних пользователей. Требования §1.3 и §5.1.4 применяются.
+> Bestme — **только для 18+**. Требования §1.3 (Kids Category) не применяются. Age gate на экране регистрации (проверка даты рождения) закрывает COPPA + GDPR Art.8 + DSA Art.28.
 
 | Требование | Реализация | Статус |
 |---|---|---|
 | Нет сторонних аналитических SDK для детей | Зависит от tech stack | ⚠️ Нужна проверка SDK |
-| Нет сторонней рекламы для детей | DSA Art.28 + Date of birth routing | ✅ |
-| Parental gate для внешних ссылок / покупок в детской зоне | Age gate при регистрации | ⚠️ Нужен явный parental gate для 13–17 |
-| Запрет сбора IDFA у детей | Зависит от tech stack | ⚠️ Нужна проверка |
+| Нет сторонней рекламы для детей | Age gate 18+ при регистрации блокирует несовершеннолетних | ✅ |
+| Parental gate для внешних ссылок | Не применяется — только 18+ | ✅ Н/П |
+| Запрет сбора IDFA у детей | Age gate 18+ | ✅ |
 
 ---
 
@@ -183,9 +183,9 @@
 |---|---|---|
 | Обязательно соблюдать COPPA, GDPR, применимые законы для детей | ✅ (проектируется) | |
 | Если приложение собирает данные детей → Privacy Policy обязательна | ✅ Privacy Policy | |
-| **Нет third-party analytics** для пользователей из Kids Category | ⚠️ Нужна проверка SDK по возрасту | |
-| **Нет third-party advertising** для детей | ✅ Blocking по возрасту | |
-| При сборе данных детей → только имя + email и только для compliance со статутами | ⚠️ Нужна проверка registration flow для 13–17 | |
+| **Нет third-party analytics** для пользователей из Kids Category | ✅ Н/П — только 18+ | |
+| **Нет third-party advertising** для детей | ✅ Blocking по age gate 18+ | |
+| При сборе данных детей → только имя + email | ✅ Н/П — только 18+ | |
 
 ### §5.1.5 Location Services — Геолокация
 
@@ -240,7 +240,7 @@
 |---|---|---|---|
 | 6 | **Pre-permission screen** для каждого системного разрешения iOS (Push, Camera, Photos) | Onboarding | §5.1.1(ii) |
 | 7 | **Кнопка отключения каждого 3rd-party login** (Google, Facebook и т.д.) | Login & Security | §5.1.1(v) |
-| 8 | **SDK audit**: проверить все аналитические SDK на предмет сбора данных от 13–17 летних | Tech review | §1.3 / §5.1.4 |
+| 8 | **SDK audit**: проверить все аналитические SDK на предмет сбора лишних данных (приложение только 18+) | Tech review | §1.3 / §5.1.4 |
 | 9 | **Честный Age Rating**: ответить на вопросы App Store Connect (UGC + possible mature content = скорее всего 17+) | App Store Connect | §2.3.6 |
 | 10 | **Privacy Nutrition Labels**: заполнить все Data Types в App Store Connect | App Store Connect | §5.1.1 |
 | 11 | **App Review Notes**: описать все неочевидные функции (модерация, blocking, reporting) | App Store Connect | Before You Submit |
@@ -288,9 +288,9 @@
 
 ### Kids & Age Rating (§1.3/§2.3.6/§5.1.4)
 
-- [ ] Age rating честно выставлен в App Store Connect
-- [ ] SDK для аналитики/рекламы не собирают данные детей
-- [ ] Нет targeted ads для пользователей 13–17
+- [ ] Age rating честно выставлен в App Store Connect (18+ приложение)
+- [ ] SDK для аналитики/рекламы не собирают данные детей (age gate 18+ обеспечивает это)
+- [ ] Нет targeted ads без явного согласия пользователя
 
 ---
 

@@ -23,7 +23,7 @@
 
 | Поле | Default | Закон |
 |---|---|---|
-| `account_private` | OFF (18+) / **ON** (13–17) | ✅ GDPR Art.25 + DSA Art.28(3)(g) |
+| `account_private` | **OFF** (открытый) | ✅ GDPR Art.25 — законно для 18+ |
 | `seo_indexable` | **OFF** (все возрасты) | ✅ GDPR Art.25 — строго обязательно |
 | `email_visibility` | **ONLY_ME** | ✅ GDPR Art.25 + CAN-SPAM |
 | `phone_visibility` | **ONLY_ME** | ✅ GDPR Art.25 + **TCPA** |
@@ -352,10 +352,8 @@
 
 ---
 
-### 🟡 GAP-19: Механизм для родителей (Art.17(1)(f))
-**Закон**: GDPR Art.17(1)(f) + COPPA  
-**Что требуется**: Если пользователь 13–17 лет — механизм для родителя запросить удаление данных своего ребёнка.  
-**Что нужно**: Форма на сайте (не только in-app) + процесс верификации родителя.
+### ~~🟡 GAP-19: Механизм для родителей (Art.17(1)(f))~~
+> ✅ **Н/П** — Bestme только 18+. Несовершеннолетние не могут зарегистрироваться, GDPR Art.17(1)(f) в части родительских запросов не применяется.
 
 ---
 
@@ -482,7 +480,7 @@
 | 14 | 🟡 | **Физический адрес** в footer email | Email-шаблоны |
 | 15 | 🟡 | **Privacy Policy** — добавить data retention + SDK list | Документ Privacy Policy |
 | 16 | 🟡 | **CSAE в Terms of Use** — явный запрет | Документ Terms of Use / Community Guidelines |
-| 17 | 🟡 | **Parental deletion request** для родителей 13–17 | Сайт: bestme.com/parents |
+| 17 | ✅ Н/П | **Parental deletion request** | Не применяется — только 18+ |
 | 18 | 🟡 | **Data Safety Form** Google Play | Play Console (административно) |
 | 19 | 🟡 | **Privacy Nutrition Labels** App Store | App Store Connect (административно) |
 | 20 | 🟢 | **App Review Notes** — описать block/report/filter | App Store Connect перед каждой подачей |

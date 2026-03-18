@@ -15,9 +15,8 @@
 |---|---|
 | **variable_name** | `account_private` |
 | **Тип** | Toggle: On / Off |
-| **Default для 18+** | `OFF` (открытый профиль) |
-| **Default для 13–17** | `ON` (закрытый профиль) |
-| **⚖️ Закон** | GDPR Art.25 · DSA Art.28 |
+| **Default** | `OFF` (открытый профиль) |
+| **⚖️ Закон** | GDPR Art.25 — открытый профиль законен для 18+ |
 
 ### ✅ Default OFF для пользователей 18+ — ЗАКОННО, НО ТОЛЬКО ПРИ ВЫПОЛНЕНИИ УСЛОВИЙ
 
@@ -38,22 +37,15 @@
 > **RU:** *«Ваш профиль будет виден всем пользователям. Вы можете изменить это в Настройки → Приватность.»*
 > Без этого уведомления открытый профиль по умолчанию = **серая зона** GDPR Art.25(2).
 
-### ⚠️ Default OFF для пользователей 13–17 — НЕЗАКОННО
+### ℹ️ Почему DSA Art.28(3)(g) и COPPA не применяются
 
-**DSA Art.28(3)(g)** прямо обязывает: для несовершеннолетних настройки конфиденциальности должны **по умолчанию** не делать профиль видимым всем.
+Bestme — **только для 18+**. Регистрация пользователей моложе 18 лет заблокирована на экране регистрации через проверку даты рождения.
 
-> Цитата из DSA Art.28(3): *"Providers… shall not present advertisements based on profiling using personal data of the recipient… where they are aware with reasonable certainty that the recipient is a minor."*
->
-> DSA Art.28(1)(d): *"…take measures to ensure a high level of privacy, safety and security of minors…"*
-
-**Вывод:**
-- **18+** → Default `OFF` (открытый) ✅ законно
-- **13–17** → Default `ON` (закрытый) ⚖️ обязательно
-- **<13** → регистрация должна быть заблокирована ⛔ COPPA · DSA Art.28(2)
+- DSA Art.28(3)(g) (обязательный `account_private = ON` для несовершеннолетних) — **не применяется**
+- COPPA (ограничения для < 13 лет) — **не применяется**, т.к. < 18 уже заблокировано
+- **Вывод:** единственный нужный default → `OFF` (открытый) ✅
 
 ### UI-пояснение для пользователя (UI copy)
-
-**EN:**
 > When your account is private, only people you approve can see your posts, photos, and friends list. Your name, profile photo, and bio are always visible to everyone.
 
 **RU:**
@@ -180,23 +172,23 @@ Art.17(2) GDPR требует: если контроллер опубликов�
 
 ## ИТОГОВАЯ ТАБЛИЦА — Блок Account Privacy (Приватность аккаунта)
 
-| # | Настройка | variable_name | Тип | Default (18+) | Default (13–17) | ⚖️/💡 | Законность |
-|---|---|---|---|---|---|---|---|
-| 1 | Private account | `account_private` | Toggle On/Off | `OFF` (открытый) | `ON` (закрытый) | ⚖️ | ✅ для 18+ · ⚖️ обязателен ON для 13-17 (DSA Art.28) |
-| 2 | Profile in search | `profile_searchable` | Toggle On/Off | `ON` | `ON` | ⚖️ | ✅ законно (GDPR Art.17 = opt-out доступен) |
-| 3 | SEO indexing | `seo_indexable` | Toggle On/Off | **`OFF`** | **`OFF`** | ⚖️ | ✅ **OFF строго обязателен** (GDPR Art.25) |
-| 4 | Activity status | `online_status_visible` | Toggle / ENUM | `FRIENDS` | `NOBODY` | ⚖️ | ✅ законно если default = Friends, не Everyone |
+| # | Настройка | variable_name | Тип | Default | ⚖️/💡 | Законность |
+|---|---|---|---|---|---|---|
+| 1 | Private account | `account_private` | Toggle On/Off | `OFF` (открытый) | ⚖️ | ✅ для 18+ — законно по GDPR Art.25 |
+| 2 | Profile in search | `profile_searchable` | Toggle On/Off | `ON` | ⚖️ | ✅ законно (GDPR Art.17 = opt-out доступен) |
+| 3 | SEO indexing | `seo_indexable` | Toggle On/Off | **`OFF`** | ⚖️ | ✅ **OFF строго обязателен** (GDPR Art.25) |
+| 4 | Activity status | `online_status_visible` | Toggle / ENUM | `FRIENDS` | ⚖️ | ✅ законно если default = Friends, не Everyone |
 
 ---
 
-## ВОЗРАСТНАЯ МАТРИЦА — Сводка дефолтов
+## СВОДНАЯ ТАБЛИЦА ДЕФОЛТОВ (только 18+)
 
-| Настройка | Пользователь 18+ | Пользователь 13–17 | Пользователь < 13 |
+| Настройка | variable_name | Default | Закон |
 |---|---|---|---|
-| Private account | `OFF` (открытый) ✅ | `ON` (закрытый) ⚖️ обязательно | 🚫 регистрация заблокирована |
-| Profile in search | `ON` ✅ | `ON` допустимо | 🚫 |
-| SEO indexing | `OFF` ⚖️ обязательно | `OFF` ⚖️ обязательно | 🚫 |
-| Activity status | `FRIENDS` ✅ | `NOBODY` рекомендуется | 🚫 |
+| Private account | `account_private` | `OFF` (открытый) ✅ | GDPR Art.25 |
+| Profile in search | `profile_searchable` | `ON` ✅ | GDPR Art.17 |
+| SEO indexing | `seo_indexable` | `OFF` ⚖️ обязательно | GDPR Art.25 |
+| Activity status | `online_status_visible` | `FRIENDS` ✅ | GDPR Art.25 · ePrivacy |
 
 ---
 
@@ -226,7 +218,6 @@ account_private = ON
 **ДА** ✅ — для взрослых (18+) открытый профиль по умолчанию законен при условии:
 1. Пользователь информирован об этом при регистрации
 2. Он может изменить в любой момент
-3. Несовершеннолетние 13–17 получают `ON` по умолчанию автоматически
 
 ### «Профиль в поиске ON по умолчанию — законно?»
 **ДА** ✅ — для взрослых законно, право на отказ (GDPR Art.17) сохраняется
