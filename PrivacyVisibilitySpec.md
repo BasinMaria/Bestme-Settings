@@ -53,6 +53,7 @@
 |---|---|---|---|---|---|
 | **Bio / About** | `bio` | Текст (≤ 300 символов) | пусто | 💡 | — |
 | **Status** | `status_text` | Текст (≤ 80 символов) | пусто | 💡 | — |
+| **Goals** | `goals` | Multi-select (цели: «пить больше воды», «больше ходить», …) | пусто | 💡 | — |
 | **Category** | `profile_category` | ENUM (список категорий: Creator, Athlete, Artist, Business…) | пусто | 💡 | — |
 | **Language** | `app_language` | ENUM (список языков) | System locale | 💡 | — |
 
@@ -132,6 +133,7 @@
 | **Birthday** | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE_ONLY` | ⚖️ | GDPR Art.9 — только возраст друзьям (не полная дата) |
 | **Gender** | `gender_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 | **Interests** | `interests_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Goals** | `goals_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | Личные цели пользователя (пить воду, ходить…) |
 
 > ⚠️ `birthday_visibility`: по умолчанию показывать **только возраст** друзьям — полная дата рождения = чувствительные данные (GDPR Art.9).
 
@@ -143,12 +145,12 @@
 
 | Настройка | variable_name | Тип | Default | ⚖️ | Закон |
 |---|---|---|---|---|---|
-| **Who sees email** | `email_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.5** — минимизация данных; **никогда не PUBLIC** |
-| **Who sees phone** | `phone_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.5 · TCPA** — никогда не PUBLIC |
-| **Who sees location/country** | `location_visibility` | ENUM: Only me / Friends / Everyone | `FRIENDS` | ⚖️ | GDPR — локационные данные |
-| **Who sees address** | `address_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.9** — адрес = чувствительные данные, строго ONLY_ME |
-| **Who sees personal link** | `personal_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
-| **Who sees business link** | `business_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
+| **Email** | `email_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.5** — минимизация данных; **никогда не PUBLIC** |
+| **Phone** | `phone_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.5 · TCPA** — никогда не PUBLIC |
+| **Location** | `location_visibility` | ENUM: Only me / Friends / Everyone | `FRIENDS` | ⚖️ | GDPR — локационные данные |
+| **Address** | `address_visibility` | ENUM: Only me / Friends / Everyone | `ONLY_ME` | ⚖️ | **GDPR Art.9** — адрес = чувствительные данные, строго ONLY_ME |
+| **Personal link** | `personal_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
+| **Business link** | `business_link_visibility` | ENUM: Only me / Friends / Everyone | `EVERYONE` | 💡 | — |
 
 > ⚠️ **`email_visibility` и `phone_visibility` НИКОГДА не могут быть `EVERYONE` по умолчанию**  
 > ⚠️ **`address_visibility`** — адрес является чувствительными данными категории "местоположение",
@@ -204,6 +206,9 @@
 |---|---|---|---|
 | Last name | `last_name` | ✅ Уточнено | SettingsTZ: только `Display name` без разделения |
 | Status | `status_text` | 🆕 Новое | Не было ни в одной спеке |
+| Status visibility | `status_visibility` | 🆕 Новое | Не было ни в одной спеке |
+| Goals | `goals` | 🆕 Новое | Не было ни в одной спеке |
+| Goals visibility | `goals_visibility` | 🆕 Новое | Не было ни в одной спеке |
 | Category (profile) | `profile_category` | 🆕 Новое | Не было |
 | Address | `address_text` | ✅ Подтверждено | Упоминалось, но без поля |
 | Address visibility | `address_visibility` | 🆕 **Новое** | **Отсутствовало** в SettingsTZ Contact Info Privacy |
@@ -279,6 +284,7 @@ Settings → Account → Account Management
 │   ├── Profile Info
 │   │   ├── Bio / About
 │   │   ├── Status
+│   │   ├── Goals  (multi-select: пить воду, ходить, …)
 │   │   ├── Category (Creator / Artist / Athlete / Business…)
 │   │   └── Language
 │   │
@@ -311,15 +317,16 @@ Settings → Account → Account Management
     │   ├── Status                  [EVERYONE]
     │   ├── Birthday                [FRIENDS_AGE_ONLY]  ⚖️ GDPR Art.9
     │   ├── Gender                  [EVERYONE]
-    │   └── Interests               [FRIENDS]
+    │   ├── Interests               [FRIENDS]
+    │   └── Goals                   [FRIENDS]
     │
     ├── Contact Info Privacy  ⚖️ GDPR Art.5 — минимизация данных
-    │   ├── Who sees email          [ONLY_ME]  ⚖️ GDPR Art.5 · CAN-SPAM
-    │   ├── Who sees phone          [ONLY_ME]  ⚖️ GDPR Art.5 · TCPA
-    │   ├── Who sees location       [FRIENDS]  ⚖️ GDPR
-    │   ├── Who sees address        [ONLY_ME]  ⚖️ GDPR Art.9
-    │   ├── Who sees personal link  [EVERYONE]
-    │   └── Who sees business link  [EVERYONE]
+    │   ├── Email                   [ONLY_ME]  ⚖️ GDPR Art.5 · CAN-SPAM
+    │   ├── Phone                   [ONLY_ME]  ⚖️ GDPR Art.5 · TCPA
+    │   ├── Location                [FRIENDS]  ⚖️ GDPR
+    │   ├── Address                 [ONLY_ME]  ⚖️ GDPR Art.9
+    │   ├── Personal link           [EVERYONE]
+    │   └── Business link           [EVERYONE]
     │
     ├── Content Visibility  ⚖️ GDPR Art.25
     │   ├── Default post audience   [FRIENDS]  ⚖️ GDPR Art.25
