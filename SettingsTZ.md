@@ -175,7 +175,7 @@
 | L3 — Пункт | Тип | ⚖️/💡 | Закон |
 |---|---|---|---|
 | Change password | Действие (с подтверждением текущего) | ⚖️ | GDPR Art.32 |
-| **Two-factor authentication (2FA)** | Toggle + выбор метода (SMS / Authenticator / Email) | ⚖️ | GDPR Art.32 · Israel Data Security Regs 5777-2017 |
+| **Two-factor authentication (2FA)** | Toggle + выбор метода (Email OTP · TOTP App; SMS — только если добавлен телефон в профиль) | ⚖️ | GDPR Art.32 · Israel Data Security Regs 5777-2017 |
 | Login methods | Список (Google / Apple / Email) | ⚖️ | App Store 5.1.3 — Sign in with Apple обязателен |
 | **Sign in with Apple** | Метод входа | ⚖️ | **App Store 5.1.3** — обязателен если есть вход через Google/Facebook |
 

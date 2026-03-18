@@ -373,7 +373,7 @@ Bestme использует данные для улучшения
 | Настройка / Действие | variable_name | Тип | Default | ⚖️ | Закон |
 |---|---|---|---|---|---|
 | **Change password** | — | Действие | — | ⚖️ | GDPR Art.32 |
-| **Two-factor authentication (2FA)** | `two_fa_enabled` | Toggle + тип (SMS/Authenticator/Email) | `OFF` → рекомендовать включить | ⚖️ | GDPR Art.32 · Israel Data Security Regs |
+| **Two-factor authentication (2FA)** | `two_fa_enabled` | Toggle + тип (Email OTP · TOTP App; SMS — только если телефон добавлен в профиль) | `OFF` → рекомендовать включить | ⚖️ | GDPR Art.32 · Israel Data Security Regs |
 | **Sign in with Apple** | — | Подключить/отключить | — | ⚖️ | **App Store §4.8 — ОБЯЗАТЕЛЬНО если есть Google/Facebook login** |
 | **Sign in with Google** | — | Подключить/отключить + кнопка «Отключить» | — | ⚖️ | **App Store §5.1.1(v) — кнопка Disconnect ОБЯЗАТЕЛЬНА** NEW |
 | **Sign in with Facebook** | — | Подключить/отключить + кнопка «Отключить» | — | ⚖️ | **App Store §5.1.1(v) — кнопка Disconnect ОБЯЗАТЕЛЬНА** NEW |
