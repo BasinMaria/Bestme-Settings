@@ -20,11 +20,14 @@
 | 10 | [📄 AppStoreAuditSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AppStoreAuditSpec.md) | Аудит Apple App Store Review Guidelines (02.2026) |
 | 11 | **[📄 AccountDeletionSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AccountDeletionSpec.md)** | ТЗ удаления аккаунта: 4 сценария, 15 экранов, сроки, де-индексация, взлом, App Store + Google Play чеклист |
 | 12 | **[📄 ComplianceClarifications.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ComplianceClarifications.md)** | Ответы на вопросы: возраст 18+ vs COPPA, субтитры/доступность в соцсети, план реализации 13 критичных пунктов |
-| 13 | **[📄 PublicationPriorityPlan.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PublicationPriorityPlan.md)** ← НОВЫЙ | 🔴 Что блокирует публикацию vs штрафные риски; статус 6 потоков; уточнение по субтитрам; 2-sprint план |
-| 14 | [📄 SettingsMapping.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsMapping.md) | Маппинг дизайнерских экранов к L1/L2/L3 |
-| 15 | [🖼 PersonalProfileSettings.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PersonalProfileSettings.drawio.html) | Диаграмма draw.io: 260 ячеек, полная иерархия L1→L2→L3 |
-| 16 | [🖼 SettingsArchitecture.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsArchitecture.drawio.html) | Диаграмма draw.io: 242 ячейки, архитектура Privacy & Visibility |
-| 17 | [🖼 ProfileSettings.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ProfileSettings.drawio.html) | Диаграмма draw.io: исходная архитектура настроек |
+| 13 | **[📄 PublicationPriorityPlan.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PublicationPriorityPlan.md)** | 🔴 Что блокирует публикацию vs штрафные риски; статус 6 потоков; уточнение по субтитрам; 2-sprint план |
+| 14 | **[📄 AccessibilitySpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AccessibilitySpec.md)** ← НОВЫЙ | ♿ Полное ТЗ раздела Accessibility: 8 настроек с variable_name + WCAG + законы + ТЗ для iOS/Android/Backend; кнопка Contact DPO |
+| 15 | **[📄 GDPRArt5SecuritySpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/GDPRArt5SecuritySpec.md)** ← НОВЫЙ | 🔒 GDPR Art.5 ТЗ: 2FA, HTTPS/TLS, Session Management, Consent History, Audit Log, DPO; ответ — нужна ли веб-форма удаления отдельно от in-app |
+| 16 | **[📄 UserManualGuide.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/UserManualGuide.md)** ← НОВЫЙ | 📖 Нужно ли руководство пользователя: что обязательно для публикации, что писать в Help Center, Accessibility Statement шаблон |
+| 17 | [📄 SettingsMapping.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsMapping.md) | Маппинг дизайнерских экранов к L1/L2/L3 |
+| 18 | [🖼 PersonalProfileSettings.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PersonalProfileSettings.drawio.html) | Диаграмма draw.io: 260 ячеек, полная иерархия L1→L2→L3 |
+| 19 | [🖼 SettingsArchitecture.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsArchitecture.drawio.html) | Диаграмма draw.io: 242 ячейки, архитектура Privacy & Visibility |
+| 20 | [🖼 ProfileSettings.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ProfileSettings.drawio.html) | Диаграмма draw.io: исходная архитектура настроек |
 
 ---
 
