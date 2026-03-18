@@ -128,6 +128,7 @@
 | **Avatar** | `avatar_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Аватар = публичный |
 | **Cover** | `cover_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Обложка = публичная |
 | **Bio** | `bio_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Открытый профиль → bio публичный |
+| **Status** | `status_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Короткий статус профиля — публичный |
 | **Birthday** | `birthday_visibility` | ENUM: Full date / Age only / Friends only / Only me / Hidden | `FRIENDS_AGE_ONLY` | ⚖️ | GDPR Art.9 — только возраст друзьям (не полная дата) |
 | **Gender** | `gender_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 | **Interests** | `interests_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
@@ -307,6 +308,7 @@ Settings → Account → Account Management
     │   ├── Avatar                  [EVERYONE]
     │   ├── Cover                   [EVERYONE]
     │   ├── Bio                     [EVERYONE]
+    │   ├── Status                  [EVERYONE]
     │   ├── Birthday                [FRIENDS_AGE_ONLY]  ⚖️ GDPR Art.9
     │   ├── Gender                  [EVERYONE]
     │   └── Interests               [FRIENDS]
