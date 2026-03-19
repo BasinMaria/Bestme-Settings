@@ -1,6 +1,6 @@
 # GDPRArt5SecuritySpec.md — ТЗ для GDPR Art.5 и Login & Security
 
-**Версия:** 1.2 · **Дата:** март 2026  
+**Версия:** 1.3 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик, DevOps  
 **Статус:** 🔴 Часть блокирует публикацию · 🟡 Часть — требования для предотвращения штрафов (€20 млн / 4% оборота)
 
@@ -174,9 +174,13 @@ Settings → Login & Security → Two-Factor Authentication
 **Путь:** Settings → Login & Security → Sign in with / Linked Accounts  
 **Применимость:** Все пользователи
 
-**Статус публикации:** 🔴 **БЛОКЕР** — кнопка **Disconnect** обязательна по **App Store §5.1.1(v)**
+**Статус публикации:** 🔴 **ДВА БЛОКЕРА** — оба обязательны для App Store
 
-> 🔴 **App Store §5.1.1(v):** Если пользователь вошёл через Sign in with Apple (и по аналогии через Google/Facebook), он **обязан иметь возможность отключить** эту связь прямо в приложении. Отсутствие кнопки Disconnect = отказ в публикации.
+> 🔴 **БЛОКЕР 1 — App Store §5.1.3 (Sign in with Apple — обязателен):**  
+> Если приложение предлагает вход через **любой** сторонний провайдер (Google, Facebook и т.д.), оно **ОБЯЗАНО** также предлагать **Sign in with Apple**. Bestme предлагает Google + Facebook → **Sign in with Apple обязателен**. Отсутствие Sign in with Apple = **автоматический отказ в публикации**.
+
+> 🔴 **БЛОКЕР 2 — App Store §5.1.1(v) (кнопка Disconnect):**  
+> Если пользователь вошёл через Sign in with Apple (или другой OAuth-провайдер), он **обязан иметь возможность отключить** эту связь прямо в приложении. Отсутствие кнопки Disconnect = **отказ в публикации**.
 
 **Варианты состояния аккаунта:**
 
@@ -348,8 +352,9 @@ CREATE TABLE auth_providers (
 
 | # | Что | Где | Закон / Правило | Статус |
 |---|---|---|---|---|
-| 1 | **Кнопка Disconnect** для каждого подключённого OAuth-провайдера | §3.3 Third-Party Login | **App Store §5.1.1(v)** | 🔴 **БЛОКЕР** |
-| 2 | **In-app путь удаления аккаунта** | AccountDeletionSpec.md | App Store §5.1.1(v) · Google Play | 🔴 **БЛОКЕР** (документ отдельный) |
+| 1 | **Sign in with Apple** обязателен, если есть Google или Facebook login | §3.3 Third-Party Login | **App Store §5.1.3** | 🔴 **БЛОКЕР** |
+| 2 | **Кнопка Disconnect** для каждого подключённого OAuth-провайдера | §3.3 Third-Party Login | **App Store §5.1.1(v)** | 🔴 **БЛОКЕР** |
+| 3 | **In-app путь удаления аккаунта** | AccountDeletionSpec.md | App Store §5.1.1(v) · Google Play | 🔴 **БЛОКЕР** (документ отдельный) |
 
 **Что РЕКОМЕНДУЕТСЯ (штраф GDPR при нарушении, не блокирует App Store):**
 
@@ -646,7 +651,8 @@ Legal
 
 ### 🔴 Sprint 1 — БЛОКЕРЫ ПУБЛИКАЦИИ (обязательно до App Store / Google Play)
 
-**UI (App Store §5.1.1(v)):**
+**UI (App Store §5.1.3 + §5.1.1(v)):**
+- [ ] **Sign in with Apple** реализован и отображается наравне с Google/Facebook (обязательно если есть любой 3rd-party login — App Store §5.1.3)
 - [ ] Кнопка **[Отключить / Disconnect]** для каждого подключённого OAuth-провайдера (Apple/Google/Facebook)
 - [ ] Защита от orphan: если последний способ входа — запросить установку пароля перед отключением
 - [ ] **In-app путь удаления аккаунта** — Settings → Account → Account Management → Delete Account *(см. AccountDeletionSpec.md)*
@@ -709,5 +715,5 @@ Legal
 
 ---
 
-*GDPRArt5SecuritySpec.md v1.2 · Bestme · март 2026*  
+*GDPRArt5SecuritySpec.md v1.3 · Bestme · март 2026*  
 *Смежные документы: [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md), [AccessibilitySpec.md](AccessibilitySpec.md)*
