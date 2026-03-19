@@ -1,6 +1,6 @@
 # PrivacyVisibilitySpec.md — Спецификация раздела: 2️⃣ PRIVACY & VISIBILITY
 
-**Версия:** 2.2 · **Дата:** март 2026  
+**Версия:** 2.3 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик  
 **Правовое основание:** ⚖️ GDPR Art.25 (Privacy by Default) · DSA Art.14 · ePrivacy · Israel PPL  
 **Статус:** 🔴 Часть блокирует публикацию · ⚖️ GDPR Art.25
@@ -25,7 +25,7 @@
 7. [2.7 Safety & Blocked Accounts](#27-safety--blocked-accounts)
 8. [🔴 Обязательно для публикации](#обязательно-для-публикации)
 9. [ASCII-структура раздела](#ascii-структура)
-10. [Что добавлено в v2.2](#changelog-v22)
+10. [Что добавлено в v2.3](#changelog-v23)
 
 ---
 
@@ -120,17 +120,25 @@
 | **Subscribed blogs visibility** | `subscribed_blogs_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 | **Subscribed communities** | `subscribed_communities_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 | **Discussions visibility** | `discussions_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
-| **Activity feed visibility** | `activity_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
-| **Likes & reactions visibility** | `likes_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
-| **Challenges visibility** | `challenges_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
-| **Saved content visibility** | `saved_content_visibility` | ENUM: Only me / Friends | `ONLY_ME` | 💡 | Сохранённые материалы — приватны по умолчанию |
+| **Activity feed visibility** | `activity_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
+| **Likes & reactions visibility** | `likes_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
+| **Challenges visibility** | `challenges_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 
 > ℹ️ **Categories (`categories_visibility`):** категория профиля (Creator, Artist и т.д.) — публичная
 > информация, аналог "профессия" в LinkedIn. Default `EVERYONE` допустим.  
 > ℹ️ **Subscribed blogs / Subscribed communities / Discussions** — публичный контент (подписки, публичные дискуссии),
 > поэтому дефолт `EVERYONE` допустим по GDPR Art.25 (публичное взаимодействие осознанно).  
-> ℹ️ **Activity feed / Likes / Challenges** — более личные данные; дефолт `FRIENDS` соответствует Privacy by Default.  
-> ℹ️ **Saved content (`saved_content_visibility`)** — закладки/сохранения. По умолчанию видит только сам пользователь. Вариант `Friends` опционален (как Pinterest «Shared boards»), но `ONLY_ME` — безопаснее.
+> ℹ️ **Activity feed (`activity_visibility`)** — это публичный лог действий пользователя: какие посты он лайкнул,
+> какие челленджи начал, какие цели поставил. **Это НЕ лента контента, которую видит сам пользователь** (его собственный
+> feed — это отдельная фича приложения, не настройка). Дефолт `EVERYONE` — делает активность видимой
+> всем, что стимулирует социальное взаимодействие и открытость (wellness-платформа).  
+> ℹ️ **Likes & reactions / Challenges** — социальная активность пользователя. Дефолт `EVERYONE` усиливает
+> вирусность и вовлечённость. Правового требования ставить `FRIENDS` нет.  
+> ℹ️ **Friends list (`friends_list_visibility`)** — дефолт `FRIENDS` оставлен: список друзей раскрывает
+> социальный граф пользователя, это более чувствительные данные.  
+> ℹ️ **Saved content** — список сохранённых материалов доступен пользователю **только в его личном меню**
+> и никогда не показывается другим пользователям. Настройка видимости не нужна: поле `saved_content_visibility`
+> **удалено** из спецификации.
 
 ---
 
@@ -323,6 +331,24 @@
 
 ---
 
+## Changelog v2.3
+
+<a name="changelog-v23"></a>
+
+> 📋 **Для разработчиков:** изменения относительно v2.2.
+
+### ✅ ЧТО ДОБАВЛЕНО / ИЗМЕНЕНО в v2.3
+
+| # | Что | Куда | Причина |
+|---|---|---|---|
+| 1 | **Дефолт `activity_visibility`** изменён с `FRIENDS` → `EVERYONE` | §2.4 Content Visibility | Нет правового требования ограничивать; открытый дефолт усиливает вовлечённость |
+| 2 | **Дефолт `likes_visibility`** изменён с `FRIENDS` → `EVERYONE` | §2.4 Content Visibility | Аналогично: лайки — социальная активность, не чувствительные данные |
+| 3 | **Дефолт `challenges_visibility`** изменён с `FRIENDS` → `EVERYONE` | §2.4 Content Visibility | Аналогично: публичные челленджи = вирусность |
+| 4 | **`saved_content_visibility` удалено** полностью | §2.4 Content Visibility | Сохранённый контент видит только сам пользователь в своём меню; функции «поделиться списком» нет |
+| 5 | **Примечание к `activity_visibility`** добавлено | §2.4 примечания | Уточнено: это лог действий пользователя, а НЕ его личная лента контента |
+
+---
+
 ## Changelog v2.2
 
 > 📋 **Для разработчиков:** изменения относительно v2.1.
@@ -342,13 +368,12 @@
 |---|---|---|---|
 | 🔴 **БЛОКЕР** | Кнопка **Report user** на профиле | Profile → ⋯ → Report | DSA Art.16 — без этого нельзя публиковаться в ЕС |
 | 🔴 **БЛОКЕР** | Кнопка **Report content** на каждом посте/фото/комменте | Post / Photo / Comment → ⋯ → Report | DSA Art.16 |
-| 🟡 **ВАЖНО** | **Activity Feed visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default |
-| 🟡 **ВАЖНО** | **Likes & Reactions visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default |
-| 🟡 **ВАЖНО** | **Challenges visibility** | Settings → Privacy & Visibility → Content Visibility | Специфика BestMe |
-| 🟡 **ВАЖНО** | **Saved content visibility** | Settings → Privacy & Visibility → Content Visibility | Bookmarks = ONLY_ME по умолчанию |
+| 🟡 **ВАЖНО** | **Activity Feed visibility** | Settings → Privacy & Visibility → Content Visibility | Дефолт изменён на EVERYONE (социальная активность открыта) |
+| 🟡 **ВАЖНО** | **Likes & Reactions visibility** | Settings → Privacy & Visibility → Content Visibility | Дефолт изменён на EVERYONE |
+| 🟡 **ВАЖНО** | **Challenges visibility** | Settings → Privacy & Visibility → Content Visibility | Дефолт изменён на EVERYONE |
 | 🟢 **РЕКОМЕНДУЕТСЯ** | **Comment moderation** | Settings → Privacy & Visibility → Interactions | UX-стандарт (Instagram Hidden words) |
 
 ---
 
-*PrivacyVisibilitySpec.md v2.2 · Bestme · март 2026*  
+*PrivacyVisibilitySpec.md v2.3 · Bestme · март 2026*  
 *Смежные документы: [AccountSpec.md](AccountSpec.md), [SettingsOverview.md](SettingsOverview.md), [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
