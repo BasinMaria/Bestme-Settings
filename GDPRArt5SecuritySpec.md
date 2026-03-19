@@ -1,6 +1,6 @@
 # GDPRArt5SecuritySpec.md — ТЗ для GDPR Art.5 и Login & Security
 
-**Версия:** 1.3 · **Дата:** март 2026  
+**Версия:** 1.4 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик, DevOps  
 **Статус:** 🔴 Часть блокирует публикацию · 🟡 Часть — требования для предотвращения штрафов (€20 млн / 4% оборота)
 
@@ -89,6 +89,302 @@ Settings → Login & Security
 | **Audit Log** | Записать `password_changed` с IP и User-Agent |
 
 > 💡 Если пользователь забыл текущий пароль → кнопка «Forgot password?» на экране → стандартный reset-flow по email.
+
+#### Реализация с Supabase + React Native
+
+> **Стек:** Supabase Auth · React Native · Supabase Edge Functions · PostgreSQL (custom tables)
+
+**Почему нельзя просто вызвать `supabase.auth.updateUser({ password })`:**  
+Supabase не проверяет текущий пароль перед сменой — `updateUser` меняет пароль сразу для уже аутентифицированного пользователя. Это значит, что если кто-то завладел активной сессией, он может сменить пароль без знания старого. **Нужна явная повторная аутентификация.**
+
+##### Шаг 1 — Повторная аутентификация (проверка текущего пароля)
+
+```typescript
+// React Native (client)
+// Перед сменой пароля проверяем текущий пароль через повторный вход
+const verifyCurrentPassword = async (email: string, currentPassword: string) => {
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password: currentPassword,
+  });
+  if (error) throw new Error('Неверный текущий пароль');
+  // Пользователь подтверждён — можно менять пароль
+};
+```
+
+> ⚠️ Supabase применяет встроенный rate limit к `signInWithPassword` (защита от brute force). Дополнительный rate limit на Edge Function нужен для логирования попыток и блокировки на уровне приложения.
+
+##### Шаг 2 — Смена пароля через Edge Function (с проверкой истории)
+
+Менять пароль напрямую через `supabase.auth.updateUser` на клиенте **нельзя** — нет возможности проверить историю паролей и инвалидировать другие сессии. Используем Edge Function:
+
+```typescript
+// Edge Function: supabase/functions/change-password/index.ts
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import * as bcrypt from 'https://deno.land/x/bcrypt/mod.ts'
+
+Deno.serve(async (req) => {
+  const { newPassword } = await req.json()
+  const authHeader = req.headers.get('Authorization')!
+  
+  // Клиентский Supabase для получения user_id из токена
+  const supabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_ANON_KEY')!,
+    { global: { headers: { Authorization: authHeader } } }
+  )
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return new Response('Unauthorized', { status: 401 })
+
+  // Admin-клиент для привилегированных операций
+  const adminSupabase = createClient(
+    Deno.env.get('SUPABASE_URL')!,
+    Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  )
+
+  // 1. Проверка истории паролей (последние 3)
+  const { data: history } = await adminSupabase
+    .from('password_history')
+    .select('password_hash')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(3)
+
+  for (const entry of history ?? []) {
+    if (await bcrypt.compare(newPassword, entry.password_hash)) {
+      return new Response(
+        JSON.stringify({ error: 'Этот пароль уже использовался. Выберите другой.' }),
+        { status: 400 }
+      )
+    }
+  }
+
+  // 2. Смена пароля через Admin API
+  const { error } = await adminSupabase.auth.admin.updateUserById(user.id, {
+    password: newPassword,
+  })
+  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 })
+
+  // 3. Сохраняем новый пароль в историю (bcrypt hash)
+  const newHash = await bcrypt.hash(newPassword)
+  await adminSupabase.from('password_history').insert({
+    user_id: user.id,
+    password_hash: newHash,
+  })
+
+  // 4. Инвалидируем ВСЕ другие сессии (оставляем только текущую)
+  // Supabase не поддерживает "logout всех кроме текущей" нативно.
+  // Решение: обновляем поле force_relogin_at — при следующем refresh_token
+  // middleware проверяет это поле и отклоняет старые токены.
+  await adminSupabase
+    .from('user_security_settings')
+    .upsert({ user_id: user.id, force_relogin_at: new Date().toISOString() })
+
+  // 5. Audit log
+  const ip = req.headers.get('x-forwarded-for') ?? 'unknown'
+  const ua = req.headers.get('user-agent') ?? 'unknown'
+  await adminSupabase.from('audit_log').insert({
+    user_id: user.id,
+    event: 'password_changed',
+    ip_address: ip,
+    user_agent: ua,
+  })
+
+  // 6. Email-уведомление (через Supabase custom SMTP или Resend/SendGrid)
+  // Вызываем отдельную Edge Function или Supabase Email Hook
+  await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/send-security-email`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}` },
+    body: JSON.stringify({
+      to: user.email,
+      template: 'password_changed',
+      data: { ip, time: new Date().toISOString() },
+    }),
+  })
+
+  return new Response(JSON.stringify({ success: true }), { status: 200 })
+})
+```
+
+##### Шаг 3 — Вызов из React Native
+
+```typescript
+// React Native (client)
+const changePassword = async (currentPassword: string, newPassword: string) => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user?.email) throw new Error('Нет email')
+
+  // 1. Сначала повторная аутентификация (проверка текущего пароля)
+  await verifyCurrentPassword(user.email, currentPassword)
+
+  // 2. Вызов Edge Function для смены с историей и инвалидацией сессий
+  const { data: { session } } = await supabase.auth.getSession()
+  const response = await fetch(
+    `${SUPABASE_URL}/functions/v1/change-password`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${session?.access_token}`,
+      },
+      body: JSON.stringify({ newPassword }),
+    }
+  )
+
+  if (!response.ok) {
+    const err = await response.json()
+    throw new Error(err.error ?? 'Ошибка смены пароля')
+  }
+
+  // 3. После успеха — пользователь остаётся в системе (текущая сессия активна)
+  // Supabase выдаёт новый токен автоматически через refreshSession
+}
+```
+
+##### Схема базы данных (дополнительные таблицы)
+
+```sql
+-- Хранение истории паролей (последние N хэшей)
+CREATE TABLE password_history (
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id      UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  password_hash TEXT NOT NULL,
+  created_at   TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- RLS: только service_role может читать/писать
+ALTER TABLE password_history ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "service_only" ON password_history USING (false); -- блокируем клиентский доступ
+
+-- Таблица для инвалидации сессий
+CREATE TABLE user_security_settings (
+  user_id         UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  force_relogin_at TIMESTAMPTZ,   -- при смене пароля обновляется; старые токены отклоняются
+  updated_at      TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE user_security_settings ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "user_own" ON user_security_settings USING (auth.uid() = user_id);
+```
+
+> ℹ️ **Инвалидация сессий:** Supabase Admin API (`signOut(userId, 'global')`) завершает **все** сессии включая текущую. Для «завершить все кроме текущей» используется подход с `force_relogin_at`: при каждом обновлении токена middleware (или Supabase Auth Hook `custom_access_token`) сравнивает время выдачи токена с `force_relogin_at`. Если токен выдан **до** этого времени — он считается невалидным.
+
+##### Rate limit (5 попыток за 15 минут)
+
+Supabase имеет встроенные rate limits для Auth-эндпоинтов (настраиваются в Dashboard → Auth → Rate Limits). Дополнительно реализуем прикладной rate limit в Edge Function:
+
+```sql
+-- Таблица для rate limiting попыток смены пароля
+CREATE TABLE rate_limit_log (
+  id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id    UUID NOT NULL,
+  action     TEXT NOT NULL,          -- 'change_password', 'login', etc.
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX ON rate_limit_log (user_id, action, created_at);
+```
+
+```typescript
+// В Edge Function — проверка перед сменой пароля
+const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString()
+const { count } = await adminSupabase
+  .from('rate_limit_log')
+  .select('*', { count: 'exact', head: true })
+  .eq('user_id', user.id)
+  .eq('action', 'change_password')
+  .gte('created_at', fifteenMinAgo)
+
+if ((count ?? 0) >= 5) {
+  return new Response(
+    JSON.stringify({ error: 'Слишком много попыток. Подождите 15 минут.' }),
+    { status: 429 }
+  )
+}
+await adminSupabase.from('rate_limit_log').insert({
+  user_id: user.id, action: 'change_password'
+})
+```
+
+---
+
+#### Специальный случай: OAuth-пользователь хочет установить пароль
+
+> **Вопрос:** Пользователь вошёл через Google/Apple/Facebook — у него нет пароля. Может ли он установить пароль для своего аккаунта?
+
+**Ответ: Да. Supabase это поддерживает. Это юридически корректно и рекомендуется.**
+
+**Как это работает технически:**
+```typescript
+// Пользователь, вошедший через OAuth, устанавливает пароль впервые
+// Для него нет "текущего пароля" — не нужна re-auth
+const setInitialPassword = async (newPassword: string) => {
+  const { error } = await supabase.auth.updateUser({ password: newPassword })
+  if (error) throw error
+  // После этого пользователь может входить и через OAuth, и через email+пароль
+}
+```
+
+> ⚠️ Supabase требует, чтобы у OAuth-пользователя был верифицированный email для установки пароля. Если email не верифицирован — сначала отправить подтверждение.
+
+**UX в приложении:**
+```
+Settings → Login & Security
+
+  Способы входа:
+  🟢 Google (подключено)
+  🟢 Apple (подключено)
+  🔘 Email + Пароль: не установлен    [Установить пароль →]
+
+→ Экран "Установить пароль"
+  (здесь нет поля "Текущий пароль" — его нет)
+
+  Новый пароль:        [___________________]  👁
+  Подтвердить пароль:  [___________________]  👁
+
+  Требования к паролю:
+  • Минимум 8 символов
+  • Хотя бы 1 заглавная буква
+  • Хотя бы 1 цифра или спецсимвол
+
+                            [Сохранить пароль]
+
+→ После установки: email-уведомление «К вашему аккаунту добавлен вход по паролю»
+→ Секция меняется на: Пароль: ••••••••••  [Изменить →]
+```
+
+**По закону:** Добавление пароля к OAuth-аккаунту — это расширение способов входа. Никаких специальных правовых ограничений нет. Это стандартная практика (как в GitHub, Notion и др.). Обязательно:
+1. Отправить email-уведомление «К аккаунту добавлен вход по паролю» (защита от несанкционированных действий)
+2. Записать в Audit Log: `password_set_for_oauth_account`
+
+**Разграничение в секции Change Password:**
+
+| Тип аккаунта | Что видит в Settings → Login & Security |
+|---|---|
+| Email + пароль (регистрация через email) | `Пароль: ••••••••  [Изменить →]` |
+| OAuth-only (никогда не устанавливал пароль) | `Пароль: не установлен  [Установить →]` |
+| OAuth + установил пароль позже | `Пароль: ••••••••  [Изменить →]` |
+| Логика | `has_password` проверяется через Supabase: `user.identities` содержит identity с `provider = 'email'` |
+
+```typescript
+// React Native: как определить, есть ли у пользователя пароль
+const hasEmailPassword = (user: User): boolean => {
+  return user.identities?.some(i => i.provider === 'email') ?? false
+}
+```
+
+---
+
+#### Сводная таблица: что реализуется где
+
+| Требование | Где реализуется | Инструмент Supabase |
+|---|---|---|
+| Проверка текущего пароля | Клиент (React Native) | `supabase.auth.signInWithPassword` |
+| Смена пароля | Edge Function | `auth.admin.updateUserById` |
+| Проверка истории паролей | Edge Function + DB | Таблица `password_history` + bcrypt |
+| Инвалидация других сессий | Edge Function + DB | Таблица `user_security_settings.force_relogin_at` |
+| Rate limit 5/15мин | Edge Function + DB | Таблица `rate_limit_log` |
+| Email-уведомление «пароль изменён» | Edge Function | Custom SMTP / Resend / SendGrid |
+| Audit log `password_changed` | Edge Function | Таблица `audit_log` |
+| OAuth-пользователь устанавливает пароль | Клиент + Edge Function | `supabase.auth.updateUser({ password })` |
 
 ---
 
@@ -715,5 +1011,5 @@ Legal
 
 ---
 
-*GDPRArt5SecuritySpec.md v1.3 · Bestme · март 2026*  
+*GDPRArt5SecuritySpec.md v1.4 · Bestme · март 2026*  
 *Смежные документы: [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md), [AccessibilitySpec.md](AccessibilitySpec.md)*
