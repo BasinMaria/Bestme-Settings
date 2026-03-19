@@ -1,100 +1,41 @@
-# PrivacyVisibilitySpec.md — Полная спецификация: Account + Privacy & Visibility
+# PrivacyVisibilitySpec.md — Спецификация раздела: 2️⃣ PRIVACY & VISIBILITY
 
-**Версия:** 2.1 · **Дата:** март 2026  
+**Версия:** 2.2 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик  
-**Статус:** 🔴 Часть блокирует публикацию (App Store + Google Play) · 🟡 Часть критична для GDPR
+**Правовое основание:** ⚖️ GDPR Art.25 (Privacy by Default) · DSA Art.14 · ePrivacy · Israel PPL  
+**Статус:** 🔴 Часть блокирует публикацию · ⚖️ GDPR Art.25
 
-> **Этот документ** формализует структуру, описанную автором приложения, с дополнением переменных,
-> дефолтов и правовых оснований. Смежные документы:
-> [AccountDeletionSpec.md](AccountDeletionSpec.md), [AccountPrivacySpec.md](AccountPrivacySpec.md),
-> [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md)
+> **Этот документ** описывает только раздел **2️⃣ Privacy & Visibility**.  
+> Смежные документы:  
+> [AccountSpec.md](AccountSpec.md) — §1 Account  
+> [SettingsOverview.md](SettingsOverview.md) — общая структура всех 9 разделов  
+> [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md),  
+> [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)
 
 ---
 
 ## Содержание
 
-1. [Раздел 1: Account (Аккаунт)](#1-account)
-2. [Раздел 2: Privacy & Visibility (Приватность и видимость)](#2-privacy--visibility)
-   - [2.1 Account Privacy](#21-account-privacy)
-   - [2.2 Profile Visibility](#22-profile-visibility)
-   - [2.3 Contact Info Privacy](#23-contact-info-privacy)
-   - [2.4 Content Visibility](#24-content-visibility)
-   - [2.5 Interactions](#25-interactions)
-   - [2.6 Discoverability](#26-discoverability)
-   - [2.7 Safety & Blocked Accounts](#27-safety--blocked-accounts)
-3. [🔴 Обязательно для публикации](#3-обязательно-для-публикации)
-4. [Карта пропущенных полей](#4-карта-пропущенных-полей)
-5. [Вопрос: куда поместить Subscribed Communities?](#5-subscribed-communities)
-6. [Итоговая ASCII-структура](#6-ascii-структура)
-7. [Что добавлено в v2.1 — сводка для разработчиков](#7-changelog-v21)
+1. [2.1 Account Privacy](#21-account-privacy)
+2. [2.2 Profile Visibility](#22-profile-visibility)
+3. [2.3 Contact Info Privacy](#23-contact-info-privacy)
+4. [2.4 Content Visibility](#24-content-visibility)
+5. [2.5 Interactions](#25-interactions)
+6. [2.6 Discoverability](#26-discoverability)
+7. [2.7 Safety & Blocked Accounts](#27-safety--blocked-accounts)
+8. [🔴 Обязательно для публикации](#обязательно-для-публикации)
+9. [ASCII-структура раздела](#ascii-структура)
+10. [Что добавлено в v2.2](#changelog-v22)
 
 ---
 
-## 1. Account
-
-**Путь в приложении:** Settings → Account  
-**Правовое основание:** ⚖️ App Store §5.1.1 · Google Play · GDPR Art.17
-
-### 1.1 User Info — Информация пользователя
-
-| Поле | variable_name | Тип | Редактируемость | ⚖️ | Закон |
-|---|---|---|---|---|---|
-| **Avatar (фото профиля)** | `avatar_url` | Изображение (загрузить / удалить) | ✏️ | 💡 | — |
-| **Cover image (обложка)** | `cover_image_url` | Изображение (загрузить / удалить) | ✏️ | 💡 | — |
-| **First name (имя)** | `first_name` | Текст | ❌ **не меняется** после регистрации | ⚖️ | GDPR Art.17 |
-| **Last name (фамилия)** | `last_name` | Текст | ✏️ (добавить если нет) | ⚖️ | GDPR Art.17 |
-| **Date of birth** | `date_of_birth` | Дата | ❌ не меняется | ⚖️ | COPPA · GDPR Art.8 · DSA Art.28 |
-| **Gender** | `gender` | ENUM: Male / Female / Other / Prefer not to say | ✏️ | 💡 | — |
-| **Interests / Categories** | `interest_tags` | Multi-select (теги) | ✏️ | 💡 | — |
-
-> ⚠️ **First name не редактируется:** под полем показать подсказку  
-> _«Чтобы изменить имя, напишите в поддержку»_ — с прямой кнопкой «Написать в поддержку».  
-> Это стандартная практика (как в Instagram, TikTok) для защиты от спуфинга.
-
-### 1.2 Profile Info — Информация профиля
-
-| Поле | variable_name | Тип | Default | ⚖️ | Закон |
-|---|---|---|---|---|---|
-| **Bio / About** | `bio` | Текст (≤ 300 символов) | пусто | 💡 | — |
-| **Status** | `status_text` | Текст (≤ 80 символов) | пусто | 💡 | — |
-| **Goals** | `goals` | Multi-select (цели: «пить больше воды», «больше ходить», …) | пусто | 💡 | — |
-| **Category** | `profile_category` | ENUM (список категорий: Creator, Athlete, Artist, Business…) | пусто | 💡 | — |
-| **Language** | `app_language` | ENUM (список языков) | System locale | 💡 | — |
-
-### 1.3 Contact Info — Контактная информация
-
-| Поле | variable_name | Тип | Default | ⚖️ | Закон |
-|---|---|---|---|---|---|
-| **Email address** | `email` | Текст | обязательный | ⚖️ | GDPR Art.5 — минимизация |
-| **Phone number** | `phone_number` | Текст | необязательный | ⚖️ | GDPR · TCPA |
-| **Location / Country / Region** | `location_country` | ENUM (страны) | пусто | ⚖️ | GDPR — применимое право |
-| **Address** | `address_text` | Текст | пусто | ⚖️ | GDPR — чувствительные данные |
-| **Personal link (профильная ссылка)** | `profile_link_url` | URL | пусто | 💡 | — |
-| **Blog link (ссылка на блог)** | `blog_link_url` | URL | пусто | 💡 | — |
-| **Business link** | `business_link_url` | URL | пусто | 💡 | — |
-
-> ⚠️ Телефон не является обязательным при регистрации — это влияет на 2FA  
-> (подробнее → [GDPRArt5SecuritySpec.md §1.1](GDPRArt5SecuritySpec.md))
-
-### 1.4 Account Management — Управление аккаунтом
-
-**Путь в приложении:** Settings → Account → Account Management
-
-| Пункт | Тип | ⚖️ | Закон |
-|---|---|---|---|
-| **Deactivate account** | Действие (временная деактивация) | ⚖️ | GDPR Art.17 |
-| **Delete account** | Действие (постоянное удаление + 2-step confirmation) | ⚖️ | GDPR Art.17 · CCPA §1798.105 · **App Store §5.1.1(v)** · **Google Play** |
-| **Switch to Business profile** | Действие (переключение на бизнес-режим) | 💡 | — |
-| **Create Business account** | Действие (создать дополнительный бизнес-аккаунт) | 💡 | — |
-
-> ⚠️ **App Store + Google Play**: кнопка Delete account должна быть доступна **прямо** из настроек.  
-> Полный путь: **Settings → Account → Account Management → Delete account**  
-> ⚠️ **Google Play** (дополнительно): веб-форма `bestme.app/account/delete` (отдельно от in-app)  
-> Подробнее → [AccountDeletionSpec.md](AccountDeletionSpec.md)
+> 📌 **Принцип Privacy by Default (GDPR Art.25):**  
+> Все настройки по умолчанию должны быть максимально строгими.  
+> Пользователь сам ослабляет ограничения — но не наоборот.
 
 ---
 
-## 2. Privacy & Visibility
+## Privacy & Visibility
 
 **Путь в приложении:** Settings → Privacy & Visibility  
 **Правовое основание:** ⚖️ GDPR Art.25 (Privacy by Default) · DSA Art.14 · ePrivacy · Israel PPL
@@ -278,21 +219,16 @@
 
 ---
 
-## 3. Обязательно для публикации
+## Обязательно для публикации
 
-> 🔴 **Этот раздел для тебя** — здесь собраны ТОЛЬКО те настройки и поведения, которые **блокируют App Store / Google Play** или грозят **крупным штрафом GDPR**. Всё остальное — рекомендации.
+> 🔴 **Этот раздел** — только те настройки §2 Privacy & Visibility, которые **блокируют App Store / Google Play** или грозят **крупным штрафом GDPR**.
 
-### 🔴 БЛОКЕРЫ App Store + Google Play
+### 🔴 БЛОКЕРЫ (Privacy & Visibility)
 
-| # | Что обязательно | Где в спеке | Почему |
+| # | Что обязательно | Где | Почему |
 |---|---|---|---|
-| 1 | **Кнопка «Delete account»** доступна прямо из Settings | §1.4 Account Management | App Store §5.1.1(v) + Google Play — обязательно иначе отказ в публикации |
-| 2 | **Веб-форма удаления** `bestme.app/account/delete` (отдельно) | §1.4 + AccountDeletionSpec.md | Google Play — требует веб-форму независимо от in-app |
-| 3 | **`seo_indexable = false` по умолчанию** — нельзя менять | §2.1 + §2.6 | GDPR Art.25 — штраф до 10 млн € |
-| 4 | **Согласие на UGC Terms of Service** при публикации | ProfileSettingsFullSpec.md | Google Play — обязательная acceptance при создании контента |
-| 5 | **ATT (App Tracking Transparency)** prompt на iOS | ProfileSettingsFullSpec.md | App Store §5.1.2 — обязательно перед сбором IDFA |
-| 6 | **Prominent Disclosure** перед запросом разрешений | ProfileSettingsFullSpec.md | App Store + Google Play — объяснить ДО запроса разрешений |
-| 7 | **Механизм жалоб (Report user / Report content)** доступен на каждом профиле и контенте | §2.7 | **DSA Art.16** — обязателен для ЕС; без него — нарушение DSA |
+| 1 | **`seo_indexable = false` по умолчанию** — нельзя менять | §2.1 + §2.6 | GDPR Art.25 — штраф до 10 млн € |
+| 2 | **Механизм жалоб (Report user / Report content)** | §2.7 | **DSA Art.16** — обязателен для ЕС; без него — нарушение DSA + отказ в App Store EU |
 
 ### ⚖️ ОБЯЗАТЕЛЬНЫЕ настройки (без них — нарушение GDPR)
 
@@ -307,136 +243,21 @@
 | 7 | **`online_status_visible`** ON | `online_status_visible` | Видят только **ДРУЗЬЯ** (не все) | ePrivacy |
 | 8 | **`show_recommendation_info`** | `show_recommendation_info` | `true` | DSA Art.27 (ЕС) |
 
-> 💡 Всё, что помечено ⚖️ в таблицах спеки — это закон. Всё, что 💡 — это лучшая практика, но не штраф.
+> 💡 Всё, что помечено ⚖️ в таблицах — это закон. 💡 — лучшая практика, не штраф.
 
 ---
 
-## 4. Карта пропущенных полей
-
-Поля, описанные пользователем, которых **не было** в предыдущих спецификациях и которые добавлены в этом документе:
-
-| Поле | variable_name | Новый? | Где было раньше |
-|---|---|---|---|
-| Last name | `last_name` | ✅ Уточнено | SettingsTZ: только `Display name` без разделения |
-| Status | `status_text` | 🆕 Новое | Не было ни в одной спеке |
-| Status visibility | `status_visibility` | 🆕 Новое | Не было ни в одной спеке |
-| Goals | `goals` | 🆕 Новое | Не было ни в одной спеке |
-| Goals visibility | `goals_visibility` | 🆕 Новое | Не было ни в одной спеке |
-| Category (profile) | `profile_category` | 🆕 Новое | Не было |
-| Address | `address_text` | ✅ Подтверждено | Упоминалось, но без поля |
-| Address visibility | `address_visibility` | 🆕 **Новое** | **Отсутствовало** в SettingsTZ Contact Info Privacy |
-| Personal link visibility | `personal_link_visibility` | 🆕 **Новое** | Только `website_visibility` в SettingsTZ |
-| Business link visibility | `business_link_visibility` | 🆕 **Новое** | Отсутствовало |
-| Blog link | `blog_link_url` | 🆕 Новое | Не было ни в одной спеке |
-| Blog link visibility | `blog_link_visibility` | 🆕 Новое | Не было ни в одной спеке |
-| Categories visibility | `categories_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility |
-| Subscribed blogs visibility | `subscribed_blogs_visibility` | 🆕 **Новое** | **Отсутствовало** |
-| Discussions visibility | `discussions_visibility` | 🆕 **Новое** | **Отсутствовало** |
-| Share permission | `share_permission` | 🆕 **Новое** | **Отсутствовало** в Interactions |
-| Friend request permission | `friend_request_permission` | 🆕 **Новое** | **Отсутствовало** |
-| Last seen | `last_seen_visible` | 🆕 **Новое** | **Отсутствовало** |
-| Read receipts | `read_receipts_visible` | 🆕 **Новое** | **Отсутствовало** |
-| Relationship visible | `relationship_visible` | 🆕 **Новое** | **Отсутствовало** в Account Privacy |
-| Who can react | `who_can_react` | 🆕 **Новое** | **Отсутствовало** в Interactions |
-| Subscribed communities visibility | `subscribed_communities_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility |
-| Recommendations opt-out | `recommendations_opt_out` | 🆕 **Новое** | **Отсутствовало** — новый §2.6 Discoverability |
-| Show recommendation info | `show_recommendation_info` | 🆕 **Новое** | **Отсутствовало** — новый §2.6 Discoverability |
-| Blocked Accounts UI | — | 🆕 **Новое** | **Отсутствовал** целый раздел §2.7 |
-| Activity feed visibility | `activity_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility §2.4 |
-| Likes & reactions visibility | `likes_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility §2.4 |
-| Challenges visibility | `challenges_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility §2.4 |
-| Saved content visibility | `saved_content_visibility` | 🆕 **Новое** | **Отсутствовало** — функция «сохранить контент» требует настройки видимости |
-| Comment moderation | `comment_moderation` | 🆕 **Новое** | **Отсутствовало** в Interactions §2.5 |
-| Report user | — (действие) | 🆕 **Новое** | **Отсутствовало** в §2.7 — обязательно DSA Art.16 |
-| Report content | — (действие) | 🆕 **Новое** | **Отсутствовало** в §2.7 — обязательно DSA Art.16 |
-
----
-
-## 5. Subscribed Communities
-
-### Вопрос: куда поместить «Подписанные сообщества»?
-
-Пользователь разместил «Subscribed communities» в разделе **Account → Account Management**.  
-Это нестандартное расположение — рассмотрим варианты:
-
-| Вариант | Где | Плюсы | Минусы |
-|---|---|---|---|
-| **A: В Account Management** (как предложила пользователь) | Settings → Account → Account Management | Логично как «управление членством» | Смешивает deletion/deactivation с подписками |
-| **B: В Friends & Community (отдельный L1 раздел)** | Settings → Friends & Community | Стандартная практика (Discord, Reddit, Telegram) | Требует отдельный раздел |
-| **C: В отдельном L2 под Account** | Settings → Account → My Communities | Компромисс | Нестандартно |
-
-**Рекомендация:**
-
-Если в приложении есть раздел **Friends & Community** (L1) — вынести туда:
-```
-Settings
-└── Friends & Community
-    ├── My Friends (список друзей)
-    ├── Friend Requests
-    ├── Subscribed Communities   ← сюда
-    └── Subscribed Blogs
-```
-
-Если отдельного раздела нет (или он называется иначе) — оставить в Account как подраздел:
-```
-Settings → Account → Account Management
-├── Deactivate account
-├── Delete account
-├── Switch to Business profile
-├── Create Business account
-└── Subscribed communities   ← если нет другого места
-```
-
-> ℹ️ «Подписанные сообщества» — это не операция управления аккаунтом, а список членств.  
-> Логически ближе к Friend/Social разделу. Но финальное решение за дизайнером/продуктом.
-
----
-
-## 6. ASCII-структура
-
-Полная структура двух разделов с учётом всех уточнений:
+## ASCII-структура
 
 ```
 ⚙️ Settings
 │
-├── 1️⃣ 👤 Account  ⚖️ App Store §5.1.1 · Google Play · GDPR Art.17
-│   ├── User Info
-│   │   ├── Avatar (upload / delete)
-│   │   ├── Cover image (upload / delete)
-│   │   ├── First name  [❌ не меняется — показать: «Написать в поддержку»]
-│   │   ├── Last name   [✏️ добавить если нет]
-│   │   ├── Date of birth  ⚖️ COPPA · GDPR Art.8 · DSA Art.28
-│   │   ├── Gender
-│   │   └── Interests
-│   │
-│   ├── Profile Info
-│   │   ├── Bio / About
-│   │   ├── Status
-│   │   ├── Goals  (multi-select: пить воду, ходить, …)
-│   │   ├── Category (Creator / Artist / Athlete / Business…)
-│   │   └── Language
-│   │
-│   ├── Contact Info
-│   │   ├── Email  ⚖️ GDPR
-│   │   ├── Phone  ⚖️ GDPR · TCPA  [необязательный]
-│   │   ├── Location / Country  ⚖️ GDPR
-│   │   ├── Address  ⚖️ GDPR (чувствительные)
-│   │   ├── Personal link
-│   │   ├── Blog link
-│   │   └── Business link
-│   │
-│   └── Account Management  ⚖️
-│       ├── Deactivate account          ⚖️ GDPR Art.17
-│       ├── Delete account              ⚖️ GDPR Art.17 · CCPA · App Store · Google Play
-│       ├── Switch to Business profile  💡
-│       └── Create Business account     💡
-│
-└── 2️⃣ (или 3️⃣) 🔒 Privacy & Visibility  ⚖️ GDPR Art.25
+└── 2️⃣ 🔒 Privacy & Visibility  ⚖️ GDPR Art.25 (Privacy by Default)
     │
-    ├── Account Privacy  ⚖️
+    ├── Account Privacy  ⚖️ GDPR Art.25 · Art.17
     │   ├── Private account         [OFF — открытый]  ⚖️ GDPR Art.25
     │   ├── Profile in search       [ON]  ⚖️ GDPR Art.17
-    │   ├── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
+    │   ├── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25  🔴 БЛОКЕР
     │   └── Relationship status     [FRIENDS]  💡
     │
     ├── Profile Visibility  💡
@@ -451,7 +272,7 @@ Settings → Account → Account Management
     │   └── Goals                   [FRIENDS]
     │
     ├── Contact Info Privacy  ⚖️ GDPR Art.5 — минимизация данных
-    │   ├── Email                   [ONLY_ME]  ⚖️ GDPR Art.5 · CAN-SPAM
+    │   ├── Email                   [ONLY_ME]  ⚖️ GDPR Art.5
     │   ├── Phone                   [ONLY_ME]  ⚖️ GDPR Art.5 · TCPA
     │   ├── Location                [FRIENDS]  ⚖️ GDPR
     │   ├── Address                 [ONLY_ME]  ⚖️ GDPR Art.9
@@ -463,7 +284,7 @@ Settings → Account → Account Management
     │   ├── Default post audience   [FRIENDS]  ⚖️ GDPR Art.25
     │   ├── Media gallery           [FRIENDS]  ⚖️ GDPR Art.25
     │   ├── Friends list            [FRIENDS]
-    │   ├── Categories              [EVERYONE]
+    │   ├── Interests               [EVERYONE]
     │   ├── Subscribed blogs        [EVERYONE]
     │   ├── Subscribed communities  [EVERYONE]
     │   ├── Discussions             [EVERYONE]
@@ -496,72 +317,38 @@ Settings → Account → Account Management
         ├── Block user (action)     ⚖️
         ├── Unblock user (action)   ⚖️
         ├── Restricted list         💡
-        ├── Report user (action)    ⚖️ DSA Art.16
-        └── Report content (action) ⚖️ DSA Art.16
+        ├── Report user (action)    ⚖️ DSA Art.16  🔴 БЛОКЕР
+        └── Report content (action) ⚖️ DSA Art.16  🔴 БЛОКЕР
 ```
 
 ---
 
-## 7. Changelog v2.1
+## Changelog v2.2
 
-> 📋 **Этот раздел — для тебя и разработчиков.** Здесь собрано всё, что добавлено или исправлено по сравнению с v1.0, с указанием: что именно, куда (путь + section), почему (UX-стандарт / закон), и критично ли для публикации.
+> 📋 **Для разработчиков:** изменения относительно v2.1.
 
----
+### ✅ ЧТО ДОБАВЛЕНО / ИЗМЕНЕНО в v2.2
 
-### 🆕 Добавлено в §2.4 Content Visibility
-
-| Что добавлено | variable_name | UI-название (как в соцсетях) | Default | ⚖️/💡 | Закон / Причина |
-|---|---|---|---|---|---|
-| **Видимость ленты активности** | `activity_visibility` | "Activity Feed" | `FRIENDS` | 💡 | Стандарт Instagram/Facebook — у каждого пользователя есть лента его действий (лайки, комментарии). Приватно по умолчанию. |
-| **Видимость лайков и реакций** | `likes_visibility` | "Likes & Reactions" | `FRIENDS` | 💡 | Стандарт — кто видит твои лайки под чужими постами. Default FRIENDS = Privacy by Default. |
-| **Видимость челленджей** | `challenges_visibility` | "Challenges" | `FRIENDS` | 💡 | Специфика платформы BestMe. Личные цели-челленджи — скрыты от чужих глаз по умолчанию. |
-| **Видимость сохранённого контента** | `saved_content_visibility` | "Saved" / "Bookmarks" | `ONLY_ME` | 💡 | В BestMe есть функция «сохранить контент». По умолчанию приватно (как в Instagram — только ты видишь свои сохранённые посты). |
-
-**Исправлены дефолты в §2.4:**
-
-| Что изменено | variable_name | Было | Стало | Причина |
+| # | Что | Куда | UX-название | Причина |
 |---|---|---|---|---|
-| Subscribed blogs visibility | `subscribed_blogs_visibility` | `FRIENDS` | `EVERYONE` | Подписки на блоги — публичное действие (как подписка в Twitter/X). Default EVERYONE логичен. |
-| Discussions visibility | `discussions_visibility` | `FRIENDS` | `EVERYONE` | Публичные дискуссии по категориям = открытый контент. Default EVERYONE стандартен (Reddit, Facebook Groups). |
+| 1 | **Документ разделён** | AccountSpec.md (отдельный) | — | Account (§1) вынесен в отдельный файл. Этот документ теперь содержит ТОЛЬКО §2 Privacy & Visibility. |
+| 2 | **Убраны ссылки на §1.x** в блокерах | Обязательно для публикации | — | Блокеры из Account (Delete account, веб-форма) перенесены в AccountSpec.md |
+| 3 | **ASCII-структура** обновлена | — | — | Показывает только раздел 2️⃣ Privacy & Visibility (без Account) |
+| 4 | **«Interests» в Content Visibility** | §2.4 Content Visibility | "Interests" | Переименована строка `categories_visibility` → показывается как «Interests» (соответствует AccountSpec §1.1) |
 
----
-
-### 🆕 Добавлено в §2.5 Interactions
-
-| Что добавлено | variable_name | UI-название | Default | ⚖️/💡 | Закон / Причина |
-|---|---|---|---|---|---|
-| **Модерация комментариев** | `comment_moderation` | "Comment Moderation" / "Filter offensive comments" | `false` (OFF) | 💡 | Стандарт Instagram («Hidden words»), TikTok. Пользователь включает сам — автофильтр оскорблений. Для публикации не обязателен, но улучшает UX и снижает токсичность. |
-
----
-
-### 🆕 Добавлено в §2.7 — переименован в «Safety & Blocked Accounts»
-
-| Что добавлено | Тип | UI-название | ⚖️/💡 | Закон / Причина |
-|---|---|---|---|---|
-| **Пожаловаться на пользователя** | Действие | "Report" (на странице профиля: ⋯ → Report) | ⚖️ | **DSA Art.16** — ОБЯЗАТЕЛЬНО для платформ в ЕС. Без кнопки Report — нарушение DSA, возможен отказ в App Store (EU) |
-| **Пожаловаться на контент** | Действие | "Report" (под постом/фото/комментом: ⋯ → Report) | ⚖️ | **DSA Art.16** — ОБЯЗАТЕЛЬНО. Механизм жалоб должен быть на каждом элементе UGC |
-
-> 🔴 **ВАЖНО ДЛЯ ПУБЛИКАЦИИ:** Кнопка **Report** — это не опция, это требование DSA (EU Digital Services Act).  
-> Минимальный flow: пользователь нажимает ⋯ → Report → выбирает категорию (Hate speech / Spam / Nudity / Other) → подтверждает.  
-> Платформа обязана обработать жалобу и уведомить пользователя о результате (DSA Art.17).
-
----
-
-### 📋 Сводная таблица для разработчика — что нужно добавить в ТЗ
+### 📋 Сводная таблица — что нужно добавить в ТЗ (Privacy & Visibility)
 
 | Приоритет | Что добавить | Путь в приложении | Закон / Почему важно |
 |---|---|---|---|
-| 🔴 **БЛОКЕР** | Кнопка **Report user** на профиле | Profile → ⋯ (три точки) → Report | DSA Art.16 — без этого нельзя публиковаться в ЕС |
+| 🔴 **БЛОКЕР** | Кнопка **Report user** на профиле | Profile → ⋯ → Report | DSA Art.16 — без этого нельзя публиковаться в ЕС |
 | 🔴 **БЛОКЕР** | Кнопка **Report content** на каждом посте/фото/комменте | Post / Photo / Comment → ⋯ → Report | DSA Art.16 |
-| 🟡 **ВАЖНО** | Настройка **Activity Feed visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default — стандарт соцсетей |
-| 🟡 **ВАЖНО** | Настройка **Likes & Reactions visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default |
-| 🟡 **ВАЖНО** | Настройка **Challenges visibility** | Settings → Privacy & Visibility → Content Visibility | Специфика BestMe |
-| 🟡 **ВАЖНО** | Настройка **Saved content** (Bookmarks) visibility | Settings → Privacy & Visibility → Content Visibility | Bookmarks по умолчанию ONLY_ME |
-| 🟢 **РЕКОМЕНДУЕТСЯ** | Настройка **Comment moderation** | Settings → Privacy & Visibility → Interactions | UX-стандарт (Instagram Hidden words) |
-| 🟢 **ИСПРАВИТЬ** | Дефолт `subscribed_blogs_visibility` = `EVERYONE` | Settings → Privacy & Visibility → Content Visibility | Публичные подписки |
-| 🟢 **ИСПРАВИТЬ** | Дефолт `discussions_visibility` = `EVERYONE` | Settings → Privacy & Visibility → Content Visibility | Публичные дискуссии |
+| 🟡 **ВАЖНО** | **Activity Feed visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default |
+| 🟡 **ВАЖНО** | **Likes & Reactions visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default |
+| 🟡 **ВАЖНО** | **Challenges visibility** | Settings → Privacy & Visibility → Content Visibility | Специфика BestMe |
+| 🟡 **ВАЖНО** | **Saved content visibility** | Settings → Privacy & Visibility → Content Visibility | Bookmarks = ONLY_ME по умолчанию |
+| 🟢 **РЕКОМЕНДУЕТСЯ** | **Comment moderation** | Settings → Privacy & Visibility → Interactions | UX-стандарт (Instagram Hidden words) |
 
 ---
 
-*PrivacyVisibilitySpec.md v2.1 · Bestme · март 2026*  
-*Смежные документы: [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
+*PrivacyVisibilitySpec.md v2.2 · Bestme · март 2026*  
+*Смежные документы: [AccountSpec.md](AccountSpec.md), [SettingsOverview.md](SettingsOverview.md), [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
