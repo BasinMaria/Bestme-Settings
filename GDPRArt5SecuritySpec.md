@@ -1,26 +1,368 @@
-# GDPRArt5SecuritySpec.md — ТЗ для GDPR Art.5: Безопасность, DPO, Consent History
+# GDPRArt5SecuritySpec.md — ТЗ для GDPR Art.5 и Login & Security
 
-**Версия:** 1.1 · **Дата:** март 2026  
+**Версия:** 1.2 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик, DevOps  
-**Статус:** 🟡 Требования для предотвращения штрафов (штраф до €20 млн или 4% оборота)
+**Статус:** 🔴 Часть блокирует публикацию · 🟡 Часть — требования для предотвращения штрафов (€20 млн / 4% оборота)
 
-> **Важно:** Эти требования **не блокируют ревью** App Store / Google Play, но их нарушение может привести к штрафам от регуляторов GDPR (особенно ЕС, Израиль). Реализовывать в Sprint 2, после получения публикации.
+> **Смежные документы:**  
+> [AccountDeletionSpec.md](AccountDeletionSpec.md) — удаление аккаунта  
+> [AccessibilitySpec.md](AccessibilitySpec.md) — кнопка Contact DPO  
+> [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md) — GDPR Art.25 / Art.17 аудит
 
 ---
 
 ## Содержание
 
-1. [GDPR Art.5(1)(f) — Целостность и конфиденциальность (безопасность)](#1-gdpr-art51f--целостность-и-конфиденциальность)
-2. [GDPR Art.5(2) — Подотчётность](#2-gdpr-art52--подотчётность)
-3. [Consent History — История согласий](#3-consent-history--история-согласий)
-4. [Audit Log — Журнал аудита (внутренний)](#4-audit-log--журнал-аудита)
-5. [DPO Contact — Контакт ответственного за данные](#5-dpo-contact)
-6. [Как выглядит в приложении](#6-как-выглядит-в-приложении)
-7. [Чеклист для разработчика](#7-чеклист-для-разработчика)
+1. [3️⃣ Login & Security — Полная спецификация раздела](#login--security)  
+   1.1 [Change Password](#31-change-password)  
+   1.2 [Two-Factor Authentication (2FA)](#32-two-factor-authentication-2fa)  
+   1.3 [Third-Party Login (Sign in with Apple / Google / Facebook)](#33-third-party-login)  
+   1.4 [Active Sessions](#34-active-sessions)  
+   1.5 [Login History](#35-login-history)  
+   1.6 [Блокеры публикации для Login & Security](#36-блокеры-публикации)
+2. [GDPR Art.5(1)(f) — Безопасность: HTTPS, шифрование](#2-gdpr-art51f--https-и-шифрование)
+3. [GDPR Art.5(2) — Подотчётность](#3-gdpr-art52--подотчётность)
+4. [Consent History — История согласий](#4-consent-history--история-согласий)
+5. [Audit Log — Журнал аудита (внутренний)](#5-audit-log--журнал-аудита)
+6. [DPO Contact — Контакт ответственного за данные](#6-dpo-contact)
+7. [Полная структура Settings → Login & Security](#7-полная-структура-экрана)
+8. [Чеклист для разработчика](#8-чеклист-для-разработчика)
 
 ---
 
-## 1. GDPR Art.5(1)(f) — Целостность и конфиденциальность
+## Login & Security
+
+**Путь в приложении:** Settings → Login & Security  
+**Правовое основание:** ⚖️ GDPR Art.5(1)(f) · App Store §5.1.1(v) · Google Play Policy  
+**Статус:** 🔴 Часть является блокером публикации
+
+> **Контекст регистрации Bestme:**  
+> Пользователь может зарегистрироваться четырьмя способами:
+> 1. **Email + пароль** (собственная система)  
+> 2. **Sign in with Google**  
+> 3. **Sign in with Apple**  
+> 4. **Sign in with Facebook**  
+>
+> При регистрации через собственную систему: **телефон не собирается**.  
+> Поэтому 2FA = **Email OTP** (первичный) + **TOTP-приложение** (опционально).  
+> **SMS 2FA** предлагается только если пользователь добавил телефон в профиль позже.
+
+---
+
+### 3.1 Change Password
+
+**Путь:** Settings → Login & Security → Change Password  
+**Применимость:** Только для аккаунтов, зарегистрированных через email + пароль  
+(Для пользователей, вошедших только через Google/Apple/Facebook — этот пункт скрыт или неактивен)
+
+**Статус публикации:** ✅ Не блокер (но требуется для любого аккаунта с паролем)
+
+**UX-поток:**
+```
+Settings → Login & Security
+  Пароль: ••••••••••           [Изменить →]
+
+→ Экран "Change Password"
+
+  Current Password:   [___________________]  👁
+  New Password:       [___________________]  👁
+  Confirm Password:   [___________________]  👁
+
+  Требования к паролю:
+  • Минимум 8 символов
+  • Хотя бы 1 заглавная буква
+  • Хотя бы 1 цифра или спецсимвол
+
+                              [Save New Password]
+```
+
+**Backend требования:**
+
+| Параметр | Значение |
+|---|---|
+| **Подтверждение текущего пароля** | Обязательно перед сменой |
+| **Хеширование** | bcrypt cost ≥ 12 или Argon2id |
+| **Запрет повтора** | Последние 3 пароля нельзя использовать повторно |
+| **После смены** | Инвалидировать все сессии кроме текущей (GDPR Art.5(1)(f)) |
+| **Rate limit** | Не более 5 попыток смены за 15 минут |
+| **Уведомление** | Email: «Ваш пароль был изменён» (с IP + время + кнопка «Не я — заблокировать») |
+| **Audit Log** | Записать `password_changed` с IP и User-Agent |
+
+> 💡 Если пользователь забыл текущий пароль → кнопка «Forgot password?» на экране → стандартный reset-flow по email.
+
+---
+
+### 3.2 Two-Factor Authentication (2FA)
+
+**Путь:** Settings → Login & Security → Two-Factor Authentication  
+**Применимость:** Только для аккаунтов с паролем (email + пароль).  
+Для OAuth-пользователей (Google/Apple/FB) — 2FA управляется на стороне провайдера; в приложении Bestme не отображается.
+
+**Статус публикации:** 🟡 Не блокер для MVP, рекомендуется в Sprint 2
+
+**Какие методы 2FA поддерживаются:**
+
+| Метод | Когда доступен | Приоритет |
+|---|---|---|
+| **Email OTP** (6-значный код на email) | Всегда (email есть у всех) | ✅ Первичный метод |
+| **TOTP App** (Google Authenticator, Authy) | Всегда | ✅ Опциональный |
+| **SMS OTP** | Только если пользователь добавил телефон в профиль | 🟡 Дополнительный |
+
+> ⚠️ **SMS 2FA НЕ запрашивается при регистрации** — телефон не собирается. SMS-опция появляется в настройках 2FA только если пользователь добавил телефон в §1 Account Info.
+
+**UX-поток включения 2FA:**
+```
+Settings → Login & Security → Two-Factor Authentication
+
+  Двухфакторная аутентификация         [OFF → Включить]
+
+→ Нажать [Включить]
+
+→ Экран "Choose 2FA Method"
+   ○ Email Code  — код придёт на user@example.com
+   ○ Authenticator App — Google Authenticator, Authy
+   ○ SMS Code (если телефон добавлен) — ••• ••• 99
+
+→ Выбрать "Email Code"
+   → Отправить код на email → ввести 6 цифр → [Подтвердить]
+   → ✅ 2FA включена
+
+→ Выбрать "Authenticator App"
+   → Показать QR-код и TOTP secret
+   → «Откройте Google Authenticator / Authy и отсканируйте QR-код»
+   → Введите 6-значный код из приложения: [______]  [Подтвердить]
+   → ✅ 2FA включена
+
+→ После успешного включения:
+   «Сохраните резервные коды. Они помогут войти, если вы потеряете доступ к методу 2FA.»
+   [Показать 10 резервных кодов]  [Скопировать]  [Скачать]
+```
+
+**UX-поток входа с 2FA (email + пароль):**
+```
+Пользователь вводит email + пароль → [Войти]
+→ Backend: credentials верны + two_factor_enabled=true
+→ Показать экран "Подтверждение личности"
+   "Введите 6-значный код из вашего приложения-аутентификатора"
+   [  ][ ][ ] - [ ][ ][ ]
+   [Подтвердить]    [Использовать резервный код]
+→ Код верен → выдать access_token → войти
+→ Код неверен → «Неверный код. Осталось попыток: N»
+```
+
+**Backend требования:**
+
+| Параметр | Значение |
+|---|---|
+| **variable_name** | `two_factor_enabled` |
+| **Тип** | Boolean |
+| **Default** | `false` — включается добровольно |
+| **TOTP-стандарт** | RFC 6238, 6 цифр, 30-секундное окно, HMAC-SHA1 |
+| **TOTP secret** | Хранить зашифрованным (AES-256), не в открытом виде |
+| **Email OTP срок** | 10 минут |
+| **Rate limit** | Не более 5 попыток ввода кода за 15 минут → временная блокировка |
+| **Backup codes** | 10 одноразовых кодов, показать один раз, хранить как bcrypt-хэши |
+| **Аудит** | `2fa_enabled`, `2fa_disabled`, `2fa_method_changed` |
+
+**Почему 2FA рекомендуется, даже если не обязательна (GDPR Art.5(1)(f)):**  
+При утечке данных регулятор спросит «какие меры безопасности были приняты?». Наличие опциональной 2FA — весомый аргумент, что меры были «надлежащими». Отсутствие 2FA само по себе не нарушение, но при инциденте без 2FA риск штрафа значительно возрастает.
+
+---
+
+### 3.3 Third-Party Login
+
+**Путь:** Settings → Login & Security → Sign in with / Linked Accounts  
+**Применимость:** Все пользователи
+
+**Статус публикации:** 🔴 **БЛОКЕР** — кнопка **Disconnect** обязательна по **App Store §5.1.1(v)**
+
+> 🔴 **App Store §5.1.1(v):** Если пользователь вошёл через Sign in with Apple (и по аналогии через Google/Facebook), он **обязан иметь возможность отключить** эту связь прямо в приложении. Отсутствие кнопки Disconnect = отказ в публикации.
+
+**Варианты состояния аккаунта:**
+
+| Тип регистрации | Что показывается |
+|---|---|
+| Зарегистрирован через email | Google/Apple/Facebook = [Подключить] |
+| Зарегистрирован через Google | Google = [Подключено — Отключить]; Apple/Facebook = [Подключить] |
+| Зарегистрирован через Apple | Apple = [Подключено — Отключить]; Google/Facebook = [Подключить] |
+| Несколько способов добавлено | Каждый со своим статусом |
+
+**UX-экран:**
+```
+Settings → Login & Security
+
+─── Связанные аккаунты (Linked Accounts) ──────────────
+
+  🍎 Apple           [Подключено]    [Отключить]
+  🔵 Google          [Подключить]
+  🔷 Facebook        [Подключить]
+
+─────────────────────────────────────────────────────
+
+  ⚠️ Прежде чем отключить последний способ входа,
+     убедитесь, что у вас установлен пароль.
+```
+
+**Логика кнопки Disconnect:**
+1. Если у пользователя **только один** способ входа → нельзя отключить без установки пароля:
+   ```
+   «Сначала установите пароль, затем можно отключить Apple.»
+   [Установить пароль]
+   ```
+2. Если у пользователя **несколько** способов входа → отключение разрешено сразу.
+3. После отключения: удалить `provider_id` из таблицы `auth_providers`.
+
+**UX-поток подключения нового провайдера:**
+```
+Пользователь нажимает [Подключить] рядом с Google
+→ OAuth-редирект на Google
+→ Успешно → «Google-аккаунт подключён» → кнопка меняется на [Подключено | Отключить]
+→ Audit Log: `oauth_provider_connected` (provider=google)
+```
+
+**Backend требования:**
+
+```sql
+CREATE TABLE auth_providers (
+  id           UUID PRIMARY KEY,
+  user_id      UUID NOT NULL REFERENCES users(id),
+  provider     TEXT NOT NULL,   -- 'google' | 'apple' | 'facebook' | 'email'
+  provider_id  TEXT NOT NULL,   -- внешний ID от провайдера
+  email        TEXT,            -- email от провайдера (может отличаться)
+  connected_at TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE (provider, provider_id)
+);
+```
+
+| Требование | Детали |
+|---|---|
+| **Sign in with Apple** | Использовать Apple's «Hide My Email» если пользователь выбрал | обязательно хранить `apple_user_id`, не email |
+| **Sign in with Google** | Google Sign-In SDK (iOS/Android), PKCE для веба |
+| **Sign in with Facebook** | Facebook Login SDK |
+| **Revoke токен при Disconnect** | При отключении провайдера — вызвать API провайдера для отзыва токена |
+| **Защита от orphan-аккаунта** | Не разрешать удаление последнего `auth_provider`, если пароль не установлен |
+| **Аудит** | `oauth_provider_connected`, `oauth_provider_disconnected` |
+
+---
+
+### 3.4 Active Sessions
+
+**Путь:** Settings → Login & Security → Active Sessions  
+**Применимость:** Все пользователи  
+**Статус публикации:** 🟡 Рекомендуется; не является строгим блокером, но GDPR Art.5(1)(f) требует механизм отзыва доступа
+
+**UX-экран:**
+```
+📱 ACTIVE SESSIONS
+
+✅ Текущее устройство
+   iPhone 14 Pro · iOS 17.2
+   Москва, Россия · 19 марта 2026, 14:23
+
+📱 iPhone 12 Mini
+   Последняя активность: 28 февраля 2026
+   Берлин, Германия
+   [Завершить сессию]
+
+💻 MacBook Pro (Chrome 122)
+   Последняя активность: 10 марта 2026
+   Тель-Авив, Израиль
+   [Завершить сессию]
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+[Завершить все другие сессии]
+```
+
+**Backend требования:**
+
+| Параметр | Значение |
+|---|---|
+| **Таблица** | `sessions`: user_id, device_name, device_type, ip_address, last_active_at, created_at, is_current |
+| **Access token** | JWT, срок действия 15 минут |
+| **Refresh token** | Secure HTTP-only cookie или Keychain/Keystore, срок 30 дней |
+| **Автоистечение** | Refresh token истекает через 30 дней неактивности |
+| **При смене пароля** | Инвалидировать ВСЕ сессии кроме текущей |
+| **При завершении сессии** | Удалить refresh_token, запись в `sessions` |
+| **Аудит** | `session_created`, `session_terminated` (с IP, User-Agent) |
+
+---
+
+### 3.5 Login History
+
+**Путь:** Settings → Login & Security → Login History  
+**Применимость:** Все пользователи  
+**Статус публикации:** 🟡 Рекомендуется для пользователей; GDPR Art.5(1)(f) требует логирование (во внутренний Audit Log — обязательно)
+
+> 💡 **Разница между Login History и Active Sessions:**  
+> - **Active Sessions** = устройства, на которых сейчас выполнен вход (можно завершить)  
+> - **Login History** = исторический журнал всех входов/выходов (только просмотр)
+
+**UX-экран:**
+```
+🕐 ИСТОРИЯ ВХОДОВ
+
+Март 2026
+
+  ✅ Вход выполнен
+     iPhone 14 Pro · iOS 17.2
+     Москва, Россия · 19 марта 2026, 14:23
+
+  ⚠️ Неудачная попытка входа
+     Неизвестное устройство
+     Киев, Украина · 15 марта 2026, 03:11
+     [Это не я → Защитить аккаунт]
+
+  ✅ Вход выполнен
+     MacBook Pro (Chrome 122)
+     Тель-Авив, Израиль · 10 марта 2026, 11:44
+
+Февраль 2026
+
+  ✅ Вход выполнен через Google
+     iPhone 12 Mini · iOS 16.5
+     Берлин, Германия · 28 февраля 2026, 09:05
+
+  🔒 Выход (пользователь завершил сессию)
+     MacBook Pro · 25 февраля 2026, 18:30
+
+─────────────────────────────────
+Показываются записи за последние 90 дней.
+```
+
+**Backend требования:**
+
+| Параметр | Значение |
+|---|---|
+| **Хранение** | 90 дней (отображаются пользователю); Audit Log хранится 3 года (внутренний) |
+| **Что логировать** | IP, User-Agent, тип входа (email / Google / Apple / Facebook / 2FA), статус (успех / неудача), геолокация (страна/город по IP) |
+| **Геолокация** | IP → страна/город (MaxMind GeoIP или аналог); хранить только страну+город, не точные координаты |
+| **Endpoint** | `GET /api/user/login-history?page=1&limit=20` |
+| **«Это не я»** | Кнопка на подозрительном входе → смена пароля + инвалидация всех сессий + оповещение по email |
+| **Аудит** | Часть Audit Log (см. §5) |
+
+---
+
+### 3.6 Блокеры публикации
+
+**Что ОБЯЗАТЕЛЬНО для App Store / Google Play:**
+
+| # | Что | Где | Закон / Правило | Статус |
+|---|---|---|---|---|
+| 1 | **Кнопка Disconnect** для каждого подключённого OAuth-провайдера | §3.3 Third-Party Login | **App Store §5.1.1(v)** | 🔴 **БЛОКЕР** |
+| 2 | **In-app путь удаления аккаунта** | AccountDeletionSpec.md | App Store §5.1.1(v) · Google Play | 🔴 **БЛОКЕР** (документ отдельный) |
+
+**Что РЕКОМЕНДУЕТСЯ (штраф GDPR при нарушении, не блокирует App Store):**
+
+| # | Что | Приоритет |
+|---|---|---|
+| Change Password | Обязательно для любого email-аккаунта | Sprint 1 |
+| Active Sessions | GDPR Art.5(1)(f) — право завершить сессию | Sprint 2 |
+| 2FA (Email OTP + TOTP) | GDPR Art.5(1)(f) — «надлежащие меры» | Sprint 2 |
+| Login History | Прозрачность; «Это не я» — защита пользователя | Sprint 2 |
+
+---
+
+## 2. GDPR Art.5(1)(f) — HTTPS и шифрование
 
 ### Что говорит закон
 
@@ -29,75 +371,28 @@
 
 ### Что это означает на практике для приложения
 
-Три конкретных механизма: **2FA (двухфакторная авторизация)**, **HTTPS (шифрование передачи)**, **управление сессиями**.
+Три конкретных механизма: **2FA** (детали — §3.2), **HTTPS**, **управление сессиями** (детали — §3.4).
 
 ---
 
-### 1.1 2FA — Двухфакторная авторизация
+### 2.1 2FA — Двухфакторная авторизация
 
-**Что это:**  
-После обычного входа (email + пароль) пользователь дополнительно подтверждает личность вторым способом: кодом из email или TOTP-приложения (Google Authenticator, Authy).
+> 📎 Полная UX/backend спецификация 2FA находится в [§3.2 Two-Factor Authentication](#32-two-factor-authentication-2fa).
 
-**Где находится в приложении:**  
-Settings → Login & Security → Two-Factor Authentication (2FA)
-
-### ❓ Вопрос: обязательно ли 2FA для закона? Нужен ли телефон?
-
-**Ответ: 2FA не обязательна для регистрации и не требует телефона.**
+**Краткий ответ на ключевые вопросы:**
 
 | Вопрос | Ответ |
 |---|---|
 | Обязателен ли 2FA по GDPR? | ❌ **Нет** — GDPR не называет 2FA явно. Он требует «надлежащие технические меры» (Art.5(1)(f)). 2FA — одна из таких мер, но не единственная. |
-| Нужно ли спрашивать телефон при регистрации ради 2FA? | ❌ **Нет** — SMS 2FA просто не предлагается, если телефон не собирается. Для приложений без обязательного номера телефона стандарт: Email OTP + TOTP App. |
-| Достаточно ли HTTPS + bcrypt паролей без 2FA? | ✅ **Да, для публикации** — этого достаточно. 2FA — улучшение безопасности (рекомендуется, но не блокирует ни App Store, ни GDPR-аудит для MVP). |
-| Когда внедрять 2FA? | 🟡 Sprint 2 — после получения публикации, как улучшение безопасности. |
-
-**Почему 2FA всё-таки рекомендуется (GDPR Art.5(1)(f)):**  
-Если аккаунт взломают и произойдёт утечка данных — регулятор GDPR спросит: «Какие меры вы приняли?». Наличие 2FA (пусть даже опциональной) — это весомый аргумент, что меры были «надлежащими». Отсутствие 2FA не нарушение само по себе, но утечка без 2FA увеличивает риск штрафа.
-
-**ТЗ для 2FA (без телефона):**
-
-| Параметр | Значение |
-|---|---|
-| **variable_name** | `two_factor_enabled` |
-| **Тип** | Boolean (toggle) |
-| **Default** | `false` — пользователь включает добровольно |
-| **Методы (без телефона)** | Email OTP · TOTP App (Google Authenticator, Authy) |
-| **SMS** | ❌ Не предлагать, если телефон не собирается при регистрации |
-
-**Поток включения 2FA (без SMS):**
-```
-Пользователь нажимает «Enable 2FA»
-→ Выбирает метод: Email Code / Authenticator App
-→ Email: на email приходит 6-значный код → пользователь вводит → ✅ Включено
-→ Authenticator App: сканирует QR-код (TOTP secret) → вводит 6-значный код → ✅ Включено
-→ Система сохраняет: two_factor_enabled=true, two_factor_method, recovery_codes (10 кодов)
-```
-
-**Поток входа с 2FA:**
-```
-Пользователь вводит email + пароль
-→ Backend проверяет credentials → если верно и two_factor_enabled=true
-→ Отправляет OTP на email или ждёт TOTP от приложения
-→ Пользователь вводит 6-значный код
-→ Backend верифицирует → выдаёт access_token
-```
-
-**Backend требования:**
-- TOTP: RFC 6238, 6 цифр, 30-секундное окно, HMAC-SHA1.
-- Backup codes: 10 одноразовых кодов, показать один раз, хранить как bcrypt-хэши.
-- Rate limiting: не более 5 попыток ввода кода за 15 минут → временная блокировка.
-- Логировать: успешный вход с 2FA, неудачные попытки, смену метода 2FA.
+| Нужен ли телефон для 2FA? | ❌ **Нет** — SMS 2FA не предлагается, если телефон не собирается. Стандарт для Bestme: **Email OTP + TOTP App**. SMS — только если пользователь добавил телефон в профиль. |
+| Достаточно ли HTTPS + bcrypt без 2FA для публикации? | ✅ **Да** — 2FA рекомендуется в Sprint 2, не блокирует App Store / GDPR MVP. |
 
 ---
 
-### 1.2 HTTPS — Шифрование передачи данных
+### 2.2 HTTPS — Шифрование передачи данных
 
 **Что это:**  
 Все данные между приложением и сервером передаются только по зашифрованному каналу HTTPS (TLS 1.2+). Никаких HTTP-запросов с персональными данными.
-
-**Почему нужно (GDPR Art.5(1)(f)):**  
-Передача персональных данных по HTTP — прямое нарушение «надлежащей безопасности». Это одно из первых, что проверяет регулятор при расследовании.
 
 **ТЗ для Backend/DevOps:**
 
@@ -113,60 +408,24 @@ Settings → Login & Security → Two-Factor Authentication (2FA)
 | **Шифрование паролей** | bcrypt, cost factor ≥12 (или Argon2id) |
 
 **ТЗ для мобильного приложения:**
-- iOS: `NSAppTransportSecurity` — не добавлять исключения без крайней необходимости. Включить `NSAllowsArbitraryLoads = false`.
-- Android: `network_security_config.xml` — добавить `<domain-config cleartextTrafficPermitted="false">`.
+- iOS: `NSAppTransportSecurity` — `NSAllowsArbitraryLoads = false`.
+- Android: `network_security_config.xml` — `<domain-config cleartextTrafficPermitted="false">`.
 - Никогда не логировать access tokens, пароли, personal data в console/Logcat.
 
 ---
 
-### 1.3 Управление сессиями (Session Management)
+### 2.3 Управление сессиями
 
-**Что это:**  
-Контроль над активными сессиями пользователя — список устройств, на которых выполнен вход, возможность завершить сессию на любом устройстве, автоматическое завершение по истечении времени.
+> 📎 Полная UX/backend спецификация Active Sessions находится в [§3.4 Active Sessions](#34-active-sessions).
 
-**Где находится в приложении:**  
-Settings → Login & Security → Active Sessions (Активные сессии)
-
-**Почему нужно (GDPR Art.5(1)(f)):**  
-Если пользователь потерял устройство — он должен иметь возможность немедленно завершить сессию на нём. Это минимизирует риск несанкционированного доступа.
-
-**ТЗ для управления сессиями:**
-
-| Параметр | Значение |
-|---|---|
-| **Хранение** | Таблица `sessions`: user_id, device_name, device_type, ip_address, last_active_at, created_at, is_current |
-| **Access token** | JWT, срок действия 15 минут |
-| **Refresh token** | Secure HTTP-only cookie или хранилище Keychain/Keystore, срок 30 дней |
-| **Автоистечение** | Refresh token истекает через 30 дней неактивности |
-
-**Что показывать пользователю (UI):**
-```
-📱 Active Sessions
-
-[✓ Current] iPhone 14 Pro · Moscow, Russia
-             Last active: Just now
-
-[  ] MacBook Pro · Berlin, Germany
-             Last active: 2 days ago
-             [Sign Out This Device]
-
-[  ] iPhone 12 · Unknown location
-             Last active: 15 days ago
-             [Sign Out This Device]
-
-[Sign Out All Other Devices]
-```
-
-**Backend требования:**
-- При входе: создать запись в `sessions`.
-- При выходе с конкретного устройства: удалить refresh_token, инвалидировать сессию.
-- При «Sign Out All»: удалить все refresh tokens кроме текущего.
-- При смене пароля: инвалидировать ВСЕ сессии кроме текущей.
-- Логировать: создание сессии (IP, User-Agent), завершение сессии.
+**Ключевые требования GDPR:**
+- Пользователь должен уметь завершить сессию на любом устройстве (право на отзыв доступа).
+- При смене пароля — инвалидировать все сессии кроме текущей.
+- Хранить IP и User-Agent для Audit Log.
 
 ---
 
-## 2. GDPR Art.5(2) — Подотчётность
+## 3. GDPR Art.5(2) — Подотчётность
 
 ### Что говорит закон
 
@@ -179,7 +438,7 @@ Settings → Login & Security → Active Sessions (Активные сессии
 
 ---
 
-## 3. Consent History — История согласий
+## 4. Consent History — История согласий
 
 ### Что это
 
@@ -256,7 +515,7 @@ Showing all permissions and agreements you've made.
 
 ---
 
-## 4. Audit Log — Журнал аудита (внутренний)
+## 5. Audit Log — Журнал аудита (внутренний)
 
 ### Что это
 
@@ -291,11 +550,17 @@ CREATE TABLE audit_log (
 |---|---|
 | `login_success` | Успешный вход |
 | `login_failed` | Неудачная попытка входа |
+| `login_2fa_success` | Успешный вход с 2FA |
+| `login_2fa_failed` | Неудачный ввод 2FA-кода |
 | `2fa_enabled` | Включение двухфакторки |
 | `2fa_disabled` | Отключение двухфакторки |
+| `2fa_method_changed` | Смена метода 2FA |
 | `password_changed` | Изменение пароля |
+| `password_reset_requested` | Запрос сброса пароля |
 | `email_changed` | Изменение email |
 | `phone_changed` | Изменение телефона |
+| `oauth_provider_connected` | Подключён Google/Apple/Facebook |
+| `oauth_provider_disconnected` | Отключён Google/Apple/Facebook |
 | `profile_updated` | Изменение данных профиля |
 | `data_export_requested` | Запрос экспорта данных |
 | `data_export_completed` | Данные экспортированы |
@@ -304,6 +569,7 @@ CREATE TABLE audit_log (
 | `admin_access` | Администратор просмотрел/изменил данные пользователя |
 | `consent_granted` | Пользователь дал согласие (ссылка на consent_log) |
 | `consent_withdrawn` | Пользователь отозвал согласие |
+| `session_created` | Сессия создана (вход) |
 | `session_terminated` | Сессия завершена (пользователем или системой) |
 | `deindex_requested` | Запрос на де-индексацию в поисковиках (GDPR Art.17(2)) |
 
@@ -312,7 +578,7 @@ CREATE TABLE audit_log (
 
 ---
 
-## 5. DPO Contact
+## 6. DPO Contact
 
 > Подробное ТЗ для кнопки Contact DPO — в [AccessibilitySpec.md §4](AccessibilitySpec.md#4-кнопка-contact-dpo)
 
@@ -324,29 +590,36 @@ CREATE TABLE audit_log (
 
 ---
 
-## 6. Как выглядит в приложении
+## 7. Полная структура экрана
 
-### Settings → Login & Security
+**Settings → Login & Security**
 
 ```
 🔒 LOGIN & SECURITY
 
-Account
-  Email: user@example.com                [Change]
-  Password: ••••••••••                   [Change]
+─── Аккаунт ──────────────────────────────────────────
+  Email: user@example.com                [Изменить →]
+  Пароль: ••••••••••                     [Изменить →]
+  (скрыто для OAuth-аккаунтов без пароля)
 
-Security
-  Two-Factor Authentication (2FA)        [OFF → Enable]
-  Active Sessions (3 devices)            [Manage →]
-  Login History                          [View →]
+─── Безопасность ─────────────────────────────────────
+  Двухфакторная аутентификация           [ВЫКЛ → Включить]
+  (только для email-аккаунтов)
 
-Third-Party Login
-  Connected with Google                  [Disconnect]
-  Connected with Apple                   [Disconnect]
-  Facebook                               [Connect]
+  Активные сессии (3 устройства)         [Управлять →]
+  История входов                         [Просмотреть →]
+
+─── Связанные аккаунты ───────────────────────────────
+  🍎 Apple       [Подключено]   [Отключить]   🔴 обязательно
+  🔵 Google      [Подключить]
+  🔷 Facebook    [Подключить]
+
+─────────────────────────────────────────────────────
+  ⚠️ Для отключения последнего способа входа
+     сначала установите пароль.
 ```
 
-### Settings → Your Data
+**Settings → Your Data**
 
 ```
 📊 YOUR DATA
@@ -358,7 +631,7 @@ Privacy Controls
 Data Access
   Download Your Data                     [Request Export →]
   Consent History                        [View →]
-  
+
 Account
   Delete Account                         [→]
 
@@ -367,47 +640,38 @@ Legal
   Privacy Policy                         [Read →]
 ```
 
-### Settings → Login & Security → Active Sessions
+---
 
-```
-📱 ACTIVE SESSIONS
+## 8. Чеклист для разработчика
 
-✅ Current Device
-iPhone 14 Pro · iOS 17.2
-Moscow, Russia · March 18, 2026, 14:23
+### 🔴 Sprint 1 — БЛОКЕРЫ ПУБЛИКАЦИИ (обязательно до App Store / Google Play)
 
-📱 iPhone 12 Mini
-Last active: Feb 28, 2026
-Berlin, Germany
-[Sign Out This Device]
+**UI (App Store §5.1.1(v)):**
+- [ ] Кнопка **[Отключить / Disconnect]** для каждого подключённого OAuth-провайдера (Apple/Google/Facebook)
+- [ ] Защита от orphan: если последний способ входа — запросить установку пароля перед отключением
+- [ ] **In-app путь удаления аккаунта** — Settings → Account → Account Management → Delete Account *(см. AccountDeletionSpec.md)*
 
-💻 MacBook Pro (Chrome)
-Last active: Mar 10, 2026
-Tel Aviv, Israel
-[Sign Out This Device]
-
-━━━━━━━━━━━━━━━━━
-[Sign Out All Other Devices]
-```
+**Google Play (с авг. 2024):**
+- [ ] URL веб-страницы `bestme.app/account/delete` указан в Google Play Console → App Content → Data deletion *(см. AccountDeletionSpec.md)*
 
 ---
 
-## 7. Чеклист для разработчика
-
-### Sprint 2 — GDPR Art.5 (после получения публикации)
+### 🟡 Sprint 2 — GDPR Art.5 (после получения публикации)
 
 **Backend (обязательно):**
 - [ ] Все API-endpoints только HTTPS, HTTP → redirect 301
-- [ ] TLS 1.2+ на всех серверах
-- [ ] HSTS заголовок настроен
+- [ ] TLS 1.2+ на всех серверах, HSTS заголовок настроен
 - [ ] Пароли хранятся как bcrypt/Argon2id (не MD5/SHA1)
+- [ ] Таблица `auth_providers` создана (Google / Apple / Facebook / email)
 - [ ] Таблица `sessions` создана, refresh tokens ротируются
 - [ ] Таблица `consent_log` создана, все согласия записываются
-- [ ] Таблица `audit_log` создана, 18 типов событий логируются
+- [ ] Таблица `audit_log` создана, события логируются (включая `oauth_provider_connected/disconnected`)
+- [ ] Change Password: подтверждение текущего пароля, инвалидация сессий, уведомление на email
+- [ ] Revoke OAuth-токен при Disconnect
 
 **iOS (обязательно):**
 - [ ] `NSAllowsArbitraryLoads = false` в Info.plist
-- [ ] Certificate Pinning настроен для production
+- [ ] Certificate Pinning для production
 - [ ] Sensitive data не логируются в os_log
 - [ ] Tokens хранятся в Keychain (не UserDefaults)
 
@@ -417,15 +681,17 @@ Tel Aviv, Israel
 - [ ] Sensitive data не логируются в Logcat (ProGuard/R8 убирает logs в release)
 
 **UI (обязательно):**
-- [ ] Экран 2FA: включение/выключение, выбор метода, backup codes
-- [ ] Экран Active Sessions: список устройств, кнопка «Sign out»
+- [ ] Экран Change Password с валидацией (мин. 8 символов, заглавная буква, цифра/спецсимвол)
+- [ ] Экран 2FA: выбор метода (Email OTP / TOTP App / SMS если телефон добавлен), backup codes
+- [ ] Экран Active Sessions: список устройств, кнопка «Завершить сессию», «Завершить все другие»
+- [ ] Экран Login History: список входов/выходов, кнопка «Это не я»
 - [ ] Экран Consent History в Settings → Your Data
 - [ ] Кнопка «Contact DPO» в Help & Support
 
 **Документы (обязательно):**
 - [ ] dpo@bestme.app создан и мониторится
-- [ ] Privacy Policy обновлена: добавлен контакт DPO (GDPR Art.13(1)(b))
-- [ ] Retention Policy задокументирована (сколько хранятся какие данные)
+- [ ] Privacy Policy обновлена: контакт DPO (GDPR Art.13(1)(b))
+- [ ] Retention Policy задокументирована
 
 ---
 
@@ -435,39 +701,13 @@ Tel Aviv, Israel
 
 | Компонент | Нужен? | Почему |
 |---|---|---|
-| **Веб-страница** `bestme.app/account/delete` | ✅ **Обязательно** | Google Play Developer Policy (с авг. 2024) **явно требует** URL веб-страницы в поле «App Content → Data deletion» в Google Play Console. Без этого URL нельзя опубликовать приложение. |
-| **In-app путь** Settings → Account → Account Management → Delete Account | ✅ **Обязательно** | App Store §5.1.1(v) требует, чтобы удаление было доступно из самого приложения. Google Play также требует in-app путь. |
-| Оба вместе | ✅ **Да** | Это НЕ замена друг друга. Нужны ОБА. |
+| **Веб-страница** `bestme.app/account/delete` | ✅ **Обязательно** | Google Play Developer Policy (с авг. 2024) **явно требует** URL веб-страницы в Google Play Console → App Content → Data deletion. Без URL нельзя опубликовать. |
+| **In-app путь** Settings → Account → Account Management → Delete Account | ✅ **Обязательно** | App Store §5.1.1(v) требует in-app путь. Google Play также. |
+| Оба вместе | ✅ **Да** | НЕ замена друг друга. Нужны ОБА. |
 
-**Что должна содержать веб-страница `/account/delete`:**
-```
-Страница: bestme.app/account/delete
-
-Заголовок: Delete Your BestMe Account
-
-Описание: "To delete your account, please enter your email address. 
-We will send you a confirmation link."
-
-Поле: Email address [____________]
-Кнопка: [Send Deletion Request]
-
-Ниже:
-"You can also delete your account directly in the app:
-Settings → Account → Account Management → Delete Account"
-
-"Data Deletion Timeline:
-• Your profile and posts will be removed immediately
-• Personal data will be deleted within 30 days
-• Backup data will be deleted within 90 days
-• See our Privacy Policy for details"
-```
-
-**Backend для веб-формы:**
-- Получить email → найти аккаунт → отправить email с confirmation link.
-- Confirmation link → активировать процесс удаления (тот же что и in-app).
-- Если аккаунта нет → показать «If an account exists, you'll receive an email» (не раскрывать, есть ли аккаунт).
+> 📎 Подробная спецификация веб-формы удаления — в [AccountDeletionSpec.md](AccountDeletionSpec.md).
 
 ---
 
-*GDPRArt5SecuritySpec.md v1.0 · Bestme · март 2026*  
+*GDPRArt5SecuritySpec.md v1.2 · Bestme · март 2026*  
 *Смежные документы: [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md), [AccessibilitySpec.md](AccessibilitySpec.md)*

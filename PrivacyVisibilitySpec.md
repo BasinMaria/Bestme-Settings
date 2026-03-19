@@ -412,5 +412,5 @@
 
 ---
 
-*PrivacyVisibilitySpec.md v2.4 · Bestme · март 2026*  
+*PrivacyVisibilitySpec.md v2.5 · Bestme · март 2026*  
 *Смежные документы: [AccountSpec.md](AccountSpec.md), [SettingsOverview.md](SettingsOverview.md), [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
