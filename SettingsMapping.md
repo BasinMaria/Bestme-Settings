@@ -116,8 +116,8 @@
 | Media gallery | `media_gallery_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 — биометрия, дети |
 | Friends list | `friends_list_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ Mutual friends ОБЯЗАНЫ быть видимы |
 | Interest categories | `categories_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
-| Subscribed blogs | `subscribed_blogs_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
-| Subscribed communities | `subscribed_communities_visibility` | **FRIENDS_ONLY** ✅ | Public / Friends / Private | ⚖️ GDPR Art.9 |
+| Subscribed blogs | `subscribed_blogs_visibility` | **EVERYONE** ✅ | Public / Friends / Private | 💡 Публичные подписки — дефолт Everyone (как Twitter/X followers) |
+| Subscribed communities | `subscribed_communities_visibility` | **EVERYONE** ✅ | Public / Friends / Private | 💡 Публичные сообщества — дефолт Everyone |
 
 ### 📌 Discoverability (НОВЫЙ — требуется по GDPR)
 
