@@ -20,9 +20,12 @@
    - [2.3 Contact Info Privacy](#23-contact-info-privacy)
    - [2.4 Content Visibility](#24-content-visibility)
    - [2.5 Interactions](#25-interactions)
-3. [Карта пропущенных полей](#3-карта-пропущенных-полей)
-4. [Вопрос: куда поместить Subscribed Communities?](#4-subscribed-communities)
-5. [Итоговая ASCII-структура](#5-ascii-структура)
+   - [2.6 Discoverability](#26-discoverability)
+   - [2.7 Blocked Accounts](#27-blocked-accounts)
+3. [🔴 Обязательно для публикации](#3-обязательно-для-публикации)
+4. [Карта пропущенных полей](#4-карта-пропущенных-полей)
+5. [Вопрос: куда поместить Subscribed Communities?](#5-subscribed-communities)
+6. [Итоговая ASCII-структура](#6-ascii-структура)
 
 ---
 
@@ -112,9 +115,11 @@
 | **Private account** | `account_private` | Toggle | `false` (открытый) | ⚖️ | GDPR Art.25 — открытый профиль законен для 18+ |
 | **Profile in search results** | `profile_searchable` | Toggle | `true` | ⚖️ | GDPR Art.17 — право на забвение (opt-out доступен) |
 | **SEO indexing** | `seo_indexable` | Toggle | **`false`** | ⚖️ | **GDPR Art.25 — СТРОГО OFF, нельзя делать ON по умолчанию** |
+| **Show relationship status** | `relationship_visible` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
 
 > ✅ `account_private = false` — **законно** для 18+, открытый профиль соответствует GDPR Art.25 (подтверждено CNIL, ICO)  
-> ❌ `seo_indexable` нельзя делать `true` по умолчанию — штраф до 10 млн € (GDPR Art.25)
+> ❌ `seo_indexable` нельзя делать `true` по умолчанию — штраф до 10 млн € (GDPR Art.25)  
+> 💬 **`relationship_visible`** — статус отношений («В отношениях», «Женат/замужем» и т.д.). Не является обязательным полем; по умолчанию видят только друзья. Пользователь может скрыть полностью (`Only me`).
 
 ---
 
@@ -171,6 +176,7 @@
 | **Friends list visibility** | `friends_list_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
 | **Categories visibility** | `categories_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Категории профиля — публичная информация |
 | **Subscribed blogs visibility** | `subscribed_blogs_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Subscribed communities** | `subscribed_communities_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 | **Discussions visibility** | `discussions_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
 
 > ℹ️ **Categories (`categories_visibility`):** категория профиля (Creator, Artist и т.д.) — публичная
@@ -188,6 +194,7 @@
 | **Who can tag me** | `who_can_tag` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | GDPR Art.25 — тег = обработка данных |
 | **Tag approval required** | `tag_approval_required` | Toggle | `true` | ⚖️ | GDPR Art.25 (Privacy by Default) |
 | **Who can comment my posts** | `who_can_comment` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | DSA Art.14 |
+| **Who can react to my posts** | `who_can_react` | ENUM: Everyone / Friends / No one | `EVERYONE` | 💡 | — |
 | **Who can share my posts** | `share_permission` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | GDPR Art.25 — шеринг = распространение данных |
 | **Who can send friend requests** | `friend_request_permission` | ENUM: Everyone / Friends of Friends / No one | `EVERYONE` | 💡 | — |
 | **Activity status (online)** | `online_status_visible` | Toggle | `true` → только друзья | ⚖️ | GDPR Art.25 · ePrivacy |
@@ -207,7 +214,81 @@
 
 ---
 
-## 3. Карта пропущенных полей
+### 2.6 Discoverability
+
+**Путь:** Settings → Privacy & Visibility → Discoverability
+
+> Управляет тем, **как алгоритм и поиск находят профиль** пользователя.  
+> `profile_searchable` и `seo_indexable` задаются также в §2.1 Account Privacy —  
+> здесь они отображаются в едином «блоке обнаружимости» для удобства пользователя.
+
+| Настройка | variable_name | Тип | Default | ⚖️ | Закон |
+|---|---|---|---|---|---|
+| **Profile in search results** | `profile_searchable` | Toggle | `true` | ⚖️ | GDPR Art.17 — право на забвение (opt-out доступен) |
+| **SEO indexing (Google, Yandex, Bing)** | `seo_indexable` | Toggle | **`false`** | ⚖️ | **GDPR Art.25 — ОБЯЗАТЕЛЬНО OFF, нельзя менять на ON** |
+| **Opt-out from recommendations** | `recommendations_opt_out` | Toggle | `false` | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
+| **Why am I recommended this?** | `show_recommendation_info` | Toggle | `true` | ⚖️ | DSA Art.27 (ЕС) — алгоритмическая прозрачность |
+
+> 💬 **`recommendations_opt_out`** — кнопка/тумблер «Не использовать мой профиль для алгоритмических рекомендаций». По GDPR Art.22 и DSA Art.29 пользователь имеет право отказаться от полностью автоматизированных решений, влияющих на него. По умолчанию `false` = участвует в рекомендациях (стандартная практика). Пользователь может отключить.  
+> 💬 **`show_recommendation_info`** — кнопка «Почему мне рекомендуют этого пользователя / этот контент?». По DSA Art.27 (ЕС) это **обязательно** для крупных платформ. Для стартапа: включить заранее, чтобы не переделывать при росте. По умолчанию `true`.  
+> ⚠️ **`seo_indexable`:** СТРОГО `false` — штраф до 10 млн € при нарушении GDPR Art.25. Никогда не включать по умолчанию.
+
+---
+
+### 2.7 Blocked Accounts
+
+**Путь:** Settings → Privacy & Visibility → Blocked Accounts
+
+> Управляет списком заблокированных и ограниченных пользователей.  
+> **Не требует переменных на бэкенде в этом разделе** — это UI для управления существующей таблицей `blocks`.
+
+| Элемент UI | Тип | ⚖️ | Закон |
+|---|---|---|---|
+| **Список заблокированных пользователей** | Список (Blocked users list) | ⚖️ | GDPR — защита от преследования |
+| **Разблокировать пользователя** | Действие (Unblock) | ⚖️ | — |
+| **Заблокировать пользователя** | Действие (Block, через профиль) | ⚖️ | — |
+| **Ограниченный список (Restricted)** | Список (видят публичный контент, но не Stories, не личные посты) | 💡 | — |
+
+> 💬 **Block vs Restrict:**  
+> — **Block** = полная блокировка: человек не видит профиль, не может написать, не появляется в поиске.  
+> — **Restrict** = мягкое ограничение: человек видит публичные посты, но его комментарии видны только ему самому (незаметно для него). Как в Instagram. Полезно против троллей без эскалации конфликта.  
+> ⚠️ GDPR требует, чтобы заблокированный пользователь **не мог определить, что его заблокировали** (нейтральный ответ системы — "профиль не найден"). Это снижает риск преследования (harassment).
+
+---
+
+## 3. Обязательно для публикации
+
+> 🔴 **Этот раздел для тебя** — здесь собраны ТОЛЬКО те настройки и поведения, которые **блокируют App Store / Google Play** или грозят **крупным штрафом GDPR**. Всё остальное — рекомендации.
+
+### 🔴 БЛОКЕРЫ App Store + Google Play
+
+| # | Что обязательно | Где в спеке | Почему |
+|---|---|---|---|
+| 1 | **Кнопка «Delete account»** доступна прямо из Settings | §1.4 Account Management | App Store §5.1.1(v) + Google Play — обязательно иначе отказ в публикации |
+| 2 | **Веб-форма удаления** `bestme.app/account/delete` (отдельно) | §1.4 + AccountDeletionSpec.md | Google Play — требует веб-форму независимо от in-app |
+| 3 | **`seo_indexable = false` по умолчанию** — нельзя менять | §2.1 + §2.6 | GDPR Art.25 — штраф до 10 млн € |
+| 4 | **Согласие на UGC Terms of Service** при публикации | ProfileSettingsFullSpec.md | Google Play — обязательная acceptance при создании контента |
+| 5 | **ATT (App Tracking Transparency)** prompt на iOS | ProfileSettingsFullSpec.md | App Store §5.1.2 — обязательно перед сбором IDFA |
+| 6 | **Prominent Disclosure** перед запросом разрешений | ProfileSettingsFullSpec.md | App Store + Google Play — объяснить ДО запроса разрешений |
+
+### ⚖️ ОБЯЗАТЕЛЬНЫЕ настройки (без них — нарушение GDPR)
+
+| # | Настройка | variable_name | Дефолт | Закон |
+|---|---|---|---|---|
+| 1 | **`seo_indexable`** | `seo_indexable` | **СТРОГО `false`** | GDPR Art.25 |
+| 2 | **`email_visibility`** | `email_visibility` | **СТРОГО `ONLY_ME`** | GDPR Art.5 |
+| 3 | **`phone_visibility`** | `phone_visibility` | **СТРОГО `ONLY_ME`** | GDPR Art.5 · TCPA |
+| 4 | **`address_visibility`** | `address_visibility` | **СТРОГО `ONLY_ME`** | GDPR Art.9 |
+| 5 | **`birthday_visibility`** | `birthday_visibility` | **`FRIENDS_AGE_ONLY`** (не полная дата) | GDPR Art.9 |
+| 6 | **`tag_approval_required`** | `tag_approval_required` | **`true`** | GDPR Art.25 |
+| 7 | **`online_status_visible`** ON | `online_status_visible` | Видят только **ДРУЗЬЯ** (не все) | ePrivacy |
+| 8 | **`show_recommendation_info`** | `show_recommendation_info` | `true` | DSA Art.27 (ЕС) |
+
+> 💡 Всё, что помечено ⚖️ в таблицах спеки — это закон. Всё, что 💡 — это лучшая практика, но не штраф.
+
+---
+
+## 4. Карта пропущенных полей
 
 Поля, описанные пользователем, которых **не было** в предыдущих спецификациях и которые добавлены в этом документе:
 
@@ -232,10 +313,16 @@
 | Friend request permission | `friend_request_permission` | 🆕 **Новое** | **Отсутствовало** |
 | Last seen | `last_seen_visible` | 🆕 **Новое** | **Отсутствовало** |
 | Read receipts | `read_receipts_visible` | 🆕 **Новое** | **Отсутствовало** |
+| Relationship visible | `relationship_visible` | 🆕 **Новое** | **Отсутствовало** в Account Privacy |
+| Who can react | `who_can_react` | 🆕 **Новое** | **Отсутствовало** в Interactions |
+| Subscribed communities visibility | `subscribed_communities_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility |
+| Recommendations opt-out | `recommendations_opt_out` | 🆕 **Новое** | **Отсутствовало** — новый §2.6 Discoverability |
+| Show recommendation info | `show_recommendation_info` | 🆕 **Новое** | **Отсутствовало** — новый §2.6 Discoverability |
+| Blocked Accounts UI | — | 🆕 **Новое** | **Отсутствовал** целый раздел §2.7 |
 
 ---
 
-## 4. Subscribed Communities
+## 5. Subscribed Communities
 
 ### Вопрос: куда поместить «Подписанные сообщества»?
 
@@ -275,7 +362,7 @@ Settings → Account → Account Management
 
 ---
 
-## 5. ASCII-структура
+## 6. ASCII-структура
 
 Полная структура двух разделов с учётом всех уточнений:
 
@@ -319,7 +406,8 @@ Settings → Account → Account Management
     ├── Account Privacy  ⚖️
     │   ├── Private account         [OFF — открытый]  ⚖️ GDPR Art.25
     │   ├── Profile in search       [ON]  ⚖️ GDPR Art.17
-    │   └── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
+    │   ├── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
+    │   └── Relationship status     [FRIENDS]  💡
     │
     ├── Profile Visibility  💡
     │   ├── Full name               [EVERYONE]
@@ -347,21 +435,35 @@ Settings → Account → Account Management
     │   ├── Friends list            [FRIENDS]
     │   ├── Categories              [EVERYONE]
     │   ├── Subscribed blogs        [FRIENDS]
+    │   ├── Subscribed communities  [EVERYONE]
     │   └── Discussions             [FRIENDS]
     │
-    └── Interactions  ⚖️ DSA Art.14 · GDPR Art.25 · ePrivacy
-        ├── Who can message         [FRIENDS]  ⚖️ DSA Art.14
-        ├── Who can tag me          [FRIENDS]  ⚖️ GDPR Art.25
-        ├── Tag approval required   [ON]  ⚖️ GDPR Art.25
-        ├── Who can comment         [FRIENDS]  ⚖️ DSA Art.14
-        ├── Who can share my posts  [FRIENDS]  ⚖️ GDPR Art.25
-        ├── Who can send friend req [EVERYONE]
-        ├── Activity status (online)[ON = только друзья]  ⚖️ ePrivacy
-        ├── Last seen               [FRIENDS]  ⚖️ GDPR Art.25
-        └── Read receipts           [ON]
+    ├── Interactions  ⚖️ DSA Art.14 · GDPR Art.25 · ePrivacy
+    │   ├── Who can message         [FRIENDS]  ⚖️ DSA Art.14
+    │   ├── Who can tag me          [FRIENDS]  ⚖️ GDPR Art.25
+    │   ├── Tag approval required   [ON]  ⚖️ GDPR Art.25
+    │   ├── Who can comment         [FRIENDS]  ⚖️ DSA Art.14
+    │   ├── Who can react           [EVERYONE]
+    │   ├── Who can share my posts  [FRIENDS]  ⚖️ GDPR Art.25
+    │   ├── Who can send friend req [EVERYONE]
+    │   ├── Activity status (online)[ON = только друзья]  ⚖️ ePrivacy
+    │   ├── Last seen               [FRIENDS]  ⚖️ GDPR Art.25
+    │   └── Read receipts           [ON]
+    │
+    ├── Discoverability  ⚖️ GDPR Art.22 · DSA Art.27 · DSA Art.29
+    │   ├── Profile in search       [ON]  ⚖️ GDPR Art.17
+    │   ├── SEO indexing            [OFF строго]  ⚖️ GDPR Art.25
+    │   ├── Opt-out recommendations [OFF]  ⚖️ GDPR Art.22 · DSA Art.29
+    │   └── Why recommended?        [ON]  ⚖️ DSA Art.27
+    │
+    └── Blocked Accounts  ⚖️
+        ├── Blocked users list      ⚖️ GDPR (защита от преследования)
+        ├── Block user (action)     ⚖️
+        ├── Unblock user (action)   ⚖️
+        └── Restricted list         💡
 ```
 
 ---
 
-*PrivacyVisibilitySpec.md v1.0 · Bestme · март 2026*  
+*PrivacyVisibilitySpec.md v2.0 · Bestme · март 2026*  
 *Смежные документы: [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
