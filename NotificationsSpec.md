@@ -21,7 +21,7 @@
 |---|---|---|---|---|---|---|---|
 | `profile_security_login_new_device` | Вход с нового устройства | ✅ 🚫 | ✅ | GDPR (security) | Email, Push, In-app | Sign-in from a new device | Notify when someone signs in to your account from a new device or browser |
 | `profile_security_suspicious_login_attempt` | Попытка входа неуспешная / необычная | ✅ 🚫 | ✅ | GDPR Art.32 | Email, Push | Suspicious sign-in attempt | Notify when an unusual or failed sign-in attempt is detected on your account |
-| `profile_security_password_changed` | Пароль изменён | ✅ 🚫 | ✅ | GDPR | Email, In-app | Password changed | Notify when the password for your account is changed |
+| `profile_security_password_changed` | Пароль изменён | ✅ 🚫 | ✅ | GDPR | Email, In-app | Password changed | Notify when the password for your account is successfully changed. Email includes the date, time and IP address of the change, and a «This wasn't me» action to lock the account |
 | `profile_security_contacts_changed` | Контакты изменены (email, телефон) | ✅ 🚫 | ✅ | GDPR | Email, In-app | Contact details changed | Notify when your email, phone number or other contact details on the account are changed |
 | `profile_security_suspicious_activity` | Подозрительная активность | ✅ 🚫 | ✅ | GDPR | Email, Push | Suspicious activity on account | Notify when unusual logins or other suspicious activity are detected on your account |
 | `profile_data_export_ready` | Файл экспорта данных готов | ✅ 🚫 | ✅ | GDPR Art.15 | Email, In-app | Your data export is ready | Download your personal data file before it expires |
