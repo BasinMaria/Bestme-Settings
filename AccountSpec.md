@@ -1,6 +1,6 @@
 # AccountSpec.md — Спецификация раздела: 1️⃣ ACCOUNT
 
-**Версия:** 1.0 · **Дата:** март 2026  
+**Версия:** 1.1 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик  
 **Правовое основание:** ⚖️ App Store §5.1.1 · Google Play · GDPR Art.17 — управление аккаунтом обязательно  
 **Статус:** 🔴 Часть блокирует публикацию (App Store + Google Play) · ⚖️ GDPR Art.17
@@ -39,7 +39,7 @@
 | **Cover image (обложка)** | `cover_image_url` | Изображение (загрузить / удалить) | ✏️ | 💡 | — |
 | **First name (имя)** | `first_name` | Текст | ❌ **не меняется** после регистрации | ⚖️ | GDPR Art.17 |
 | **Last name (фамилия)** | `last_name` | Текст | ✏️ (добавить если нет) | ⚖️ | GDPR Art.17 |
-| **Date of birth** | `date_of_birth` | Дата | ❌ не меняется | ⚖️ | COPPA · GDPR Art.8 · DSA Art.28 |
+| **Date of birth** | `date_of_birth` | Дата | ❌ **значение не меняется** после регистрации (изменить — только через поддержку) · ✏️ **формат отображения** задаётся отдельно в Privacy & Visibility → `birthday_visibility` | ⚖️ | COPPA · GDPR Art.8 · DSA Art.28 |
 | **Gender** | `gender` | ENUM: Male / Female / Other / Prefer not to say | ✏️ | 💡 | — |
 | **Interests** | `interest_category` | Multi-select (6 категорий — см. ниже) | ✏️ | 💡 | — |
 
@@ -72,6 +72,16 @@
 > ⚠️ **First name не редактируется:** под полем показать подсказку  
 > _«Чтобы изменить имя, напишите в поддержку»_ — с прямой кнопкой «Написать в поддержку».  
 > Стандартная практика Instagram, TikTok — защита от спуфинга.
+
+> ⚠️ **Date of birth — два разных поля, не путать:**
+>
+> | Что | Переменная | Редактируемость | Где |
+> |---|---|---|---|
+> | **Сама дата рождения** (значение) | `date_of_birth` | ❌ **заблокировано** — устанавливается при регистрации, изменить нельзя. Это возрастная верификация (18+). При ошибке — только через поддержку. | Этот экран (User Info) |
+> | **Формат отображения** (как дата видна другим) | `birthday_visibility` | ✏️ **редактируется** — пользователь выбирает: показывать **полную дату** или только **возраст**, и кому (всем / друзьям / только мне / скрыть). | **Privacy & Visibility → §2.2 Profile Visibility** |
+>
+> **Итого:** пользователь не может изменить саму дату, но может настроить, как она отображается — в полном виде (день.месяц.год) или только в виде возраста (например, «28 лет»).  
+> По умолчанию: `birthday_visibility = FRIENDS_AGE_ONLY` — только возраст, только друзьям (GDPR Art.9 — полная дата рождения = чувствительные данные).
 
 ---
 
@@ -157,7 +167,7 @@
     │   ├── Cover image (upload / delete)
     │   ├── First name  [❌ не меняется — «Написать в поддержку»]  ⚖️ GDPR Art.17
     │   ├── Last name   [✏️ добавить если нет]  ⚖️ GDPR Art.17
-    │   ├── Date of birth  ⚖️ COPPA · GDPR Art.8 · DSA Art.28
+    │   ├── Date of birth  [❌ значение заблокировано · ✏️ формат → Privacy §2.2 birthday_visibility]  ⚖️ COPPA · GDPR Art.8
     │   ├── Gender
     │   └── Interests (6 категорий: Sport / Nutrition / Environment /
     │                              Aesthetics & Hygiene / Mental Health / Daily Routine)
@@ -201,14 +211,14 @@
 | # | Настройка | variable_name | Требование | Закон |
 |---|---|---|---|---|
 | 1 | **Email** — обязателен при регистрации | `email` | Поле обязательное | GDPR Art.5 |
-| 2 | **Date of birth** — не редактируется после регистрации | `date_of_birth` | ❌ заблокировать изменение | COPPA · GDPR Art.8 |
+| 2 | **Date of birth** — значение не редактируется после регистрации; формат отображения (`birthday_visibility`) — в Privacy & Visibility | `date_of_birth` · `birthday_visibility` | ❌ заблокировать изменение значения · ✏️ формат — в Privacy §2.2 | COPPA · GDPR Art.8 |
 | 3 | **Phone** — не обязателен, влияет на 2FA | `phone_number` | Поле необязательное | GDPR · TCPA |
 
 ---
 
-## Changelog v1.0
+## Changelog v1.0 → v1.1
 
-> 📋 **Для разработчиков:** это все изменения относительно предыдущей версии (PrivacyVisibilitySpec.md v2.1 §1).
+> 📋 **Для разработчиков:** все изменения относительно предыдущей версии (PrivacyVisibilitySpec.md v2.1 §1).
 
 ---
 
@@ -222,8 +232,9 @@
 | 4 | **Убран `profile_category` (Creator/Artist/Business) из Profile Info** | §1.2 Profile Info | — | Поле было некорректно — в BestMe нет деления на «Creator / Artist». Категории = 6 wellness-направлений. Удалено во избежание путаницы. |
 | 5 | **«Business link» в Contact Info разъяснён** | §1.3 Contact Info | "Business link" / "Website / Business page" | Пользователи путали «Business link» (внешний URL) с «Switch to Business profile» (смена режима аккаунта). Добавлена таблица-сравнение. Рекомендовано переименовать в «Website / Business page». |
 | 6 | **Документ разделён** | AccountSpec.md (этот файл) | — | Ранее Account + Privacy & Visibility были в одном файле (PrivacyVisibilitySpec.md). Разделены в отдельные документы для ясности ТЗ. |
+| 7 | **`date_of_birth` разъяснён** (v1.1) | §1.1 User Info + §Changelog | "Date of birth" | Уточнено различие: **значение** даты рождения (`date_of_birth`) — заблокировано после регистрации (для возрастной верификации 18+, COPPA/GDPR Art.8). **Формат отображения** (`birthday_visibility`) — редактируется отдельно в Privacy & Visibility §2.2: выбор «показывать полную дату» или «только возраст» (и кому). По умолчанию: `FRIENDS_AGE_ONLY` (GDPR Art.9). |
 
 ---
 
-*AccountSpec.md v1.0 · Bestme · март 2026*  
+*AccountSpec.md v1.1 · Bestme · март 2026*  
 *Смежные документы: [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md), [SettingsOverview.md](SettingsOverview.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
