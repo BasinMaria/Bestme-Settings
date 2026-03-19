@@ -1,6 +1,6 @@
 # PrivacyVisibilitySpec.md — Спецификация раздела: 2️⃣ PRIVACY & VISIBILITY
 
-**Версия:** 2.3 · **Дата:** март 2026  
+**Версия:** 2.4 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик  
 **Правовое основание:** ⚖️ GDPR Art.25 (Privacy by Default) · DSA Art.14 · ePrivacy · Israel PPL  
 **Статус:** 🔴 Часть блокирует публикацию · ⚖️ GDPR Art.25
@@ -25,7 +25,7 @@
 7. [2.7 Safety & Blocked Accounts](#27-safety--blocked-accounts)
 8. [🔴 Обязательно для публикации](#обязательно-для-публикации)
 9. [ASCII-структура раздела](#ascii-структура)
-10. [Что добавлено в v2.3](#changelog-v23)
+10. [Что добавлено в v2.4](#changelog-v24)
 
 ---
 
@@ -137,8 +137,14 @@
 > ℹ️ **Friends list (`friends_list_visibility`)** — дефолт `FRIENDS` оставлен: список друзей раскрывает
 > социальный граф пользователя, это более чувствительные данные.  
 > ℹ️ **Saved content** — список сохранённых материалов доступен пользователю **только в его личном меню**
-> и никогда не показывается другим пользователям. Настройка видимости не нужна: поле `saved_content_visibility`
-> **удалено** из спецификации.
+> (Menu → Saved) и никогда не показывается другим пользователям. Настройка видимости не нужна: поле
+> `saved_content_visibility` **удалено** из спецификации. Дублировать ссылку на «Saved» в настройках не нужно —
+> доступ через меню является достаточным и стандартным паттерном (как в Instagram, TikTok).
+>
+> ℹ️ **UX-правило: меню vs настройки.** Настройки §2.4 управляют тем, **кто из других пользователей может видеть**
+> тот или иной раздел на публичном профиле (например, список обсуждений или челленджей пользователя). Сам
+> пользователь всегда видит свои собственные списки через навигацию приложения (Menu / Profile). Добавлять в
+> Settings → Privacy & Visibility ссылку на личные разделы меню не требуется.
 
 ---
 
@@ -296,10 +302,9 @@
     │   ├── Subscribed blogs        [EVERYONE]
     │   ├── Subscribed communities  [EVERYONE]
     │   ├── Discussions             [EVERYONE]
-    │   ├── Activity feed           [FRIENDS]
-    │   ├── Likes & reactions       [FRIENDS]
-    │   ├── Challenges              [FRIENDS]
-    │   └── Saved content           [ONLY_ME]
+    │   ├── Activity feed           [EVERYONE]
+    │   ├── Likes & reactions       [EVERYONE]
+    │   └── Challenges              [EVERYONE]
     │
     ├── Interactions  ⚖️ DSA Art.14 · GDPR Art.25 · ePrivacy
     │   ├── Who can message         [FRIENDS]  ⚖️ DSA Art.14
@@ -331,7 +336,23 @@
 
 ---
 
-## Changelog v2.3
+## Changelog v2.4
+
+<a name="changelog-v24"></a>
+
+> 📋 **Для разработчиков:** изменения относительно v2.3.
+
+### ✅ ЧТО ДОБАВЛЕНО / ИЗМЕНЕНО в v2.4
+
+| # | Что | Куда | Причина |
+|---|---|---|---|
+| 1 | **ASCII-дерево исправлено** — `activity_visibility`, `likes_visibility`, `challenges_visibility` обновлены с `[FRIENDS]` → `[EVERYONE]` | §8 Architecture tree | Дерево отставало от таблицы §2.4 (регрессия в v2.3) |
+| 2 | **`Saved content [ONLY_ME]`** удалено из ASCII-дерева | §8 Architecture tree | Поле `saved_content_visibility` было удалено из таблицы в v2.3, но строка осталась в дереве |
+| 3 | **UX-примечание «меню vs настройки»** добавлено | §2.4 примечания | Поясняет: Settings §2.4 = кто *другие* видят на профиле; Menu → Saved/Discussions/Challenges = личный доступ самого пользователя; дублировать ссылки на личные разделы в настройках не нужно |
+
+---
+
+
 
 <a name="changelog-v23"></a>
 
@@ -375,5 +396,5 @@
 
 ---
 
-*PrivacyVisibilitySpec.md v2.3 · Bestme · март 2026*  
+*PrivacyVisibilitySpec.md v2.4 · Bestme · март 2026*  
 *Смежные документы: [AccountSpec.md](AccountSpec.md), [SettingsOverview.md](SettingsOverview.md), [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
