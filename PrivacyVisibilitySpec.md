@@ -1,6 +1,6 @@
 # PrivacyVisibilitySpec.md — Полная спецификация: Account + Privacy & Visibility
 
-**Версия:** 1.0 · **Дата:** март 2026  
+**Версия:** 2.1 · **Дата:** март 2026  
 **Кому:** Дизайнер, iOS-разработчик, Android-разработчик, Backend-разработчик  
 **Статус:** 🔴 Часть блокирует публикацию (App Store + Google Play) · 🟡 Часть критична для GDPR
 
@@ -21,11 +21,12 @@
    - [2.4 Content Visibility](#24-content-visibility)
    - [2.5 Interactions](#25-interactions)
    - [2.6 Discoverability](#26-discoverability)
-   - [2.7 Blocked Accounts](#27-blocked-accounts)
+   - [2.7 Safety & Blocked Accounts](#27-safety--blocked-accounts)
 3. [🔴 Обязательно для публикации](#3-обязательно-для-публикации)
 4. [Карта пропущенных полей](#4-карта-пропущенных-полей)
 5. [Вопрос: куда поместить Subscribed Communities?](#5-subscribed-communities)
 6. [Итоговая ASCII-структура](#6-ascii-структура)
+7. [Что добавлено в v2.1 — сводка для разработчиков](#7-changelog-v21)
 
 ---
 
@@ -175,12 +176,20 @@
 | **Media gallery visibility** | `gallery_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | ⚖️ | GDPR Art.25 |
 | **Friends list visibility** | `friends_list_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
 | **Categories visibility** | `categories_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | Категории профиля — публичная информация |
-| **Subscribed blogs visibility** | `subscribed_blogs_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Subscribed blogs visibility** | `subscribed_blogs_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
 | **Subscribed communities** | `subscribed_communities_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
-| **Discussions visibility** | `discussions_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Discussions visibility** | `discussions_visibility` | ENUM: Everyone / Friends / Only me | `EVERYONE` | 💡 | — |
+| **Activity feed visibility** | `activity_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Likes & reactions visibility** | `likes_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Challenges visibility** | `challenges_visibility` | ENUM: Everyone / Friends / Only me | `FRIENDS` | 💡 | — |
+| **Saved content visibility** | `saved_content_visibility` | ENUM: Only me / Friends | `ONLY_ME` | 💡 | Сохранённые материалы — приватны по умолчанию |
 
 > ℹ️ **Categories (`categories_visibility`):** категория профиля (Creator, Artist и т.д.) — публичная
-> информация, аналог "профессия" в LinkedIn. Default `EVERYONE` допустим.
+> информация, аналог "профессия" в LinkedIn. Default `EVERYONE` допустим.  
+> ℹ️ **Subscribed blogs / Subscribed communities / Discussions** — публичный контент (подписки, публичные дискуссии),
+> поэтому дефолт `EVERYONE` допустим по GDPR Art.25 (публичное взаимодействие осознанно).  
+> ℹ️ **Activity feed / Likes / Challenges** — более личные данные; дефолт `FRIENDS` соответствует Privacy by Default.  
+> ℹ️ **Saved content (`saved_content_visibility`)** — закладки/сохранения. По умолчанию видит только сам пользователь. Вариант `Friends` опционален (как Pinterest «Shared boards»), но `ONLY_ME` — безопаснее.
 
 ---
 
@@ -200,6 +209,7 @@
 | **Activity status (online)** | `online_status_visible` | Toggle | `true` → только друзья | ⚖️ | GDPR Art.25 · ePrivacy |
 | **Last seen** | `last_seen_visible` | ENUM: Everyone / Friends / No one | `FRIENDS` | ⚖️ | GDPR Art.25 · ePrivacy — метаданные активности |
 | **Read receipts** | `read_receipts_visible` | Toggle | `true` | 💡 | — |
+| **Comment moderation** | `comment_moderation` | Toggle | `false` (OFF) | 💡 | — |
 
 > 💬 **Activity status (online) — `online_status_visible`**  
 > Зелёная точка (или надпись «В сети») рядом с аватаром пользователя, которая показывает, что человек **прямо сейчас** открыл приложение. Как в WhatsApp или Instagram Stories — ты видишь, что друг онлайн, и можешь написать. Если выключить — никто не увидит, когда ты в приложении.  
@@ -211,6 +221,9 @@
 
 > ⚠️ **`last_seen_visible`:** Default `FRIENDS` (не `EVERYONE`) — по GDPR Art.25 данные о времени активности = персональные данные.  
 > ⚠️ **`share_permission`:** кто может делиться твоими постами вовне. Default `FRIENDS` — Privacy by Default (GDPR Art.25). Пользователь может ослабить до `EVERYONE`.
+
+> 💬 **Comment moderation — `comment_moderation`**  
+> Автоматическая фильтрация оскорбительных комментариев под постами пользователя (как в Instagram — «Hidden words»). По умолчанию `false` (OFF) — пользователь сам решает. Рекомендуется предложить заготовленный список стоп-слов при включении.
 
 ---
 
@@ -235,24 +248,33 @@
 
 ---
 
-### 2.7 Blocked Accounts
+### 2.7 Safety & Blocked Accounts
 
-**Путь:** Settings → Privacy & Visibility → Blocked Accounts
+**Путь:** Settings → Privacy & Visibility → Safety & Blocked Accounts
 
-> Управляет списком заблокированных и ограниченных пользователей.  
-> **Не требует переменных на бэкенде в этом разделе** — это UI для управления существующей таблицей `blocks`.
+> Управляет списком заблокированных / ограниченных пользователей, а также жалобами на контент и пользователей.  
+> **Не требует переменных на бэкенде в этом разделе** — это UI для управления существующими таблицами `blocks` и `reports`.
 
 | Элемент UI | Тип | ⚖️ | Закон |
 |---|---|---|---|
-| **Список заблокированных пользователей** | Список (Blocked users list) | ⚖️ | GDPR — защита от преследования |
-| **Разблокировать пользователя** | Действие (Unblock) | ⚖️ | — |
-| **Заблокировать пользователя** | Действие (Block, через профиль) | ⚖️ | — |
-| **Ограниченный список (Restricted)** | Список (видят публичный контент, но не Stories, не личные посты) | 💡 | — |
+| **Blocked users list** | Список (заблокированные пользователи) | ⚖️ | GDPR — защита от преследования |
+| **Unblock user** | Действие (разблокировать) | ⚖️ | — |
+| **Block user** | Действие (заблокировать, через профиль) | ⚖️ | — |
+| **Restricted list** | Список (мягкое ограничение — видят публичный контент, но не личные посты) | 💡 | — |
+| **Report user** | Действие (пожаловаться на пользователя) | ⚖️ | **DSA Art.16 · DSA Art.14** — механизм уведомления и принятия мер |
+| **Report content** | Действие (пожаловаться на контент: пост, комментарий, фото) | ⚖️ | **DSA Art.16** — обязателен для платформ, работающих в ЕС |
 
 > 💬 **Block vs Restrict:**  
 > — **Block** = полная блокировка: человек не видит профиль, не может написать, не появляется в поиске.  
 > — **Restrict** = мягкое ограничение: человек видит публичные посты, но его комментарии видны только ему самому (незаметно для него). Как в Instagram. Полезно против троллей без эскалации конфликта.  
 > ⚠️ GDPR требует, чтобы заблокированный пользователь **не мог определить, что его заблокировали** (нейтральный ответ системы — "профиль не найден"). Это снижает риск преследования (harassment).
+
+> 💬 **Report user / Report content — обязательно для публикации в ЕС:**  
+> По **DSA Art.16** (Digital Services Act) любая платформа, доступная в ЕС, **обязана** предоставить механизм жалоб на незаконный контент и пользователей. Кнопка «Report» должна быть доступна:  
+> 1. На странице профиля любого пользователя (три точки → Report)  
+> 2. Под каждым постом, комментарием, фото (три точки → Report)  
+> 3. В этом разделе — для жалоб на уже заблокированных пользователей  
+> ⚠️ **Без механизма жалоб — нарушение DSA, недопустимо при публикации в App Store (EU) и Google Play (EU).**
 
 ---
 
@@ -270,6 +292,7 @@
 | 4 | **Согласие на UGC Terms of Service** при публикации | ProfileSettingsFullSpec.md | Google Play — обязательная acceptance при создании контента |
 | 5 | **ATT (App Tracking Transparency)** prompt на iOS | ProfileSettingsFullSpec.md | App Store §5.1.2 — обязательно перед сбором IDFA |
 | 6 | **Prominent Disclosure** перед запросом разрешений | ProfileSettingsFullSpec.md | App Store + Google Play — объяснить ДО запроса разрешений |
+| 7 | **Механизм жалоб (Report user / Report content)** доступен на каждом профиле и контенте | §2.7 | **DSA Art.16** — обязателен для ЕС; без него — нарушение DSA |
 
 ### ⚖️ ОБЯЗАТЕЛЬНЫЕ настройки (без них — нарушение GDPR)
 
@@ -319,6 +342,13 @@
 | Recommendations opt-out | `recommendations_opt_out` | 🆕 **Новое** | **Отсутствовало** — новый §2.6 Discoverability |
 | Show recommendation info | `show_recommendation_info` | 🆕 **Новое** | **Отсутствовало** — новый §2.6 Discoverability |
 | Blocked Accounts UI | — | 🆕 **Новое** | **Отсутствовал** целый раздел §2.7 |
+| Activity feed visibility | `activity_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility §2.4 |
+| Likes & reactions visibility | `likes_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility §2.4 |
+| Challenges visibility | `challenges_visibility` | 🆕 **Новое** | **Отсутствовало** в Content Visibility §2.4 |
+| Saved content visibility | `saved_content_visibility` | 🆕 **Новое** | **Отсутствовало** — функция «сохранить контент» требует настройки видимости |
+| Comment moderation | `comment_moderation` | 🆕 **Новое** | **Отсутствовало** в Interactions §2.5 |
+| Report user | — (действие) | 🆕 **Новое** | **Отсутствовало** в §2.7 — обязательно DSA Art.16 |
+| Report content | — (действие) | 🆕 **Новое** | **Отсутствовало** в §2.7 — обязательно DSA Art.16 |
 
 ---
 
@@ -434,9 +464,13 @@ Settings → Account → Account Management
     │   ├── Media gallery           [FRIENDS]  ⚖️ GDPR Art.25
     │   ├── Friends list            [FRIENDS]
     │   ├── Categories              [EVERYONE]
-    │   ├── Subscribed blogs        [FRIENDS]
+    │   ├── Subscribed blogs        [EVERYONE]
     │   ├── Subscribed communities  [EVERYONE]
-    │   └── Discussions             [FRIENDS]
+    │   ├── Discussions             [EVERYONE]
+    │   ├── Activity feed           [FRIENDS]
+    │   ├── Likes & reactions       [FRIENDS]
+    │   ├── Challenges              [FRIENDS]
+    │   └── Saved content           [ONLY_ME]
     │
     ├── Interactions  ⚖️ DSA Art.14 · GDPR Art.25 · ePrivacy
     │   ├── Who can message         [FRIENDS]  ⚖️ DSA Art.14
@@ -448,7 +482,8 @@ Settings → Account → Account Management
     │   ├── Who can send friend req [EVERYONE]
     │   ├── Activity status (online)[ON = только друзья]  ⚖️ ePrivacy
     │   ├── Last seen               [FRIENDS]  ⚖️ GDPR Art.25
-    │   └── Read receipts           [ON]
+    │   ├── Read receipts           [ON]
+    │   └── Comment moderation      [OFF]
     │
     ├── Discoverability  ⚖️ GDPR Art.22 · DSA Art.27 · DSA Art.29
     │   ├── Profile in search       [ON]  ⚖️ GDPR Art.17
@@ -456,14 +491,77 @@ Settings → Account → Account Management
     │   ├── Opt-out recommendations [OFF]  ⚖️ GDPR Art.22 · DSA Art.29
     │   └── Why recommended?        [ON]  ⚖️ DSA Art.27
     │
-    └── Blocked Accounts  ⚖️
+    └── Safety & Blocked Accounts  ⚖️ GDPR · DSA Art.16
         ├── Blocked users list      ⚖️ GDPR (защита от преследования)
         ├── Block user (action)     ⚖️
         ├── Unblock user (action)   ⚖️
-        └── Restricted list         💡
+        ├── Restricted list         💡
+        ├── Report user (action)    ⚖️ DSA Art.16
+        └── Report content (action) ⚖️ DSA Art.16
 ```
 
 ---
 
-*PrivacyVisibilitySpec.md v2.0 · Bestme · март 2026*  
+## 7. Changelog v2.1
+
+> 📋 **Этот раздел — для тебя и разработчиков.** Здесь собрано всё, что добавлено или исправлено по сравнению с v1.0, с указанием: что именно, куда (путь + section), почему (UX-стандарт / закон), и критично ли для публикации.
+
+---
+
+### 🆕 Добавлено в §2.4 Content Visibility
+
+| Что добавлено | variable_name | UI-название (как в соцсетях) | Default | ⚖️/💡 | Закон / Причина |
+|---|---|---|---|---|---|
+| **Видимость ленты активности** | `activity_visibility` | "Activity Feed" | `FRIENDS` | 💡 | Стандарт Instagram/Facebook — у каждого пользователя есть лента его действий (лайки, комментарии). Приватно по умолчанию. |
+| **Видимость лайков и реакций** | `likes_visibility` | "Likes & Reactions" | `FRIENDS` | 💡 | Стандарт — кто видит твои лайки под чужими постами. Default FRIENDS = Privacy by Default. |
+| **Видимость челленджей** | `challenges_visibility` | "Challenges" | `FRIENDS` | 💡 | Специфика платформы BestMe. Личные цели-челленджи — скрыты от чужих глаз по умолчанию. |
+| **Видимость сохранённого контента** | `saved_content_visibility` | "Saved" / "Bookmarks" | `ONLY_ME` | 💡 | В BestMe есть функция «сохранить контент». По умолчанию приватно (как в Instagram — только ты видишь свои сохранённые посты). |
+
+**Исправлены дефолты в §2.4:**
+
+| Что изменено | variable_name | Было | Стало | Причина |
+|---|---|---|---|---|
+| Subscribed blogs visibility | `subscribed_blogs_visibility` | `FRIENDS` | `EVERYONE` | Подписки на блоги — публичное действие (как подписка в Twitter/X). Default EVERYONE логичен. |
+| Discussions visibility | `discussions_visibility` | `FRIENDS` | `EVERYONE` | Публичные дискуссии по категориям = открытый контент. Default EVERYONE стандартен (Reddit, Facebook Groups). |
+
+---
+
+### 🆕 Добавлено в §2.5 Interactions
+
+| Что добавлено | variable_name | UI-название | Default | ⚖️/💡 | Закон / Причина |
+|---|---|---|---|---|---|
+| **Модерация комментариев** | `comment_moderation` | "Comment Moderation" / "Filter offensive comments" | `false` (OFF) | 💡 | Стандарт Instagram («Hidden words»), TikTok. Пользователь включает сам — автофильтр оскорблений. Для публикации не обязателен, но улучшает UX и снижает токсичность. |
+
+---
+
+### 🆕 Добавлено в §2.7 — переименован в «Safety & Blocked Accounts»
+
+| Что добавлено | Тип | UI-название | ⚖️/💡 | Закон / Причина |
+|---|---|---|---|---|
+| **Пожаловаться на пользователя** | Действие | "Report" (на странице профиля: ⋯ → Report) | ⚖️ | **DSA Art.16** — ОБЯЗАТЕЛЬНО для платформ в ЕС. Без кнопки Report — нарушение DSA, возможен отказ в App Store (EU) |
+| **Пожаловаться на контент** | Действие | "Report" (под постом/фото/комментом: ⋯ → Report) | ⚖️ | **DSA Art.16** — ОБЯЗАТЕЛЬНО. Механизм жалоб должен быть на каждом элементе UGC |
+
+> 🔴 **ВАЖНО ДЛЯ ПУБЛИКАЦИИ:** Кнопка **Report** — это не опция, это требование DSA (EU Digital Services Act).  
+> Минимальный flow: пользователь нажимает ⋯ → Report → выбирает категорию (Hate speech / Spam / Nudity / Other) → подтверждает.  
+> Платформа обязана обработать жалобу и уведомить пользователя о результате (DSA Art.17).
+
+---
+
+### 📋 Сводная таблица для разработчика — что нужно добавить в ТЗ
+
+| Приоритет | Что добавить | Путь в приложении | Закон / Почему важно |
+|---|---|---|---|
+| 🔴 **БЛОКЕР** | Кнопка **Report user** на профиле | Profile → ⋯ (три точки) → Report | DSA Art.16 — без этого нельзя публиковаться в ЕС |
+| 🔴 **БЛОКЕР** | Кнопка **Report content** на каждом посте/фото/комменте | Post / Photo / Comment → ⋯ → Report | DSA Art.16 |
+| 🟡 **ВАЖНО** | Настройка **Activity Feed visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default — стандарт соцсетей |
+| 🟡 **ВАЖНО** | Настройка **Likes & Reactions visibility** | Settings → Privacy & Visibility → Content Visibility | Privacy by Default |
+| 🟡 **ВАЖНО** | Настройка **Challenges visibility** | Settings → Privacy & Visibility → Content Visibility | Специфика BestMe |
+| 🟡 **ВАЖНО** | Настройка **Saved content** (Bookmarks) visibility | Settings → Privacy & Visibility → Content Visibility | Bookmarks по умолчанию ONLY_ME |
+| 🟢 **РЕКОМЕНДУЕТСЯ** | Настройка **Comment moderation** | Settings → Privacy & Visibility → Interactions | UX-стандарт (Instagram Hidden words) |
+| 🟢 **ИСПРАВИТЬ** | Дефолт `subscribed_blogs_visibility` = `EVERYONE` | Settings → Privacy & Visibility → Content Visibility | Публичные подписки |
+| 🟢 **ИСПРАВИТЬ** | Дефолт `discussions_visibility` = `EVERYONE` | Settings → Privacy & Visibility → Content Visibility | Публичные дискуссии |
+
+---
+
+*PrivacyVisibilitySpec.md v2.1 · Bestme · март 2026*  
 *Смежные документы: [AccountPrivacySpec.md](AccountPrivacySpec.md), [PrivacyFieldsSpec.md](PrivacyFieldsSpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
