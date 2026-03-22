@@ -337,15 +337,15 @@ BestMe is not liable for losses caused by your failure to maintain the security 
 
 ## 5. Content You Post
 
-### 4.1 Ownership
+### 5.1 Ownership
 
 You retain all intellectual property rights in the content you post. By posting, you grant BestMe a non-exclusive, royalty-free, worldwide license to display, distribute, and store your content as necessary to provide the Service.
 
-### 4.2 Default Audience
+### 5.2 Default Audience
 
 New posts default to **Friends** visibility (GDPR Art.25 · Quebec Law 25 Art.8). You may change the audience before posting or retroactively.
 
-### 4.3 Content Standards
+### 5.3 Content Standards
 
 All content must comply with our Community Guidelines. Content that is illegal, harmful, harassing, or violates the rights of others will be removed. See §8 Safety for the reporting mechanism.
 
@@ -353,15 +353,15 @@ All content must comply with our Community Guidelines. Content that is illegal, 
 
 ## 6. Interactions with Other Users
 
-### 5.1 Messages
+### 6.1 Messages
 
 By default, only your **Friends** may send you direct messages (DSA Art.14). You may change this in Settings → Privacy & Visibility → Interactions.
 
-### 5.2 Tags
+### 6.2 Tags
 
 You must approve tags before they appear on your profile or content (**tag approval ON by default**, GDPR Art.25). When someone tags you, you will receive a notification to approve or decline.
 
-### 5.3 Comments
+### 6.3 Comments
 
 By default, only your **Friends** may comment on your posts (DSA Art.14). You may expand or restrict this per post or globally.
 

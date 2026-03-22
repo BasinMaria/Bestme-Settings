@@ -1,6 +1,6 @@
 # UserManualGuide.md — Руководство пользователя: нужно ли, что писать
 
-**Версия:** 1.0 · **Дата:** март 2026  
+**Версия:** 1.2 · **Дата:** март 2026  
 **Кому:** Продакт-менеджер, контент-менеджер, дизайнер  
 
 ---
@@ -188,7 +188,7 @@ bestme.app/help
 
 ---
 
-*UserManualGuide.md v1.1 · Bestme · март 2026*  
+*UserManualGuide.md v1.2 · Bestme · март 2026*  
 *Смежные документы: [AccessibilitySpec.md](AccessibilitySpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [PrivacyPolicy.md](PrivacyPolicy.md), [TermsOfService.md](TermsOfService.md)*
 
 ---
