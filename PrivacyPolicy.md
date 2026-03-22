@@ -21,16 +21,22 @@
    - 4.5 [Interactions — Who Can Reach You](#45-interactions--who-can-reach-you)
    - 4.6 [Discoverability and Algorithmic Recommendations](#46-discoverability-and-algorithmic-recommendations)
    - 4.7 [Safety & Blocking — Data Processing in Blocking](#47-safety--blocking--data-processing-in-blocking)
-5. [Default Privacy Settings — Summary](#5-default-privacy-settings--summary)
-6. [How Long We Keep Your Data](#6-how-long-we-keep-your-data)
-7. [Who We Share Your Data With](#7-who-we-share-your-data-with)
-8. [International Data Transfers](#8-international-data-transfers)
-9. [Your Rights as a Data Subject](#9-your-rights-as-a-data-subject)
-10. [Cookies and Tracking](#10-cookies-and-tracking)
-11. [Children's Privacy (COPPA / GDPR Art.8)](#11-childrens-privacy-coppa--gdpr-art8)
-12. [Security of Your Data](#12-security-of-your-data)
-13. [Changes to This Policy](#13-changes-to-this-policy)
-14. [Contact and Supervisory Authorities](#14-contact-and-supervisory-authorities)
+5. [Login & Security — Data We Process for Account Protection](#5-login--security--data-we-process-for-account-protection)
+   - 5.1 [Password Data](#51-password-data)
+   - 5.2 [Two-Factor Authentication Data](#52-two-factor-authentication-data)
+   - 5.3 [Linked Accounts (OAuth Tokens)](#53-linked-accounts-oauth-tokens)
+   - 5.4 [Active Sessions Data](#54-active-sessions-data)
+   - 5.5 [Login History Data](#55-login-history-data)
+6. [Default Privacy Settings — Summary](#6-default-privacy-settings--summary)
+7. [How Long We Keep Your Data](#7-how-long-we-keep-your-data)
+8. [Who We Share Your Data With](#8-who-we-share-your-data-with)
+9. [International Data Transfers](#9-international-data-transfers)
+10. [Your Rights as a Data Subject](#10-your-rights-as-a-data-subject)
+11. [Cookies and Tracking](#11-cookies-and-tracking)
+12. [Children's Privacy (COPPA / GDPR Art.8)](#12-childrens-privacy-coppa--gdpr-art8)
+13. [Security of Your Data](#13-security-of-your-data)
+14. [Changes to This Policy](#14-changes-to-this-policy)
+15. [Contact and Supervisory Authorities](#15-contact-and-supervisory-authorities)
 
 ---
 
@@ -337,7 +343,109 @@ A "restricted" user can see your public posts but their comments appear only to 
 
 ---
 
-## 5. Default Privacy Settings — Summary
+## 5. Login & Security — Data We Process for Account Protection
+
+> This section describes in detail what personal data BestMe processes for Login & Security features, the legal basis for each processing activity, and how long we keep this data.  
+> Full technical specification: [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md).
+
+---
+
+### 5.1 Password Data
+
+| Data element | What we store | Legal basis | Retention |
+|---|---|---|---|
+| **Password hash** | bcrypt hash of your password — **never the plain-text password** | Art.6(1)(b) — contract / Art.32 — security | Until account deletion |
+| **Password history hashes** | Last 5 bcrypt hashes (prevent reuse) | Art.6(1)(f) — legitimate interest (security) | Until account deletion |
+| **Password change timestamp** | When the password was last changed | Art.6(1)(f) — legitimate interest (security audit) | Until account deletion |
+| **Rate limit log** | Timestamp + IP of failed password-change attempts | Art.6(1)(f) — legitimate interest (brute-force prevention) | 24 hours |
+
+**Why we collect this:** To authenticate you securely and prevent unauthorized account access.  
+**Who has access:** Password hashes are stored in the database. Only the bcrypt verification function has access; no human can read your password.  
+**Your rights:** You may change your password at any time (Settings → Login & Security → Password). You may not request deletion of the password hash while your account exists, as it is necessary to provide the Service (GDPR Art.17(3)(b)).
+
+---
+
+### 5.2 Two-Factor Authentication Data
+
+**Applicable when 2FA is enabled by the user (optional feature)**
+
+| Data element | What we store | Legal basis | Retention |
+|---|---|---|---|
+| **TOTP secret key** | Encrypted TOTP seed (used to generate/verify 6-digit codes) | Art.6(1)(b) — contract / Art.32 — security | Until 2FA disabled or account deleted |
+| **Backup code hashes** | 10 bcrypt-hashed single-use backup codes | Art.6(1)(b) — contract · Art.15 — right to account recovery | Until regenerated or account deleted |
+| **2FA method** | Which method is active: Email Code / Authenticator App | Art.6(1)(b) — contract | Until 2FA disabled or account deleted |
+| **2FA attempt log** | Timestamp + IP of failed 2FA attempts (rate limiting) | Art.6(1)(f) — legitimate interest (brute-force prevention) | 24 hours |
+| **2FA enabled/disabled timestamp** | Audit trail | Art.6(1)(f) — legitimate interest (security audit) | Until account deletion |
+
+**Why we collect this:** To provide additional account security layers that you choose to enable.  
+**Your rights:** You may enable, disable, or change your 2FA method at any time. If you disable 2FA, your TOTP secret and unused backup codes are deleted immediately (GDPR Art.17 — right to erasure).  
+**Email OTP:** Email-based OTP codes are generated on demand and not stored after transmission. They expire within 10 minutes.
+
+---
+
+### 5.3 Linked Accounts (OAuth Tokens)
+
+**Applicable when you use Google, Apple, or Facebook login**
+
+| Data element | What we store | Legal basis | Retention |
+|---|---|---|---|
+| **OAuth provider name** | Which provider: google / apple / facebook | Art.6(1)(b) — contract | Until disconnected or account deleted |
+| **OAuth provider user ID** | Unique identifier from the provider (not your email) | Art.6(1)(b) — contract performance | Until disconnected or account deleted |
+| **Name from provider** | As provided at login | Art.6(1)(b) — contract (populate your profile) | Until you change it or account deleted |
+| **Email from provider** | Used to match/create account | Art.6(1)(b) — contract | Until account deleted |
+| **OAuth access token** | Short-lived token for API access (not stored long-term) | Art.6(1)(b) — contract | 1 hour or less |
+| **OAuth refresh token** | Stored in OS secure storage (iOS Keychain / Android Keystore) | Art.6(1)(b) — contract | Until disconnected or account deleted |
+
+> ⚠️ **Apple Private Relay email:** When using "Hide My Email" via Sign in with Apple, Apple provides a private relay email (e.g. abc123@privaterelay.appleid.com). We store this relay address as your account email. If you later disable the relay in your Apple account, we cannot contact you at that address. We will not attempt to unilaterally replace Apple relay emails.
+
+**Disconnecting a provider:** You may disconnect any OAuth provider from Settings → Login & Security → Linked Accounts. After disconnection, we delete the OAuth provider's user ID and tokens. If your BestMe account has no password set, you must set a password before disconnecting your only OAuth provider (to prevent account lockout).
+
+**Third-party privacy policies:**
+- Google: [policies.google.com/privacy](https://policies.google.com/privacy)
+- Apple: [apple.com/legal/privacy](https://www.apple.com/legal/privacy/)
+- Facebook: [facebook.com/privacy/policy](https://www.facebook.com/privacy/policy/)
+
+---
+
+### 5.4 Active Sessions Data
+
+| Data element | What we store | Legal basis | Retention |
+|---|---|---|---|
+| **Session ID (JWT identifier)** | Unique identifier for each active session | Art.6(1)(b) — contract (authentication) | Until session expired or terminated |
+| **Refresh token** | Stored in OS secure storage (iOS Keychain / Android Keystore) | Art.6(1)(b) — contract | Until expired (configurable — default 30 days) or terminated |
+| **IP address at login** | Used to display approximate location in Active Sessions | Art.6(1)(f) — legitimate interest (security) · Art.15 (right of access) | Until session terminated |
+| **Device / User-Agent** | Parsed to display "iPhone, iOS 17" etc. in Active Sessions | Art.6(1)(f) — legitimate interest (security) · Art.15 | Until session terminated |
+| **Session start time** | Displayed in Active Sessions list | Art.6(1)(f) | Until session terminated |
+
+**Session termination:** When you terminate a session (remotely or by logging out), the refresh token is immediately invalidated server-side. Even if someone has a copy of the token, it cannot be used after invalidation.
+
+**JWT access tokens:** Short-lived (15 minutes). They are not stored in our database; they are self-contained tokens validated cryptographically. After 15 minutes, a new access token must be obtained via the refresh token.
+
+---
+
+### 5.5 Login History Data
+
+| Data element | What we store | Legal basis | Retention |
+|---|---|---|---|
+| **Login timestamp** | Exact date/time of login event | Art.6(1)(f) — legitimate interest (security) · Art.15 | **90 days** |
+| **Login method** | email / google / apple / facebook | Art.6(1)(f) — security audit | **90 days** |
+| **IP address** | Source IP of login | Art.6(1)(f) — security / Art.15 | **90 days** |
+| **Geo-location (city/region)** | Derived from IP via geo-lookup service (country/city only — no precise coordinates) | Art.6(1)(f) — security | **90 days** |
+| **Device / User-Agent** | Device identification | Art.6(1)(f) — security | **90 days** |
+| **Login result** | success / failed / blocked | Art.6(1)(f) — brute-force detection | **90 days** |
+| **2FA result** | passed / failed / bypassed-with-backup | Art.6(1)(f) — security audit | **90 days** |
+
+**Automatic deletion:** Login history records older than 90 days are automatically deleted by a scheduled database job (GDPR Art.5(1)(e) — storage limitation). This deletion is automatic and does not require user action.
+
+**Your right of access (GDPR Art.15):** You may view your full login history at any time via Settings → Login & Security → Login History. You may request a data export including login history via Settings → Your Data → Download My Data.
+
+**Geo-IP processing note:** IP-to-location conversion uses a geo-lookup service. The result is approximate (city/region level). The raw IP address is stored for 90 days; no precise GPS coordinates are ever derived from login events.
+
+**Breach notification:** If we detect unauthorized access to your account (e.g., successful login from an unrecognized location), we will notify you via push notification and email. You may also trigger the **Protect Account** flow manually from Login History → "This wasn't me".
+
+---
+
+## 6. Default Privacy Settings — Summary
 
 This table summarises all default privacy values that BestMe applies at account creation, as required by GDPR Art.25 (Privacy by Default):
 
@@ -363,7 +471,7 @@ This table summarises all default privacy values that BestMe applies at account 
 
 ---
 
-## 6. How Long We Keep Your Data
+## 7. How Long We Keep Your Data
 
 | Data type | Retention period | Legal basis |
 |---|---|---|
@@ -380,7 +488,7 @@ This table summarises all default privacy values that BestMe applies at account 
 
 ---
 
-## 7. Who We Share Your Data With
+## 8. Who We Share Your Data With
 
 | Recipient | What we share | Why |
 |---|---|---|
@@ -397,7 +505,7 @@ This table summarises all default privacy values that BestMe applies at account 
 
 ---
 
-## 8. International Data Transfers
+## 9. International Data Transfers
 
 If you are located in the EU/EEA, your data may be transferred to servers outside the EU. Such transfers are protected by:
 - **Standard Contractual Clauses (SCCs)** approved by the European Commission (GDPR Art.46)
@@ -405,7 +513,7 @@ If you are located in the EU/EEA, your data may be transferred to servers outsid
 
 ---
 
-## 9. Your Rights as a Data Subject
+## 10. Your Rights as a Data Subject
 
 ### GDPR Rights (EU/EEA residents)
 
@@ -438,7 +546,7 @@ Under the Protection of Privacy Law 5741-1981, you have the right to access and 
 
 ---
 
-## 10. Cookies and Tracking
+## 11. Cookies and Tracking
 
 BestMe's mobile application does not use browser cookies. We use:
 - **Secure token storage:** Refresh tokens are stored in the OS secure storage (iOS Keychain, Android Keystore/EncryptedSharedPreferences) — not in cookies
@@ -448,7 +556,7 @@ If you access BestMe via a web browser, standard browser cookies may be used for
 
 ---
 
-## 11. Children's Privacy (COPPA / GDPR Art.8)
+## 12. Children's Privacy (COPPA / GDPR Art.8)
 
 BestMe is not directed at children under 13. We do not knowingly collect personal data from children under 13.
 
@@ -458,7 +566,7 @@ BestMe is not directed at children under 13. We do not knowingly collect persona
 
 ---
 
-## 12. Security of Your Data
+## 13. Security of Your Data
 
 BestMe implements security measures consistent with GDPR Art.32 and NIST SP 800-63B:
 
@@ -473,7 +581,7 @@ In the event of a security breach affecting your data, we will notify you and re
 
 ---
 
-## 13. Changes to This Policy
+## 14. Changes to This Policy
 
 We will notify you of material changes to this Privacy Policy:
 - Via email (to the address associated with your account)
@@ -484,7 +592,7 @@ The updated policy will be available at bestme.app/privacy and via Settings → 
 
 ---
 
-## 14. Contact and Supervisory Authorities
+## 15. Contact and Supervisory Authorities
 
 | Contact | Details |
 |---|---|
@@ -505,5 +613,5 @@ If you believe we have not adequately addressed a privacy concern:
 
 ---
 
-*PrivacyPolicy.md v1.0 · BestMe · March 2026*  
+*PrivacyPolicy.md v1.1 · BestMe · March 2026*  
 *Related documents: [TermsOfService.md](TermsOfService.md) · [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md) · [AccountDeletionSpec.md](AccountDeletionSpec.md)*

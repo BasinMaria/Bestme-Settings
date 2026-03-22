@@ -14,17 +14,18 @@
 1. [Who Can Use BestMe](#1-who-can-use-bestme)
 2. [Your Account](#2-your-account)
 3. [Privacy & Visibility Settings — Your Rights and Controls](#3-privacy--visibility-settings--your-rights-and-controls)
-4. [Content You Post](#4-content-you-post)
-5. [Interactions with Other Users](#5-interactions-with-other-users)
-6. [Algorithmic Recommendations](#6-algorithmic-recommendations)
-7. [Safety, Blocking, and Reporting](#7-safety-blocking-and-reporting)
-8. [Intellectual Property](#8-intellectual-property)
-9. [Prohibited Conduct](#9-prohibited-conduct)
-10. [Termination](#10-termination)
-11. [Limitation of Liability](#11-limitation-of-liability)
-12. [Governing Law and Disputes](#12-governing-law-and-disputes)
-13. [Changes to These Terms](#13-changes-to-these-terms)
-14. [Contact](#14-contact)
+4. [Login & Security — Your Account Protection Rights](#4-login--security--your-account-protection-rights)
+5. [Content You Post](#5-content-you-post)
+6. [Interactions with Other Users](#6-interactions-with-other-users)
+7. [Algorithmic Recommendations](#7-algorithmic-recommendations)
+8. [Safety, Blocking, and Reporting](#8-safety-blocking-and-reporting)
+9. [Intellectual Property](#9-intellectual-property)
+10. [Prohibited Conduct](#10-prohibited-conduct)
+11. [Termination](#11-termination)
+12. [Limitation of Liability](#12-limitation-of-liability)
+13. [Governing Law and Disputes](#13-governing-law-and-disputes)
+14. [Changes to These Terms](#14-changes-to-these-terms)
+15. [Contact](#15-contact)
 
 ---
 
@@ -201,7 +202,140 @@ To exercise any right, or to contact our Data Protection Officer: **dpo@bestme.a
 
 ---
 
-## 4. Content You Post
+## 4. Login & Security — Your Account Protection Rights
+
+> This section describes the security features available in **Settings → Login & Security**, your rights regarding account access control, and the legal obligations BestMe has to protect your credentials and authentication data.  
+> Full technical specification: [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md).
+
+---
+
+### 4.1 Password — Change Password
+
+You have the right and ability to change your account password at any time via **Settings → Login & Security → Password → Change**.
+
+| Aspect | Rule | Legal basis |
+|---|---|---|
+| **Password storage** | Passwords are **never stored in plain text**. Stored as bcrypt hash (industry standard) | GDPR Art.32 · NIST SP 800-63B |
+| **Password change** | You must re-authenticate (enter current password) before changing | GDPR Art.32 — access control |
+| **Password history** | Your last 5 passwords are checked to prevent reuse | NIST SP 800-63B §5.1.1 |
+| **Session invalidation** | All other active sessions are logged out when you change password | GDPR Art.32 — security measure |
+| **Rate limit** | Maximum 5 password-change attempts per 15 minutes | OWASP ASVS 2.1.9 |
+| **Notification** | You receive an email notification confirming the password change, including IP and timestamp | GDPR Art.32 |
+| **OAuth users** | If you registered via Google, Apple, or Facebook, you may set an additional BestMe password for direct login | App Store §5.1.1 |
+
+> 🔴 **BestMe obligation:** All passwords must be stored in hashed form (GDPR Art.32). Storing plaintext passwords is a data breach under GDPR Art.4(12) and must be reported to supervisory authorities within 72 hours (GDPR Art.33).
+
+---
+
+### 4.2 Two-Factor Authentication (2FA)
+
+BestMe provides optional Two-Factor Authentication to protect your account beyond your password.
+
+**Settings → Login & Security → Two-Factor Authentication**
+
+| Method | Description | Legal / Compliance basis |
+|---|---|---|
+| **Email Code** | One-time 6-digit code sent to your registered email | GDPR Art.32 · NIST SP 800-63B |
+| **Authenticator App (TOTP)** | Time-based one-time password via Google Authenticator / Authy / etc. | GDPR Art.32 · NIST SP 800-63B |
+| **Backup codes** | 10 single-use recovery codes provided at 2FA setup | GDPR Art.15 (right to access) — you must be able to recover your account |
+
+**Status display:** The 2FA screen displays the current status (ON/OFF and active method) before the user enters any flow. This allows informed decision-making per GDPR Art.5(1)(a) — transparency.
+
+**Rate limits (mandatory for App Store / Google Play approval):**
+- Email OTP: 5 attempts / 15 min lockout · 3 resends / 15 min
+- TOTP: 5 attempts / 15 min lockout
+- Backup codes: 3 attempts / hour
+
+> ⚠️ **Your right to disable:** You may disable 2FA at any time by re-entering your password. BestMe will not prevent you from disabling 2FA, but will warn you that your account security decreases. (GDPR Art.7 — right to withdraw consent-based processing.)
+
+---
+
+### 4.3 Linked Accounts (Third-Party Login)
+
+You may connect your BestMe account to third-party identity providers: **Google**, **Apple**, **Facebook**.
+
+**Settings → Login & Security → Linked Accounts**
+
+| Provider | What BestMe receives | Your rights |
+|---|---|---|
+| **Google** | Name, email, profile photo | Disconnect at any time |
+| **Apple** | Name (optional), email or private relay email | Disconnect at any time |
+| **Facebook** | Name, email, profile photo | Disconnect at any time |
+
+**Disconnecting a linked account:** You may disconnect any linked account from Settings → Login & Security → Linked Accounts → [Provider] → Disconnect.
+
+> 🔴 **App Store §5.1.3 (blocker for publication):** If BestMe offers any third-party social login (Google, Facebook), **Sign in with Apple MUST be offered as an option**. Failure to include Sign in with Apple while offering other social logins will result in **App Store rejection**.  
+> 🔴 **App Store §5.1.1(v) (blocker for publication):** A **Disconnect** button must be available for each linked OAuth provider. Users must be able to revoke third-party access from within the app.
+
+**Data received from third-party providers** is processed under GDPR Art.6(1)(b) (contract performance — needed to create your account) and disclosed at registration per GDPR Art.13.
+
+---
+
+### 4.4 Active Sessions
+
+BestMe shows you all devices and sessions currently logged into your account.
+
+**Settings → Login & Security → Active Sessions**
+
+| Information shown | Source | Legal basis |
+|---|---|---|
+| Device type & OS | User-Agent string (parsed) | GDPR Art.15 — right of access to own data |
+| Approximate location | IP geo-lookup (city/region only) | GDPR Art.15 |
+| Session start time | Login timestamp | GDPR Art.15 |
+| Current session indicator | JWT session ID | — |
+
+**Your rights in Active Sessions:**
+- **Terminate a single session:** You may remotely log out any specific session (device) at any time
+- **Terminate all other sessions:** "Log out of all other devices" — logs out all sessions except the current one
+- **Termination is immediate:** Session tokens are invalidated server-side; re-login is required on terminated devices
+
+> ⚠️ **Security obligation (GDPR Art.32):** Providing users with visibility and control over their active sessions is a security measure required by GDPR Art.32. BestMe must provide this functionality.  
+> ⚠️ **Session token storage:** Refresh tokens are stored in OS-level secure storage (iOS Keychain / Android Keystore). They are never stored in browser localStorage or unencrypted storage.
+
+---
+
+### 4.5 Login History
+
+BestMe keeps a log of all login events to your account for your security and per GDPR Art.15 access rights.
+
+**Settings → Login & Security → Login History**
+
+| Information logged | Purpose | Retention |
+|---|---|---|
+| Login timestamp | Security audit | 90 days |
+| Login method (email / Google / Apple / Facebook) | Security audit | 90 days |
+| IP address | Identify suspicious access | 90 days |
+| Approximate location (city/region) | Identify suspicious access | 90 days |
+| Device / User-Agent | Identify suspicious access | 90 days |
+| Login result (success / failed) | Detect brute-force attacks | 90 days |
+
+**90-day retention:** Login history is automatically deleted after 90 days via scheduled database cleanup, per GDPR Art.5(1)(e) — data minimisation and storage limitation.
+
+**"Protect Account" (panic button):** If you see a login in your history that you do not recognize, you may tap **"This wasn't me"** or use the **Protect Account** button, which will:
+1. Terminate all active sessions
+2. Lock the account
+3. Send a security alert to your registered email
+4. Prompt you to change your password
+
+> ⚠️ **GDPR Art.15 right of access:** You have the right to access your login history. BestMe provides this directly in the app at no charge.  
+> ⚠️ **GDPR Art.33 breach notification:** If an unauthorized login is detected or reported, BestMe must assess whether a data breach has occurred and notify relevant supervisory authorities within 72 hours if required.  
+> ⚠️ **GDPR Art.33 / Art.34 obligation:** If BestMe becomes aware of a security breach affecting your account data, we will notify you and relevant supervisory authorities within legally required timeframes.
+
+---
+
+### 4.6 Your Security Obligations
+
+You are responsible for:
+- Keeping your password confidential and not sharing it with others
+- Logging out of shared devices after use
+- Promptly reporting suspicious account activity via Login History → "This wasn't me" or by contacting **security@bestme.app**
+- Keeping your registered email address current, as it is used for security notifications
+
+BestMe is not liable for losses caused by your failure to maintain the security of your account credentials.
+
+---
+
+## 5. Content You Post
 
 ### 4.1 Ownership
 
@@ -213,11 +347,11 @@ New posts default to **Friends** visibility (GDPR Art.25 · Quebec Law 25 Art.8)
 
 ### 4.3 Content Standards
 
-All content must comply with our Community Guidelines. Content that is illegal, harmful, harassing, or violates the rights of others will be removed. See §7 Safety for the reporting mechanism.
+All content must comply with our Community Guidelines. Content that is illegal, harmful, harassing, or violates the rights of others will be removed. See §8 Safety for the reporting mechanism.
 
 ---
 
-## 5. Interactions with Other Users
+## 6. Interactions with Other Users
 
 ### 5.1 Messages
 
@@ -233,7 +367,7 @@ By default, only your **Friends** may comment on your posts (DSA Art.14). You ma
 
 ---
 
-## 6. Algorithmic Recommendations
+## 7. Algorithmic Recommendations
 
 BestMe uses automated algorithms to recommend content and profiles you may find relevant. You have the following rights regarding recommendations:
 
@@ -243,29 +377,29 @@ BestMe uses automated algorithms to recommend content and profiles you may find 
 
 ---
 
-## 7. Safety, Blocking, and Reporting
+## 8. Safety, Blocking, and Reporting
 
-### 7.1 Block
+### 8.1 Block
 
 You may block any user at any time. See §3.8 for details.
 
-### 7.2 Report
+### 8.2 Report
 
 You may report illegal or harmful content or users. BestMe is required by DSA Art.16 to have a notice-and-action mechanism. We will review reports and act within legally required timeframes.
 
-### 7.3 Child Safety
+### 8.3 Child Safety
 
 Reports involving child sexual abuse or exploitation (CSAE) are escalated immediately to relevant authorities. Report such content to: **childsafety@bestme.app** or via the in-app Report function.
 
 ---
 
-## 8. Intellectual Property
+## 9. Intellectual Property
 
 BestMe and its logos, design, and software are owned by BestMe and protected by applicable intellectual property laws. You may not copy, modify, or distribute the Service without our written consent.
 
 ---
 
-## 9. Prohibited Conduct
+## 10. Prohibited Conduct
 
 You may not use BestMe to:
 
@@ -277,19 +411,19 @@ You may not use BestMe to:
 
 ---
 
-## 10. Termination
+## 11. Termination
 
 We may suspend or terminate your account if you violate these Terms. You may terminate your account at any time. Upon termination, your data will be handled per our Privacy Policy.
 
 ---
 
-## 11. Limitation of Liability
+## 12. Limitation of Liability
 
 To the maximum extent permitted by law, BestMe is not liable for indirect, incidental, or consequential damages arising from your use of the Service. Our total liability shall not exceed the greater of €100 or the amount you paid us in the past 12 months.
 
 ---
 
-## 12. Governing Law and Disputes
+## 13. Governing Law and Disputes
 
 - **EU residents:** GDPR, DSA, and applicable EU national law apply. Disputes may be brought before your local supervisory authority (e.g., DPA in your country).
 - **California residents:** CCPA / CPRA rights apply. You may contact the California Privacy Protection Agency.
@@ -299,13 +433,13 @@ To the maximum extent permitted by law, BestMe is not liable for indirect, incid
 
 ---
 
-## 13. Changes to These Terms
+## 14. Changes to These Terms
 
 We will notify you of material changes to these Terms via email or in-app notification at least **30 days** before the changes take effect. Your continued use after the effective date constitutes acceptance.
 
 ---
 
-## 14. Contact
+## 15. Contact
 
 | Role | Contact |
 |---|---|
@@ -318,5 +452,5 @@ We will notify you of material changes to these Terms via email or in-app notifi
 
 ---
 
-*TermsOfService.md v1.0 · BestMe · March 2026*  
+*TermsOfService.md v1.1 · BestMe · March 2026*  
 *Related documents: [PrivacyPolicy.md](PrivacyPolicy.md) · [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [AccountDeletionSpec.md](AccountDeletionSpec.md) · [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
