@@ -1016,42 +1016,86 @@ CREATE TABLE auth_providers (
 ### 3.4 Active Sessions
 
 **Путь:** Settings → Login & Security → Active Sessions  
-**Применимость:** Все пользователи  
-**Статус публикации:** 🟡 Рекомендуется; не является строгим блокером, но GDPR Art.5(1)(f) требует механизм отзыва доступа
+**Применимость:** Все пользователи (с паролем и без)  
+**Статус публикации:** 🟡 Рекомендуется. Не является строгим блокером для App Store, но **GDPR Art.5(1)(f)** требует предоставлять пользователю механизм отзыва доступа (Remote Logout) в случае утери устройства или взлома.
+
+---
+
+#### Часть 1. Экраны и Логика (Дизайн + Frontend)
 
 **UX-экран:**
 ```
-📱 ACTIVE SESSIONS
-
-✅ Текущее устройство
-   iPhone 14 Pro · iOS 17.2
-   Москва, Россия · 19 марта 2026, 14:23
-
-📱 iPhone 12 Mini
-   Последняя активность: 28 февраля 2026
-   Берлин, Германия
-   [Завершить сессию]
-
-💻 MacBook Pro (Chrome 122)
-   Последняя активность: 10 марта 2026
-   Тель-Авив, Израиль
-   [Завершить сессию]
-
-━━━━━━━━━━━━━━━━━━━━━━━━
-[Завершить все другие сессии]
+┌──────────────────────────────────────────────┐
+│  < Back      Active Sessions                 │
+│                                              │
+│  CURRENT SESSION                             │
+│  📱 iPhone 14 Pro (iOS 17.2)                 │
+│     Moscow, Russia • Active now              │
+│                                              │
+│  OTHER SESSIONS                              │
+│  📱 iPhone 12 Mini (iOS 16.0)                │
+│     Berlin, Germany • Last active: Feb 28    │
+│     [ Terminate Session ]                    │
+│                                              │
+│  💻 MacBook Pro (Chrome 122)                 │
+│     Tel Aviv, Israel • Last active: Mar 10   │
+│     [ Terminate Session ]                    │
+│                                              │
+│──────────────────────────────────────────────│
+│  [ Terminate all other sessions ]            │ ← Красная кнопка
+└──────────────────────────────────────────────┘
 ```
 
-**Backend требования:**
+**Логика Frontend:**
 
-| Параметр | Значение |
+| Элемент | Поведение |
 |---|---|
-| **Таблица** | `sessions`: user_id, device_name, device_type, ip_address, last_active_at, created_at, is_current |
-| **Access token** | JWT, срок действия 15 минут |
-| **Refresh token** | Secure HTTP-only cookie или Keychain/Keystore, срок 30 дней |
-| **Автоистечение** | Refresh token истекает через 30 дней неактивности |
-| **При смене пароля** | Инвалидировать ВСЕ сессии кроме текущей |
-| **При завершении сессии** | Удалить refresh_token, запись в `sessions` |
-| **Аудит** | `session_created`, `session_terminated` (с IP, User-Agent) |
+| **Хранение токенов (мобильное приложение)** | Frontend обязан хранить Refresh Token в безопасном хранилище ОС: **Keychain** для iOS, **Keystore / EncryptedSharedPreferences** для Android. Никогда не хранить в AsyncStorage / UserDefaults. |
+| **Парсинг User-Agent** | Backend возвращает сырую строку User-Agent (например, `Mozilla/5.0 (iPhone; CPU iPhone OS 17_2...)`). Frontend использует библиотеку (например, **UAParser.js**) для преобразования в читаемый текст: `iPhone 14 Pro (iOS 17.2)`, `MacBook Pro (Chrome 122)`, `Unknown device`. |
+| **Кнопка [Terminate Session]** | При клике — показать модальное окно: *"Are you sure you want to log out of this device?"*. При подтверждении — отправить запрос на удаление конкретной сессии. Строка исчезает из списка без перезагрузки страницы. |
+| **Красная кнопка [Terminate all other sessions]** | Завершает все сессии, кроме текущей (CURRENT SESSION). После успешного выполнения показывает зелёный Toast: *"All other devices logged out"*. |
+| **CURRENT SESSION** | Всегда отображается первой в списке. Кнопки [Terminate] у неё нет — пользователь не может завершить собственную текущую сессию. |
+
+---
+
+#### Часть 2. Требования к Backend (Supabase)
+
+> ⚠️ **Внимание разработчикам:** В Supabase таблица сессий (`auth.sessions`) является системной и недоступна напрямую из API клиента. Необходимо создать безопасные «мосты» — RPC-функции в публичной схеме (public schema).
+
+**🟡 Что настроить в дашборде Supabase (Authentication → Sessions):**
+
+| Параметр | Значение | Назначение |
+|---|---|---|
+| **Access Token (JWT) lifetime** | 900 секунд (15 минут) | Короткое время жизни ограничивает окно атаки при краже токена |
+| **Refresh Token lifetime** | 2 592 000 секунд (30 дней) | NIST SP 800-63B — разумный период сессии для мобильного приложения |
+| **Refresh token reuse interval** | Включить тумблер | Защита от кражи токена: при повторном использовании «старого» refresh token — немедленная инвалидация всей сессии |
+| **Sign out other sessions on password change** | Включить тумблер | Требование GDPR Art.32 — смена пароля должна разлогинивать всех «лишних» участников |
+
+**🔴 Что реализовать вручную (PostgreSQL RPC-функции):**
+
+**1. Получение списка активных сессий (`get_active_sessions`)**
+
+Назначение: функция PostgreSQL, которая делает `SELECT` из системной таблицы `auth.sessions`, строго фильтруя по `WHERE user_id = auth.uid()`. Возвращает массив объектов: `id` (ID сессии), `user_agent`, `ip`, `created_at`, `updated_at`. Текущая сессия определяется по токену, переданному фронтендом, и помечается флагом `is_current: true`.
+
+**2. Геолокация по IP**
+
+Supabase «из коробки» хранит только IP-адрес (`ip_address`). Необходимо настроить Edge Function, которая при каждом логине обращается к стороннему сервису (например, MaxMind GeoIP или ip-api.com), переводит IP в гео-данные (`Moscow, Russia`) и сохраняет их в `user_metadata` сессии или в отдельную таблицу `session_locations`. Точные GPS-координаты не хранить — только страна + город.
+
+**3. Завершение одной сессии (`terminate_session`)**
+
+Назначение: функция `terminate_session(target_session_id UUID)`. Логика: `DELETE FROM auth.sessions WHERE id = target_session_id AND user_id = auth.uid()`. Условие `AND user_id = auth.uid()` — обязательно, оно защищает от завершения чужих сессий. Удаление записи из `auth.sessions` автоматически инвалидирует соответствующий refresh token в экосистеме Supabase.
+
+**4. Завершение всех остальных сессий (`terminate_all_other_sessions`)**
+
+Назначение: функция `terminate_all_other_sessions()`. Логика: `DELETE FROM auth.sessions WHERE user_id = auth.uid() AND id != current_session_id`. Текущий `current_session_id` Frontend должен передать в вызов функции, чтобы исключить свою сессию из удаления.
+
+**5. Журнал аудита**
+
+В таблицу `security_audit_logs` (описана в §5) записывать событие:
+- `event_type = 'session_terminated_remotely'`
+- В колонку `metadata` — ID убитой сессии и IP-адрес инициатора действия.
+
+> ℹ️ Событие `session_created` Supabase пишет автоматически при логине — дублировать не нужно.
 
 ---
 
@@ -1059,54 +1103,141 @@ CREATE TABLE auth_providers (
 
 **Путь:** Settings → Login & Security → Login History  
 **Применимость:** Все пользователи  
-**Статус публикации:** 🟡 Рекомендуется для пользователей; GDPR Art.5(1)(f) требует логирование (во внутренний Audit Log — обязательно)
+**Статус публикации:** 🟡 Рекомендуется. Не является строгим блокером (App Store не отклонит за отсутствие этого экрана), но повышает доверие модераторов и выполняет требования GDPR по прозрачности.
 
 > 💡 **Разница между Login History и Active Sessions:**  
 > - **Active Sessions** = устройства, на которых сейчас выполнен вход (можно завершить)  
 > - **Login History** = исторический журнал всех входов/выходов (только просмотр)
 
+---
+
+#### Часть 1. Законы и Безопасность (Зачем мы делаем Login History)
+
+| Закон | Требование | Как Login History выполняет |
+|---|---|---|
+| **GDPR Art.32** + **Art.5(1)(f)** | Компания обязана внедрять «надлежащие технические меры» для защиты от взлома | Экран истории входов с кнопкой «Это не я» признан европейскими DPA одним из лучших стандартов такой защиты — пользователь получает инструмент самозащиты |
+| **GDPR Art.15** | Пользователь имеет право знать, какие данные о нём собираются | IP-адрес и User-Agent являются персональными данными по EU. Показывая этот экран, мы выполняем требование прозрачности |
+| **GDPR Art.33** | При массовом взломе у компании есть 72 часа для уведомления властей | Кнопка [This wasn't me] — система раннего обнаружения: если 100 пользователей нажмут её за один день, бэкенд обнаружит атаку до получения штрафа |
+
+---
+
+#### Часть 2. UX-экран и Логика (Дизайн + Frontend)
+
 **UX-экран:**
 ```
-🕐 ИСТОРИЯ ВХОДОВ
-
-Март 2026
-
-  ✅ Вход выполнен
-     iPhone 14 Pro · iOS 17.2
-     Москва, Россия · 19 марта 2026, 14:23
-
-  ⚠️ Неудачная попытка входа
-     Неизвестное устройство
-     Киев, Украина · 15 марта 2026, 03:11
-     [Это не я → Защитить аккаунт]
-
-  ✅ Вход выполнен
-     MacBook Pro (Chrome 122)
-     Тель-Авив, Израиль · 10 марта 2026, 11:44
-
-Февраль 2026
-
-  ✅ Вход выполнен через Google
-     iPhone 12 Mini · iOS 16.5
-     Берлин, Германия · 28 февраля 2026, 09:05
-
-  🔒 Выход (пользователь завершил сессию)
-     MacBook Pro · 25 февраля 2026, 18:30
-
-─────────────────────────────────
-Показываются записи за последние 90 дней.
+┌──────────────────────────────────────────────┐
+│  < Back      Login History                   │
+│                                              │
+│  Review your login activity for the past     │
+│  90 days.                                    │
+│                                              │
+│  MARCH 2026                                  │
+│                                              │
+│  ✅ Successful login                         │
+│     iPhone 14 Pro (iOS 17.2)                 │
+│     Moscow, Russia • Mar 19, 14:23           │
+│                                              │
+│  ⚠️ Failed login attempt                     │
+│     Unknown device                           │
+│     Kyiv, Ukraine • Mar 15, 03:11            │
+│     [ This wasn't me → Protect account ]     │
+│                                              │
+│  ✅ Logged in via Google                     │
+│     MacBook Pro (Chrome 122)                 │
+│     Tel Aviv, Israel • Mar 10, 11:44         │
+│                                              │
+│  🔒 Logged out                               │
+│     MacBook Pro • Mar 10, 18:30              │
+└──────────────────────────────────────────────┘
 ```
 
-**Backend требования:**
+**Типы событий в списке:**
 
-| Параметр | Значение |
+| Иконка | Тип события | `event_type` |
+|---|---|---|
+| ✅ | Успешный вход (email / Google / Apple / Facebook) | `success` |
+| ⚠️ | Неудачная попытка входа | `failed` |
+| 🔒 | Выход из системы | `logout` |
+
+---
+
+#### Часть 3. Экстренный сценарий "Protect Account"
+
+*Если пользователь видит подозрительный вход и нажимает кнопку [This wasn't me → Protect account]:*
+
+**Шаг 1. Модальное окно подтверждения:**
+```
+┌──────────────────────────────────────────────┐
+│░░┌────────────────────────────────────────┐░░│
+│░░│  🛡️ Secure Your Account                │░░│
+│░░│                                        │░░│
+│░░│  It looks like someone else tried to   │░░│
+│░░│  access your account.                  │░░│
+│░░│                                        │░░│
+│░░│  To protect your data, we will:        │░░│
+│░░│  1. Log you out of all other devices.  │░░│
+│░░│  2. Ask you to change your password.   │░░│
+│░░│                                        │░░│
+│░░│  [ Cancel ]          [ Secure Now ]    │░░│
+│░░└────────────────────────────────────────┘░░│
+└──────────────────────────────────────────────┘
+```
+
+**Шаг 2. Действие при клике [Secure Now]:**
+
+| Шаг | Что происходит |
 |---|---|
-| **Хранение** | 90 дней (отображаются пользователю); Audit Log хранится 3 года (внутренний) |
-| **Что логировать** | IP, User-Agent, тип входа (email / Google / Apple / Facebook / 2FA), статус (успех / неудача), геолокация (страна/город по IP) |
-| **Геолокация** | IP → страна/город (MaxMind GeoIP или аналог); хранить только страну+город, не точные координаты |
-| **Endpoint** | `GET /api/user/login-history?page=1&limit=20` |
-| **«Это не я»** | Кнопка на подозрительном входе → смена пароля + инвалидация всех сессий + оповещение по email |
-| **Аудит** | Часть Audit Log (см. §5) |
+| 1 | Frontend вызывает RPC `secure_compromised_account()` |
+| 2 | Сервер мгновенно инвалидирует (удаляет) все сессии, кроме текущей |
+| 3 | Frontend автоматически перенаправляет пользователя на экран **Settings → Login & Security → Change Password** |
+| 4 | После успешной смены пароля показывается Toast: *"Your account is now secure"* |
+
+> ℹ️ Новых экранов для этого сценария верстать не нужно — используются уже существующий экран Change Password.
+
+---
+
+#### Часть 4. Требования к Backend (Supabase)
+
+> ⚠️ **Внимание разработчикам:** Supabase не имеет готового эндпоинта для передачи красивой истории логов на фронтенд. Реализовать кастомно.
+
+**1. Таблица `user_login_history`**
+
+Создать в публичной схеме (`public`) таблицу со следующими колонками:
+
+| Колонка | Тип | Описание |
+|---|---|---|
+| `id` | UUID | Первичный ключ |
+| `user_id` | UUID | FK → `auth.users.id` |
+| `event_type` | text | `success`, `failed`, `logout` |
+| `auth_method` | text | `email`, `google`, `apple`, `facebook`, `2fa` |
+| `ip_address` | inet | IP-адрес входа |
+| `user_agent` | text | Сырой User-Agent строки |
+| `location` | text | Город, Страна (из IP) |
+| `created_at` | timestamptz | Время события |
+
+**RLS (Row Level Security):** пользователь может делать `SELECT` только строк, где `user_id = auth.uid()`. `INSERT` с клиента — запрещён (запись ведётся только через сервер/триггер).
+
+**2. Запись событий (Triggers / Webhooks)**
+
+Написать PostgreSQL Trigger или использовать Supabase Auth Webhooks, которые при каждом событии логина/логаута автоматически пишут строку в таблицу `user_login_history`.
+
+**3. Геолокация по IP**
+
+Для поля `location` (Город, Страна) использовать Edge Function, которая через сторонний API (MaxMind GeoIP или ip-api.com) переводит IP-адрес в гео-данные перед записью в базу. **Точные GPS-координаты не хранить** — только Страна/Город.
+
+**4. Авто-очистка (Data Retention — GDPR)**
+
+Хранить логи бессрочно запрещено. Настроить расширение `pg_cron`: ежедневно в 00:00 UTC выполнять очистку:
+- `DELETE FROM user_login_history WHERE created_at < NOW() - INTERVAL '90 days'`
+
+Внутренний `security_audit_log` (§5) хранится 3 года — там своя политика очистки.
+
+**5. RPC для кнопки паники (`secure_compromised_account`)**
+
+Функция `secure_compromised_account()` или Edge Function:
+- Выполняет `DELETE FROM auth.sessions WHERE user_id = auth.uid() AND id != current_session_id` (удаляет все сессии кроме текущей)
+- Отправляет email пользователю: *«В вашем аккаунте была замечена подозрительная активность. Все другие сессии сброшены.»*
+- Записывает событие `account_secured_by_user` в `security_audit_logs` (с IP инициатора и timestamp)
 
 ---
 
@@ -1592,8 +1723,10 @@ Legal
 
 ---
 
-*GDPRArt5SecuritySpec.md v2.1 · Bestme · март 2026*  
+*GDPRArt5SecuritySpec.md v2.2 · Bestme · март 2026*  
 *Смежные документы: [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md), [AccessibilitySpec.md](AccessibilitySpec.md), [NotificationsSpec.md](NotificationsSpec.md)*
+
+> **Changelog v2.2:** §3.4 Active Sessions — переработан в полный детальный UX-поток: ASCII-wireframe (English, с CURRENT SESSION / OTHER SESSIONS / красной кнопкой), таблица логики Frontend (хранение токенов в Keychain/Keystore, UAParser.js для User-Agent, confirm-модалка при Terminate, Toast «All other devices logged out»). Требования к Backend (Supabase Dashboard): JWT 900 сек, Refresh Token 30 дней, Refresh token reuse interval, Sign out on password change. PostgreSQL RPC-функции: `get_active_sessions()` (SELECT из auth.sessions по auth.uid(), флаг is_current), геолокация по IP через Edge Function (только Страна/Город), `terminate_session(UUID)` (DELETE с защитой AND user_id = auth.uid()), `terminate_all_other_sessions()`, аудит-событие `session_terminated_remotely`. §3.5 Login History — переработан в полный детальный UX-поток: ASCII-wireframe (English) со всеми типами событий (✅⚠️🔒), таблица законов (GDPR Art.32, Art.15, Art.33), экстренный сценарий «Protect Account» с ASCII-wireframe модального окна 🛡️, шаг-за-шагом (RPC → инвалидация сессий → редирект на Change Password → Toast). Backend: таблица `user_login_history` (id, user_id, event_type, auth_method, ip_address, user_agent, location, created_at), RLS (SELECT only), PostgreSQL Trigger/Webhook для записи событий, Edge Function для геолокации IP, pg_cron авто-очистка через 90 дней, RPC `secure_compromised_account()` (DELETE сессий + email пользователю + audit). Версия: 2.1 → 2.2.
 
 > **Changelog v2.1:** §3.2 — добавлен полный детальный UX-поток «Authenticator App / TOTP»: таблица правовых требований (App Store §4.0 QR+Copy, GDPR Art.15 backup codes, GDPR Art.32 disable-by-password, OWASP rate limit), экран Setup Authenticator (QR-код + текстовый ключ + [Copy], поле ввода 6-значного кода, кнопка [Verify & Enable] disabled до заполнения). Два способа настройки: Способ А (два устройства — сканирование QR) и Способ Б (одно устройство — копирование ключа). Логика [Verify & Enable]: `supabase.auth.mfa.challengeAndVerify()`, ±1 период TOTP-окна, генерация 10 bcrypt-хэшированных резервных кодов, Audit Log `2fa_enabled/totp`. Rate limit: 5 попыток / 15 минут. Экран резервных кодов (TOTP) с усиленным предупреждением ⚠️ IMPORTANT. Состояние «ВКЛЮЧЕНО (Authenticator App)»: wireframe, отключение 2FA через пароль → `supabase.auth.mfa.unenroll()`. Ссылка на Flow 1 / Flow 2 из Email Code для смены метода и управления кодами. Версия: 2.0 → 2.1.
 
