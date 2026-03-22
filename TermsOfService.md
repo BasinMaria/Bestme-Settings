@@ -15,17 +15,18 @@
 2. [Your Account](#2-your-account)
 3. [Privacy & Visibility Settings — Your Rights and Controls](#3-privacy--visibility-settings--your-rights-and-controls)
 4. [Login & Security — Your Account Protection Rights](#4-login--security--your-account-protection-rights)
-5. [Content You Post](#5-content-you-post)
-6. [Interactions with Other Users](#6-interactions-with-other-users)
-7. [Algorithmic Recommendations](#7-algorithmic-recommendations)
-8. [Safety, Blocking, and Reporting](#8-safety-blocking-and-reporting)
-9. [Intellectual Property](#9-intellectual-property)
-10. [Prohibited Conduct](#10-prohibited-conduct)
-11. [Termination](#11-termination)
-12. [Limitation of Liability](#12-limitation-of-liability)
-13. [Governing Law and Disputes](#13-governing-law-and-disputes)
-14. [Changes to These Terms](#14-changes-to-these-terms)
-15. [Contact](#15-contact)
+5. [Friends & Community — Your Social Connection Rights](#5-friends--community--your-social-connection-rights)
+6. [Content You Post](#6-content-you-post)
+7. [Interactions with Other Users](#7-interactions-with-other-users)
+8. [Algorithmic Recommendations](#8-algorithmic-recommendations)
+9. [Safety, Blocking, and Reporting](#9-safety-blocking-and-reporting)
+10. [Intellectual Property](#10-intellectual-property)
+11. [Prohibited Conduct](#11-prohibited-conduct)
+12. [Termination](#12-termination)
+13. [Limitation of Liability](#13-limitation-of-liability)
+14. [Governing Law and Disputes](#14-governing-law-and-disputes)
+15. [Changes to These Terms](#15-changes-to-these-terms)
+16. [Contact](#16-contact)
 
 ---
 
@@ -335,7 +336,65 @@ BestMe is not liable for losses caused by your failure to maintain the security 
 
 ---
 
-## 5. Content You Post
+## 5. Friends & Community — Your Social Connection Rights
+
+BestMe provides social features organized in three areas: **Friends**, **Subscriptions**, and **Communities**.
+All social features are subject to our Community Guidelines and applicable law.
+
+### 5.1 Friends
+
+**Friends** are mutual connections between two BestMe users. A friendship is established when one user sends a
+request and the other accepts it.
+
+- You may **view, search, and remove** friends at any time (Settings → Friends & Community → Friends → My Friends).
+- When you remove a friend, the other person is **not notified** (GDPR Art.25 — privacy by default).
+- You may **send, accept, decline, or cancel** friend requests (Settings → Friends & Community → Friends → Requests).
+- You may **hide or disable** friend recommendations at any time (Settings → Privacy & Visibility → Discoverability → Recommendations).
+
+### 5.2 Subscriptions
+
+**Subscriptions** are one-way follows — you follow their content; they do not need to follow you back.
+
+- **Blogs:** You may subscribe to or unsubscribe from any user's personal blog at any time
+  (Settings → Friends & Community → Subscriptions → Blogs).
+- **Business Profiles:** You may follow or unfollow any business account. You may also leave ratings and
+  comments, subject to our Community Guidelines (Settings → Friends & Community → Subscriptions → Business Profiles).
+- Unsubscribing takes effect immediately. The author is not notified.
+
+### 5.3 Communities
+
+**Communities** are groups that users create and join.
+
+- You may **create unlimited communities** (you become the administrator).
+- You may **join any public community** or request to join a private one.
+- You may **leave any community at any time** without providing a reason
+  (Settings → Friends & Community → Communities → Subscriptions → Leave). This right cannot be waived (GDPR Art.17).
+- As a community administrator, you may **delete the community**. All content will be permanently deleted
+  within 30 days (GDPR Art.17).
+
+### 5.4 User-Generated Content in Social Features
+
+All content posted in blogs and communities must comply with our **Community Guidelines**.
+
+- You may **report** any post, comment, or community for violating Community Guidelines or applicable law
+  (DSA Art.16).
+- We reserve the right to remove content that violates our policies without prior notice (DSA Art.14).
+- Algorithmic content recommendations (suggested communities, friend suggestions) are based on your
+  activity and interests, as explained in our Privacy Policy §6 (DSA Art.27).
+
+### 5.5 Your Rights Regarding Social Data
+
+| Data | Your Right | How to Exercise |
+|---|---|---|
+| Friend connections | Remove at any time | Settings → Friends & Community → Friends → My Friends |
+| Blog subscriptions | Unsubscribe at any time | Settings → Friends & Community → Subscriptions → Blogs |
+| Business subscriptions | Unfollow at any time | Settings → Friends & Community → Subscriptions → Business Profiles |
+| Community membership | Leave at any time | Settings → Friends & Community → Communities → Subscriptions |
+| Communities you created | Delete community | Settings → Friends & Community → Communities → My Groups |
+
+> **See also:** Privacy Policy §6 for how we process data from social features.
+
+## 6. Content You Post
 
 ### 5.1 Ownership
 
@@ -347,11 +406,11 @@ New posts default to **Friends** visibility (GDPR Art.25 · Quebec Law 25 Art.8)
 
 ### 5.3 Content Standards
 
-All content must comply with our Community Guidelines. Content that is illegal, harmful, harassing, or violates the rights of others will be removed. See §8 Safety for the reporting mechanism.
+All content must comply with our Community Guidelines. Content that is illegal, harmful, harassing, or violates the rights of others will be removed. See §9 Safety for the reporting mechanism.
 
 ---
 
-## 6. Interactions with Other Users
+## 7. Interactions with Other Users
 
 ### 6.1 Messages
 
@@ -367,7 +426,7 @@ By default, only your **Friends** may comment on your posts (DSA Art.14). You ma
 
 ---
 
-## 7. Algorithmic Recommendations
+## 8. Algorithmic Recommendations
 
 BestMe uses automated algorithms to recommend content and profiles you may find relevant. You have the following rights regarding recommendations:
 
@@ -377,7 +436,7 @@ BestMe uses automated algorithms to recommend content and profiles you may find 
 
 ---
 
-## 8. Safety, Blocking, and Reporting
+## 9. Safety, Blocking, and Reporting
 
 ### 8.1 Block
 
@@ -393,13 +452,13 @@ Reports involving child sexual abuse or exploitation (CSAE) are escalated immedi
 
 ---
 
-## 9. Intellectual Property
+## 10. Intellectual Property
 
 BestMe and its logos, design, and software are owned by BestMe and protected by applicable intellectual property laws. You may not copy, modify, or distribute the Service without our written consent.
 
 ---
 
-## 10. Prohibited Conduct
+## 11. Prohibited Conduct
 
 You may not use BestMe to:
 
@@ -411,19 +470,19 @@ You may not use BestMe to:
 
 ---
 
-## 11. Termination
+## 12. Termination
 
 We may suspend or terminate your account if you violate these Terms. You may terminate your account at any time. Upon termination, your data will be handled per our Privacy Policy.
 
 ---
 
-## 12. Limitation of Liability
+## 13. Limitation of Liability
 
 To the maximum extent permitted by law, BestMe is not liable for indirect, incidental, or consequential damages arising from your use of the Service. Our total liability shall not exceed the greater of €100 or the amount you paid us in the past 12 months.
 
 ---
 
-## 13. Governing Law and Disputes
+## 14. Governing Law and Disputes
 
 - **EU residents:** GDPR, DSA, and applicable EU national law apply. Disputes may be brought before your local supervisory authority (e.g., DPA in your country).
 - **California residents:** CCPA / CPRA rights apply. You may contact the California Privacy Protection Agency.
@@ -433,13 +492,13 @@ To the maximum extent permitted by law, BestMe is not liable for indirect, incid
 
 ---
 
-## 14. Changes to These Terms
+## 15. Changes to These Terms
 
 We will notify you of material changes to these Terms via email or in-app notification at least **30 days** before the changes take effect. Your continued use after the effective date constitutes acceptance.
 
 ---
 
-## 15. Contact
+## 16. Contact
 
 | Role | Contact |
 |---|---|

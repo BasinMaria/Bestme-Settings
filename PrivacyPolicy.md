@@ -27,16 +27,17 @@
    - 5.3 [Linked Accounts (OAuth Tokens)](#53-linked-accounts-oauth-tokens)
    - 5.4 [Active Sessions Data](#54-active-sessions-data)
    - 5.5 [Login History Data](#55-login-history-data)
-6. [Default Privacy Settings — Summary](#6-default-privacy-settings--summary)
-7. [How Long We Keep Your Data](#7-how-long-we-keep-your-data)
-8. [Who We Share Your Data With](#8-who-we-share-your-data-with)
-9. [International Data Transfers](#9-international-data-transfers)
-10. [Your Rights as a Data Subject](#10-your-rights-as-a-data-subject)
-11. [Cookies and Tracking](#11-cookies-and-tracking)
-12. [Children's Privacy (COPPA / GDPR Art.8)](#12-childrens-privacy-coppa--gdpr-art8)
-13. [Security of Your Data](#13-security-of-your-data)
-14. [Changes to This Policy](#14-changes-to-this-policy)
-15. [Contact and Supervisory Authorities](#15-contact-and-supervisory-authorities)
+6. [Friends & Community — Data We Process for Social Features](#6-friends--community--data-we-process-for-social-features)
+7. [Default Privacy Settings — Summary](#7-default-privacy-settings--summary)
+8. [How Long We Keep Your Data](#8-how-long-we-keep-your-data)
+9. [Who We Share Your Data With](#9-who-we-share-your-data-with)
+10. [International Data Transfers](#10-international-data-transfers)
+11. [Your Rights as a Data Subject](#11-your-rights-as-a-data-subject)
+12. [Cookies and Tracking](#12-cookies-and-tracking)
+13. [Children's Privacy (COPPA / GDPR Art.8)](#13-childrens-privacy-coppa--gdpr-art8)
+14. [Security of Your Data](#14-security-of-your-data)
+15. [Changes to This Policy](#15-changes-to-this-policy)
+16. [Contact and Supervisory Authorities](#16-contact-and-supervisory-authorities)
 
 ---
 
@@ -445,7 +446,54 @@ A "restricted" user can see your public posts but their comments appear only to 
 
 ---
 
-## 6. Default Privacy Settings — Summary
+## 6. Friends & Community — Data We Process for Social Features
+
+When you use Friends, Subscriptions, or Communities features, we process the following personal data.
+
+### 6.1 Friends Data
+
+| Data | Legal Basis | Retention |
+|---|---|---|
+| Friend connections (user ID pairs) | GDPR Art.6(1)(b) — Contract performance | Until friendship is removed |
+| Friend request history (sent / received / declined) | GDPR Art.6(1)(b) | 90 days after resolution |
+| Friend recommendations (computed graph) | GDPR Art.6(1)(f) — Legitimate interest | Not stored — computed on-demand |
+
+**Privacy by Design (GDPR Art.25):** Friend request declines are never disclosed to the requester.
+Removed friends are not notified. Recommendations can be turned off at any time
+(Settings → Privacy & Visibility → Discoverability → Recommendations).
+
+### 6.2 Subscriptions Data
+
+| Data | Legal Basis | Retention |
+|---|---|---|
+| Blog subscription records | GDPR Art.6(1)(b) | Until unsubscribed |
+| Business profile subscription records | GDPR Art.6(1)(b) | Until unsubscribed |
+| Ratings and reviews on business profiles | GDPR Art.6(1)(b) | Until deleted by user or removed by moderation |
+
+**DSA Art.16:** Ratings and reviews are user-generated content. We maintain a moderation and reporting mechanism.
+
+### 6.3 Communities Data
+
+| Data | Legal Basis | Retention |
+|---|---|---|
+| Community membership records | GDPR Art.6(1)(b) | Until user leaves community |
+| Community administration records | GDPR Art.6(1)(b) | Until community is deleted |
+| Community posts and comments | GDPR Art.6(1)(b) | Until deleted by user or community admin |
+| Audit log of community actions | GDPR Art.6(1)(c) — Legal obligation | 90 days |
+
+**Right to Erasure (GDPR Art.17):** You may leave any community at any time. Community administrators may
+delete communities. Upon deletion, all content is removed from our servers within **30 days**.
+
+**DSA Compliance (Art.14 / Art.16):** We maintain a notice-and-action mechanism for illegal or harmful content
+in communities and blogs. All reports are logged and actioned within our moderation process.
+
+**Algorithmic Recommendations (DSA Art.27):** Friend and community recommendations are generated based on
+mutual connections, shared communities, and similar interests. You may opt out at any time
+(Settings → Privacy & Visibility → Discoverability → Recommendations).
+
+> **See also:** Terms of Service §5 for your rights regarding Friends & Community features.
+
+## 7. Default Privacy Settings — Summary
 
 This table summarises all default privacy values that BestMe applies at account creation, as required by GDPR Art.25 (Privacy by Default):
 
@@ -471,7 +519,7 @@ This table summarises all default privacy values that BestMe applies at account 
 
 ---
 
-## 7. How Long We Keep Your Data
+## 8. How Long We Keep Your Data
 
 | Data type | Retention period | Legal basis |
 |---|---|---|
@@ -488,7 +536,7 @@ This table summarises all default privacy values that BestMe applies at account 
 
 ---
 
-## 8. Who We Share Your Data With
+## 9. Who We Share Your Data With
 
 | Recipient | What we share | Why |
 |---|---|---|
@@ -505,7 +553,7 @@ This table summarises all default privacy values that BestMe applies at account 
 
 ---
 
-## 9. International Data Transfers
+## 10. International Data Transfers
 
 If you are located in the EU/EEA, your data may be transferred to servers outside the EU. Such transfers are protected by:
 - **Standard Contractual Clauses (SCCs)** approved by the European Commission (GDPR Art.46)
@@ -513,7 +561,7 @@ If you are located in the EU/EEA, your data may be transferred to servers outsid
 
 ---
 
-## 10. Your Rights as a Data Subject
+## 11. Your Rights as a Data Subject
 
 ### GDPR Rights (EU/EEA residents)
 
@@ -546,7 +594,7 @@ Under the Protection of Privacy Law 5741-1981, you have the right to access and 
 
 ---
 
-## 11. Cookies and Tracking
+## 12. Cookies and Tracking
 
 BestMe's mobile application does not use browser cookies. We use:
 - **Secure token storage:** Refresh tokens are stored in the OS secure storage (iOS Keychain, Android Keystore/EncryptedSharedPreferences) — not in cookies
@@ -556,7 +604,7 @@ If you access BestMe via a web browser, standard browser cookies may be used for
 
 ---
 
-## 12. Children's Privacy (COPPA / GDPR Art.8)
+## 13. Children's Privacy (COPPA / GDPR Art.8)
 
 BestMe is not directed at children under 13. We do not knowingly collect personal data from children under 13.
 
@@ -566,7 +614,7 @@ BestMe is not directed at children under 13. We do not knowingly collect persona
 
 ---
 
-## 13. Security of Your Data
+## 14. Security of Your Data
 
 BestMe implements security measures consistent with GDPR Art.32 and NIST SP 800-63B:
 
@@ -581,7 +629,7 @@ In the event of a security breach affecting your data, we will notify you and re
 
 ---
 
-## 14. Changes to This Policy
+## 15. Changes to This Policy
 
 We will notify you of material changes to this Privacy Policy:
 - Via email (to the address associated with your account)
@@ -592,7 +640,7 @@ The updated policy will be available at bestme.app/privacy and via Settings → 
 
 ---
 
-## 15. Contact and Supervisory Authorities
+## 16. Contact and Supervisory Authorities
 
 | Contact | Details |
 |---|---|
