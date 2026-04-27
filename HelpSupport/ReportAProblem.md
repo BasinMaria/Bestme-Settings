@@ -6,7 +6,7 @@
 - Settings → Help & Support → Report a Problem (точка входа из настроек)
 
 **Обязательно:**
-⚖️ DSA Art.14 (механизм жалоб на незаконный контент) · DSA Art.16 (уведомление репортёра о результате) · DSA Art.17 (Statement of Reasons при удалении) · DSA Art.20 (апелляция) · GDPR Art.22 (право на human review при AI-решении) · Apple §1.2 · Google Play Child Safety
+⚖️ DSA Art.14 (механизм жалоб на незаконный контент) · DSA Art.16 (уведомление репортёра о результате) · DSA Art.17 (Statement of R[...]
 
 ---
 
@@ -148,14 +148,14 @@
 Заголовок: «Report submitted»
 Иконка: ✅
 
-Текст: «Thanks for letting us know. We'll review this and take action
-        if it violates our Community Guidelines.
-        We'll notify you of the outcome.»
+Текст: «Thanks for letting us know. We will review your report and take action if it violates our Community Guidelines. You will be notified of the outcome.»
+
+Текст (конфиденциальность): «Your identity is kept confidential — the reported user will NOT know who reported them.»
 
 ────────────────────────────
 
-Вопрос: «Do you also want to block @username?»
-Текст: «They won't be able to see your profile or contact you.»
+Вопрос: «Want to block @username?»
+Текст: «They will no longer be able to view your content or interact with you.»
 
 [Кнопка: «Block @username»]
 [Кнопка: «No thanks»]
@@ -313,7 +313,7 @@
 ## 9. Кнопка «Appeal» при AI-удалении (GDPR Art.22 + DSA Art.20)
 
 > Если контент удалён **автоматически (AI)** — пользователь имеет право потребовать проверки **человеком**.  
-> ⚖️ **GDPR Art.22:** запрещено принимать юридически значимые решения исключительно автоматически без возможности human review.  
+> ⚖️ **GDPR Art.22:** запрещено принимать юридически значимые решения исключительно автоматически без возможности[...]
 > ⚖️ **DSA Art.20:** апелляция на любое решение о модерации.
 
 ### Отличие от стандартной апелляции
@@ -416,7 +416,7 @@
 ### 12.4 Конфиденциальность при модерации DM
 
 > Содержание личных сообщений модератор **не читает** без веских оснований.  
-> При жалобе: модератор видит только **флаг жалобы + категорию + конкретное сообщение**, на которое пожаловались (если жалоба на одно сообщение).  
+> При жалобе: модератор видит только **флаг жалобы + категорию + конкретное сообщение**, на которое пожаловались[...]
 > При CSAE: полный доступ к чату + обязательный репорт в NCMEC.
 
 ---
@@ -589,3 +589,4 @@ My Content
 - [ContactSupport.md](ContactSupport.md) — контакты поддержки, сроки ответа
 - `NotificationsSpec.md` — все ключи уведомлений с каналами
 - `TermsOfService.md` → раздел 9 «Safety, Blocking, and Reporting»
+
