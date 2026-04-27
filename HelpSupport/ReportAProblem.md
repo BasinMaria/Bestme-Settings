@@ -1,68 +1,113 @@
-# Report a Problem — Полная спецификация экранов
+# UGC Moderation — Report a Problem: Полная спецификация
 
-**Раздел:** Settings → Help & Support → Report a Problem  
-**Обязательно:** ⚖️ DSA Art.14 (механизм жалоб) · DSA Art.16 (уведомление репортёра) · DSA Art.17 (апелляция) · App Store · Google Play Child Safety
+**Разделы в приложении:**
+- Кнопка Report — на каждом посте, профиле, комментарии, DM
+- Settings → My Reports (история жалоб)
+- Settings → Help & Support → Report a Problem (точка входа из настроек)
+
+**Обязательно:**
+⚖️ DSA Art.14 (механизм жалоб на незаконный контент) · DSA Art.16 (уведомление репортёра о результате) · DSA Art.17 (Statement of Reasons при удалении) · DSA Art.20 (апелляция) · GDPR Art.22 (право на human review при AI-решении) · Apple §1.2 · Google Play Child Safety
 
 ---
 
-## Обзор флоу
+## Обзор системы
 
-Система жалоб состоит из **четырёх независимых флоу:**
-
-| Флоу | Кто участвует | Экраны |
+| Компонент | Кто участвует | Где |
 |---|---|---|
-| A. Подача жалобы | Пользователь-репортёр | 3 экрана |
-| B. Уведомление нарушителя | Нарушитель | In-app сообщение + placeholder |
-| C. Апелляция | Нарушитель | 2 экрана |
-| D. Account Status | Любой пользователь | 1 экран (история) |
+| 🚩 Report Button + Report Menu | Репортёр | Везде: пост, профиль, комментарий, DM |
+| 🚫 Block User Button | Репортёр | Профиль, после Report |
+| Alert — Submit report | Репортёр | Перед отправкой жалобы |
+| Статусы жалобы | Репортёр | Settings → My Reports |
+| Уведомление о жалобе | Нарушитель | In-app (до решения) |
+| Content Moderation (AI + Human) | Нарушитель | In-app |
+| Statement of Reasons (DSA Art.17) | Нарушитель | In-app + Email |
+| Appeal — DSA Art.20 | Нарушитель | In-app |
+| Appeal при AI-удалении — GDPR Art.22 | Нарушитель | In-app |
+| Модерация DM/чатов | Участники чата | In-app |
+| Anti-Spam — автоматика | Система | Фон |
+| My Reports (история) | Любой пользователь | Settings → My Reports |
 
 ---
 
-## A. Флоу репортёра — Подача жалобы
+## 1. 🚩 Report Button — Кнопка «Пожаловаться»
 
-### A-1. Точки входа (откуда открывается Report)
+> ⚖️ **Apple §1.2 · DSA Art.14 · Google Play:** кнопка Report обязательна на всём пользовательском контенте.  
+> Кнопка должна быть доступна **на каждом посте, профиле, комментарии и в личных сообщениях.**
+
+### 1.1 Расположение кнопки
+
+| Контекст | Доступ | Иконка / метка |
+|---|---|---|
+| Пост / фото в ленте | Кнопка ⋯ (три точки) под постом | 🚩 «Report» |
+| Страница поста (detail view) | Кнопка ⋯ вверху справа | 🚩 «Report» |
+| Профиль другого пользователя | Кнопка ⋯ на странице профиля | 🚩 «Report» |
+| Комментарий | Long press на комментарии | 🚩 «Report» |
+| Личное сообщение (DM) | Long press на сообщении | 🚩 «Report» |
+| Чат (беседа целиком) | Кнопка ⋯ в шапке чата | 🚩 «Report conversation» |
+| Settings → Help & Support | Строка «Report a problem» | 🚩 «Report a problem» |
+
+> Кнопка не показывается на **собственном** контенте пользователя.
+
+---
+
+## 2. 🚫 Block User Button — Кнопка «Заблокировать»
+
+> Блокировка — немедленное действие, не требует проверки модератором.  
+> Может использоваться **вместе** с жалобой или **без неё**.
+
+### 2.1 Расположение
 
 | Контекст | Действие |
 |---|---|
-| Профиль другого пользователя | Кнопка ⋯ → «Report» |
-| Пост / фото | Кнопка ⋯ под постом → «Report» |
-| Комментарий | Long press → «Report» |
-| Settings → Help & Support | «Report a problem» |
+| Профиль пользователя → ⋯ | «Block» (отдельный пункт, рядом с «Report») |
+| После подачи жалобы (экран подтверждения) | Предложение «Also block @username?» |
+| Settings → Privacy & Visibility → Blocked Accounts | Добавить вручную |
+
+### 2.2 Поведение после блокировки
+
+| Что меняется | Для кого |
+|---|---|
+| Заблокированный не видит профиль блокирующего | Заблокированный |
+| Заблокированный не может написать сообщение | Заблокированный |
+| Заблокированный не отображается в поиске (для блокирующего) | Оба |
+| Уведомление о блокировке | ❌ Не отправляется (защита блокирующего) |
 
 ---
 
-### A-2. Экран 1 — Выбор причины (Report Reason)
+## 3. Report Menu — Список причин жалобы
+
+> Открывается сразу после нажатия 🚩 Report.  
+> Тип: bottom sheet или full-screen modal.
 
 ```
-[Bottom sheet или отдельный экран]
+[Bottom sheet]
 
 Заголовок: «Why are you reporting this?»
 Подзаголовок: «Your report is anonymous.»
 
-Список причин (одиночный выбор, radio):
+Список причин (radio, одиночный выбор):
   ○ Spam
   ○ Harassment or bullying
   ○ Hate speech
   ○ Violence or dangerous content
   ○ Nudity or sexual content
   ○ Fraud or scam
-  ○ Misinformation
-  ○ 🔴 Child Safety (CSAE)          ← обязательная категория (Google Play)
+  ○ Misinformation / False information
+  ○ 🔴 Child Safety (CSAE)            ← обязательно (Google Play Child Safety)
   ○ Intellectual property violation
   ○ Other
 
-[Кнопка: «Next»]
+[Кнопка: «Next»  — активна только после выбора]
 [Кнопка: «Cancel»]
 ```
 
-> ⚖️ **Обязательно (Google Play Child Safety Standards):** категория «Child Safety» должна присутствовать в списке.  
-> ⚖️ **DSA Art.14:** категория незаконного контента (hate speech, CSAE, fraud) обязательна для платформ ЕС.
+> ⚖️ **Google Play Child Safety Standards:** категория «Child Safety» обязательна.  
+> ⚖️ **DSA Art.14:** категории незаконного контента (hate speech, CSAE, violence, fraud) обязательны для платформ ЕС.  
+> ⚖️ **Apple §1.2:** механизм жалоб на оскорбительный UGC обязателен.
 
----
+### 3.1 Экран деталей (после выбора причины)
 
-### A-3. Экран 2 — Детали (опциональный)
-
-> Показывается после выбора любой причины, кроме Spam.
+> Показывается для всех причин, кроме Spam.
 
 ```
 Заголовок: «Add more details (optional)»
@@ -71,7 +116,7 @@
 Текстовое поле: «Describe the problem...» (max 500 chars)
 Прикрепить скриншот: [+] (опционально)
 
-[Кнопка: «Submit Report»]
+[Кнопка: «Next»]
 [Кнопка: «Back»]
 ```
 
@@ -79,7 +124,25 @@
 
 ---
 
-### A-4. Экран 3 — Подтверждение (Confirmation)
+## 4. Alert — Submit Report (Подтверждение перед отправкой)
+
+> Системный алерт перед финальной отправкой — защита от случайных жалоб.
+
+```
+[System Alert]
+
+Заголовок: «Submit report?»
+Текст:
+  «You're reporting this [post / comment / profile] for [Reason].
+   This report is anonymous.»
+
+[Кнопка: «Submit»]    ← основное действие
+[Кнопка: «Cancel»]
+```
+
+---
+
+## 5. Подтверждение отправки (Success Screen)
 
 ```
 Заголовок: «Report submitted»
@@ -89,74 +152,103 @@
         if it violates our Community Guidelines.
         We'll notify you of the outcome.»
 
-Разделитель: ─────
+────────────────────────────
 
 Вопрос: «Do you also want to block @username?»
 Текст: «They won't be able to see your profile or contact you.»
 
-[Кнопка: «Block @username»]   ← рекомендуется (снижает вред для репортёра)
+[Кнопка: «Block @username»]
 [Кнопка: «No thanks»]
 
 [Кнопка: «Done»]
 ```
 
-> ⚖️ **DSA Art.16(5):** платформа обязана уведомить репортёра о результате рассмотрения жалобы.  
-> Предложение заблокировать пользователя — лучшая практика (Instagram, TikTok, YouTube).
+> ⚖️ **DSA Art.16(5):** платформа обязана уведомить репортёра о результате.  
+> Предложение заблокировать — лучшая практика (снижает вред для репортёра).
 
 ---
 
-### A-5. Уведомление репортёра о результате
+## 6. Уведомление заявителю о результате жалобы
 
-Когда модератор принимает решение, репортёр получает:
+> ⚖️ **DSA Art.16 — обязательно.** Платформа обязана уведомить репортёра о результате.
 
-| Канал | Ключ уведомления | Текст |
+| Канал | Ключ | Текст |
 |---|---|---|
 | In-app | `report_outcome_action_taken` | «Update on your report: We reviewed the content you reported and took action.» |
 | In-app | `report_outcome_no_violation` | «Update on your report: We reviewed the content and found it doesn't violate our guidelines.» |
 
-> ⚖️ **DSA Art.16(5):** уведомление обязательно для платформ ЕС. Содержание решения сообщается без раскрытия личности нарушителя.
+> Имя нарушителя в уведомлении **не раскрывается**.
 
 ---
 
-## B. Флоу нарушителя — Уведомление об удалении контента
+## 7. Content Moderation — Уведомление нарушителю
 
-### B-1. In-app сообщение (Statement of Reasons)
+### 7.1 Уведомление о жалобе (до решения)
 
-> Отправляется автоматически, когда модератор удаляет контент.  
-> Канал: In-app notification + Email.  
-> Ключ: `system_moderation_content_removed`
+> Отправляется сразу после получения жалобы — до того как модератор принял решение.  
+> Ключ: `profile_complaint_received`
 
 ```
 [In-app notification]
 
+Заголовок: «Complaint about your content»
+Текст: «Someone reported content on your profile.
+        We're reviewing it. No action has been taken yet.»
+```
+
+> Кто пожаловался — **не раскрывается**. Защищает репортёра от мести.
+
+### 7.2 Контент удалён — Statement of Reasons (DSA Art.17)
+
+> Отправляется, когда **модератор (или AI)** принял решение удалить контент.  
+> Ключ: `system_moderation_content_removed`  
+> Каналы: Email + In-app
+
+```
+[In-app / Email]
+
 Заголовок: «Your content was removed»
 Текст:
-  «We removed your [post / photo / comment] posted on [date].
+  «We removed your [post / photo / comment] posted on [дата].
 
-   Reason: [Violation category, например: Hate Speech]
+   Reason: [Violation category — например: Hate Speech]
 
-   This content violated our Community Guidelines.
-   [Read Community Guidelines →]
+   This content violated our Community Guidelines:
+   [Ссылка: Read Community Guidelines →]
 
-   If you believe this was a mistake, you can appeal below.»
+   If you believe this was a mistake, you can appeal this decision.»
 
-[Кнопка: «Appeal this decision»]   ← обязательна (DSA Art.17)
+[Кнопка: «Appeal this decision»]   ← обязательна (DSA Art.20)
 [Кнопка: «OK»]
 ```
 
-> ⚖️ **DSA Art.17(1):** платформа обязана предоставить Statement of Reasons — объяснение, какое правило нарушено.  
-> ⚖️ **DSA Art.17(3):** пользователь должен иметь возможность подать апелляцию.
+> ⚖️ **DSA Art.17(1):** Statement of Reasons обязателен — нужно указать конкретное правило, которое нарушено.  
+> ⚖️ **DSA Art.20:** пользователь должен иметь возможность обжаловать любое решение.
 
----
+### 7.3 Контент не прошёл модерацию (при публикации)
 
-### B-2. Placeholder удалённого контента (в ленте автора)
-
-> Другие пользователи не видят удалённый пост вообще.  
-> Автор видит placeholder вместо своего поста.
+> Контент заблокирован до публикации (pre-moderation).  
+> Ключ: `system_moderation_content_rejected`
 
 ```
-[Карточка поста — только для автора]
+[In-app]
 
+Заголовок: «Content not approved»
+Текст: «Your [post / photo] was not published because it doesn't meet
+        our Community Guidelines.
+        Reason: [категория]»
+
+[Кнопка: «Appeal»]
+[Кнопка: «Edit and repost»]
+[Кнопка: «OK»]
+```
+
+### 7.4 Placeholder удалённого контента (в ленте автора)
+
+> Другие пользователи удалённый пост **не видят вообще**.  
+> Автор видит placeholder на месте своего поста.
+
+```
 ┌─────────────────────────────┐
 │  ⚠️ Content removed         │
 │  This post was removed for  │
@@ -169,47 +261,29 @@
 
 ---
 
-### B-3. Уведомление о жалобе (до решения)
+## 8. Обжалование (Appeal) — DSA Art.20
 
-> Отправляется сразу после получения жалобы, до принятия решения.  
-> Ключ: `profile_complaint_received`
+> ⚖️ **DSA Art.20:** право на апелляцию обязательно для **каждого** решения об удалении контента.  
+> Апелляция всегда рассматривается **живым модератором** (не AI).
 
-```
-[In-app notification]
-
-Текст: «Someone reported content on your profile.
-        We're reviewing it. No action has been taken yet.»
-```
-
-> Кто пожаловался — не раскрывается. Это защищает репортёра от преследования.
-
----
-
-## C. Флоу апелляции
-
-### C-1. Экран 1 — Форма апелляции
+### 8.1 Экран 1 — Форма апелляции
 
 ```
 Заголовок: «Appeal content removal»
-
-Текст: «Tell us why you think this was a mistake.»
 
 Информация об удалённом контенте:
   Тип: Post / Photo / Comment
   Дата удаления: [дата]
   Причина удаления: [Hate Speech]
 
-Текстовое поле: «Explain your appeal...» (обязательное, max 1000 chars)
+Текст: «Tell us why you think this was a mistake.»
+Поле: «Explain your appeal...» (обязательное, max 1000 chars)
 
 [Кнопка: «Submit Appeal»]
 [Кнопка: «Cancel»]
 ```
 
-> ⚖️ **DSA Art.17(3)(c):** пользователь должен иметь возможность объяснить, почему считает решение ошибкой.
-
----
-
-### C-2. Экран 2 — Подтверждение апелляции
+### 8.2 Экран 2 — Подтверждение апелляции
 
 ```
 Заголовок: «Appeal submitted»
@@ -222,41 +296,176 @@
 [Кнопка: «Done»]
 ```
 
+### 8.3 Уведомление о решении по апелляции
+
+> Ключ: `profile_appeal_decision`  
+> Каналы: Email + In-app
+
+| Решение | Текст уведомления |
+|---|---|
+| Апелляция удовлетворена | «Your appeal was approved. Your content has been restored.» |
+| Апелляция отклонена | «Your appeal was reviewed. The removal decision was upheld. [Reason].» |
+
+> ⚖️ **DSA Art.20(4):** решение по апелляции должно быть мотивировано.
+
 ---
 
-### C-3. Уведомление о решении по апелляции
+## 9. Кнопка «Appeal» при AI-удалении (GDPR Art.22 + DSA Art.20)
 
-| Канал | Ключ | Текст |
+> Если контент удалён **автоматически (AI)** — пользователь имеет право потребовать проверки **человеком**.  
+> ⚖️ **GDPR Art.22:** запрещено принимать юридически значимые решения исключительно автоматически без возможности human review.  
+> ⚖️ **DSA Art.20:** апелляция на любое решение о модерации.
+
+### Отличие от стандартной апелляции
+
+| Параметр | Стандартная апелляция | AI-удаление |
 |---|---|---|
-| In-app + Email | `profile_appeal_decision` | «Your appeal has been reviewed. [Решение: Content restored / Removal upheld]. [Reason].» |
+| Инициатор удаления | Модератор (человек) | AI / автоматика |
+| Метка в уведомлении | — | «Removed automatically» |
+| Текст кнопки | «Appeal» | «Request human review» |
+| Срок рассмотрения | 5 рабочих дней | 5 рабочих дней |
+| Кто рассматривает апелляцию | Модератор 2 | Модератор (всегда человек) |
 
-> ⚖️ **DSA Art.17(4):** решение по апелляции должно быть мотивировано.
+### Уведомление об AI-удалении
+
+```
+[In-app]
+
+Заголовок: «Your content was removed automatically»
+Текст:
+  «Your [post / photo] was automatically removed on [дата]
+   because it may violate our guidelines on [причина].
+
+   If you believe this was a mistake, you can request
+   a review by a human moderator.»
+
+[Кнопка: «Request human review»]   ← GDPR Art.22
+[Кнопка: «OK»]
+```
 
 ---
 
-## D. Account Status — История жалоб и нарушений
+## 10. Сроки рассмотрения
 
-**Раздел:** Settings → Help & Support → Account Status  
-*(или: Settings → Help & Support → My Reports & Violations)*
+> ⚖️ **DSA Art.14–20:** сроки обязательны для платформ ЕС.
 
-> Этот экран снижает нагрузку на поддержку: пользователь сам видит, что происходит с его жалобами и контентом.
+| Тип | Срок | Кто рассматривает |
+|---|---|---|
+| CSAE / незаконный контент | ≤ 24 ч | Специальная CSAE-команда |
+| Стандартная жалоба (Spam, Harassment и др.) | ≤ 5 рабочих дней | Модератор |
+| Апелляция (стандартная) | ≤ 5 рабочих дней | Модератор 2 (не тот, кто удалял) |
+| Апелляция при AI-удалении | ≤ 5 рабочих дней | Модератор-человек |
+| Ответ на GDPR-запрос | ≤ 30 дней | DPO / Privacy Officer |
 
-### D-1. Структура экрана
+---
+
+## 11. Проверка достоверности информации (Misinformation)
+
+> Жалоба с причиной **«Misinformation / False information»** обрабатывается отдельным флоу.
+
+| Шаг | Действие |
+|---|---|
+| 1 | Жалоба поступает → тег `fact_check_required` |
+| 2 | AI делает предварительную оценку + добавляет метку «Disputed» на контент |
+| 3 | Модератор проверяет + при необходимости привлекает fact-check партнёра |
+| 4 | Решения: Verified / Disputed (остаётся с меткой) / Removed |
+
+**Метка «Disputed» (на контенте, видна всем):**
+```
+┌─────────────────────────────────────┐
+│  ⚠️ This post contains disputed    │
+│  information.                        │
+│  [Learn more →]                      │
+└─────────────────────────────────────┘
+```
+
+> Автор видит ту же метку и может подать апелляцию через стандартный флоу (п. 8).
+
+---
+
+## 12. 💬 Модерация личных сообщений (DM / Чаты)
+
+> ⚖️ **DSA Art.14 · Apple §1.2:** механизм жалоб обязателен в том числе в личных сообщениях.
+
+### 12.1 Точки входа для Report в чате
+
+| Действие | Результат |
+|---|---|
+| Long press на конкретном сообщении → «Report» | Жалоба на одно сообщение |
+| ⋯ в шапке чата → «Report conversation» | Жалоба на весь диалог |
+| ⋯ в шапке чата → «Block user» | Блокировка + закрытие чата |
+
+### 12.2 Report Menu в чате (дополнительные категории)
 
 ```
-Account Status
-├── Вкладка: «My Reports» (жалобы, которые я подал)
-└── Вкладка: «My Violations» (удалённый мой контент)
+Список причин для DM:
+  ○ Spam or unwanted messages
+  ○ Harassment or threats
+  ○ Sending harmful content (images / links)
+  ○ Fraud or scam attempt
+  ○ 🔴 Child Safety (CSAE)
+  ○ Other
+```
+
+### 12.3 Поведение после блокировки в чате
+
+- Чат остаётся в истории (только для заблокировавшего).
+- Заблокированный не может написать новые сообщения.
+- Уведомление заблокированному **не отправляется**.
+
+### 12.4 Конфиденциальность при модерации DM
+
+> Содержание личных сообщений модератор **не читает** без веских оснований.  
+> При жалобе: модератор видит только **флаг жалобы + категорию + конкретное сообщение**, на которое пожаловались (если жалоба на одно сообщение).  
+> При CSAE: полный доступ к чату + обязательный репорт в NCMEC.
+
+---
+
+## 13. Автоматическая система защиты (Anti-Spam)
+
+> Работает в фоне, пользователю не видна. Снижает нагрузку на модераторов.
+
+| Триггер | Автодействие |
+|---|---|
+| Одинаковый текст/ссылки в N постах за короткое время | Временный hold (задержка публикации) |
+| Новый аккаунт рассылает DM сразу нескольким пользователям | Капча / временный лимит на DM |
+| Ссылка из блэклиста (фишинг, malware) | Автоблокировка ссылки + уведомление пользователю |
+| Одинаковые комментарии на разных постах | Автоскрытие + флаг для модератора |
+| > 10 жалоб «Spam» на одного пользователя за 24 ч | Временная приостановка аккаунта + review |
+
+**Уведомление пользователю при автоматическом ограничении:**
+```
+[In-app]
+
+Текст: «Your account has been temporarily limited due to
+        unusual activity. This may have been a mistake.
+        If you believe this is an error, please contact support.»
+
+[Кнопка: «Contact Support»]
+[Кнопка: «OK»]
 ```
 
 ---
 
-### D-2. Вкладка «My Reports» (жалобы репортёра)
+## 14. Settings → My Reports (История жалоб)
+
+**Расположение:** `Settings → My Reports`  
+*(также доступно через Settings → Help & Support → Report a problem)*
+
+> Экран снижает нагрузку на поддержку: пользователь сам отслеживает статус своих жалоб и нарушений.
+
+### 14.1 Структура экрана
 
 ```
 My Reports
+├── Вкладка: «Submitted» (жалобы, которые я подал)
+└── Вкладка: «My content» (мой удалённый / оспариваемый контент)
+```
 
-[Список жалоб]
+### 14.2 Вкладка «Submitted» — Жалобы репортёра
+
+```
+Submitted Reports
 
 ┌─────────────────────────────────────┐
 │  Report #1042                        │
@@ -283,70 +492,100 @@ My Reports
 └─────────────────────────────────────┘
 ```
 
-**Статусы:**
-- `● Under review` — на рассмотрении
-- `✅ Action taken` — контент удалён / пользователь заблокирован
-- `ℹ️ No violation found` — нарушений не найдено
+**Статусы жалобы (DSA Art.17 — уведомление о результате):**
 
-> Имя пользователя, на которого подана жалоба, **не показывается** — только тип контента.  
-> Это защищает анонимность: если репортёр видит «action taken» или «no violation», этого достаточно.
+| Статус | Значение |
+|---|---|
+| `● Under review` | Жалоба принята, рассматривается |
+| `✅ Action taken` | Контент удалён / аккаунт ограничен |
+| `ℹ️ No violation found` | Нарушений не найдено |
 
----
+> Имя пользователя, на которого подана жалоба, **не показывается** — только тип контента.
 
-### D-3. Вкладка «My Violations» (нарушения пользователя)
+### 14.3 Вкладка «My content» — Мои нарушения
 
 ```
-My Violations
+My Content
 
-Предупреждение (если есть страйки):
+Предупреждение (если есть активные страйки):
 ┌─────────────────────────────────────┐
-│  ⚠️ 1 strike on your account       │
+│  ⚠️ 1 active strike on your account│
 │  3 strikes may result in account    │
 │  suspension.                         │
 └─────────────────────────────────────┘
 
-[Список удалённого контента]
+[Список удалённого/оспариваемого контента]
 
 ┌─────────────────────────────────────┐
 │  Post removed                        │
 │  Date: 12 Apr 2026                   │
 │  Reason: Hate Speech                 │
-│  Appeal status: Not submitted        │
+│  Removed by: Moderator              │
+│  Appeal: Not submitted               │
 │  [Submit Appeal →]                   │
+└─────────────────────────────────────┘
+
+┌─────────────────────────────────────┐
+│  Photo removed automatically        │
+│  Date: 8 Apr 2026                   │
+│  Reason: Nudity                      │
+│  Removed by: AI (automatic)         │
+│  Appeal: Requested human review ↻  │
 └─────────────────────────────────────┘
 
 ┌─────────────────────────────────────┐
 │  Comment removed                     │
 │  Date: 1 Mar 2026                    │
 │  Reason: Spam                        │
-│  Appeal status: ✅ Upheld — Removed │
+│  Removed by: Moderator              │
+│  Appeal: ✅ Upheld — Removal stands │
 └─────────────────────────────────────┘
 ```
 
 ---
 
-## Уведомления, связанные с жалобами (сводка)
+## 15. Уведомления — Сводная таблица
 
-| Ключ | Кому | Нельзя выключить | Канал |
-|---|---|---|---|
-| `profile_complaint_received` | Нарушителю | ⚖️ DSA Art.17 | In-app |
-| `system_moderation_content_removed` | Нарушителю | ⚖️ DSA Art.17 | Email · In-app |
-| `profile_appeal_decision` | Нарушителю (апеллянту) | ⚖️ DSA Art.17 | Email · In-app |
-| `report_outcome_action_taken` | Репортёру | ⚖️ DSA Art.16 | In-app |
-| `report_outcome_no_violation` | Репортёру | ⚖️ DSA Art.16 | In-app |
+> Все уведомления из `NotificationsSpec.md`, связанные с модерацией.  
+> Нельзя выключить (🚫).
+
+| Ключ | Кому | Закон | Канал | Title (EN) |
+|---|---|---|---|---|
+| `profile_complaint_received` | Нарушителю | ⚖️ DSA Art.17 | In-app | «Complaint about your content» |
+| `system_moderation_content_removed` | Нарушителю | ⚖️ DSA Art.17 | Email, In-app | «Content removed by moderation» |
+| `system_moderation_content_rejected` | Нарушителю | ⚖️ GDPR Art.20 | In-app | «Content not approved» |
+| `profile_appeal_decision` | Нарушителю (апеллянту) | ⚖️ DSA Art.20 / GDPR Art.22 | Email, In-app | «Decision on your appeal» |
+| `report_outcome_action_taken` | Репортёру | ⚖️ DSA Art.16 | In-app | «Update on your report» |
+| `report_outcome_no_violation` | Репортёру | ⚖️ DSA Art.16 | In-app | «Update on your report» |
+| `profile_account_suspended` | Нарушителю | ⚖️ DSA Art.20 | Email, In-app | «Account blocked or suspended» |
 
 ---
 
-## Что нужно дизайнеру — список экранов
+## 16. Список экранов для дизайнера
 
 | # | Экран | Тип |
 |---|---|---|
-| 1 | Выбор причины жалобы | Bottom sheet / Full screen |
+| 1 | Report Menu — выбор причины | Bottom sheet |
 | 2 | Детали жалобы (текст + скриншот) | Full screen |
-| 3 | Подтверждение жалобы + предложение Block | Full screen |
-| 4 | In-app уведомление: контент удалён (Statement of Reasons) | In-app notification |
-| 5 | Placeholder удалённого поста в ленте автора | Card (inline в ленте) |
-| 6 | Форма апелляции | Full screen |
-| 7 | Подтверждение апелляции | Full screen |
-| 8 | Account Status → My Reports | Full screen |
-| 9 | Account Status → My Violations | Full screen |
+| 3 | Alert — «Submit report?» | System alert |
+| 4 | Подтверждение жалобы + предложение Block | Full screen |
+| 5 | In-app: жалоба получена (до решения) | Push / In-app banner |
+| 6 | In-app + Email: контент удалён (Statement of Reasons) | In-app modal |
+| 7 | In-app: контент удалён AI («Request human review») | In-app modal |
+| 8 | Placeholder удалённого поста в ленте автора | Card (inline) |
+| 9 | Метка «Disputed» на посте (misinformation) | Card overlay |
+| 10 | Форма апелляции (standard) | Full screen |
+| 11 | Форма «Request human review» (AI-removal) | Full screen |
+| 12 | Подтверждение апелляции | Full screen |
+| 13 | Settings → My Reports → «Submitted» | Full screen |
+| 14 | Settings → My Reports → «My content» | Full screen |
+
+---
+
+## Связанные файлы
+
+- [ModerationAdminGuide.md](ModerationAdminGuide.md) — процессы модератора, страйки, Trust Score, CSAE-протокол
+- [ChildSafety.md](ChildSafety.md) — отдельный экран Child Safety
+- [ContactSupport.md](ContactSupport.md) — контакты поддержки, сроки ответа
+- `NotificationsSpec.md` — все ключи уведомлений с каналами
+- `TermsOfService.md` → раздел 9 «Safety, Blocking, and Reporting»
