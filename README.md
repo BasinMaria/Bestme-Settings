@@ -1,99 +1,144 @@
-# Bestme Settings — Полный список файлов
+# Bestme Settings — Карта репозитория
 
-> Репозиторий: **BasinMaria/Bestme-Settings** · Ветка: `copilot/design-settings-organization`
+> **Репозиторий:** BasinMaria/Bestme-Settings  
+> **Принцип:** каждый документ живёт **ровно в одном месте**. Везде остальное — только ссылка.
 
 ---
 
-## 📂 ВСЕ ФАЙЛЫ — нажмите на название чтобы открыть
+## 📁 Структура папок
 
-| # | Файл | Что внутри |
+```
+Bestme-Settings/
+├── 01_legal/          ← Юридические тексты (Terms, Privacy, Cookies)
+├── 02_compliance/     ← Аудиты, анализы, чеклисты публикации
+├── 03_settings/       ← ТЗ всех 9 разделов настроек приложения
+├── 04_moderation/     ← UGC модерация: экраны для пользователей + инструкция модератора
+├── 05_admin_panel/    ← Интерфейс бэкофиса: роли, экраны, API
+├── 06_database/       ← Схема БД: таблицы, индексы, политика хранения
+├── 07_help_support/   ← Экраны Help & Support (только то, что видит пользователь)
+└── diagrams/          ← draw.io схемы
+```
+
+---
+
+## 01_legal — Юридические тексты
+
+> Полные тексты документов. Нигде не дублируются — везде только ссылки сюда.
+
+| Файл | Что внутри |
+|---|---|
+| [TermsOfService.md](01_legal/TermsOfService.md) | Terms of Service v1.0 — полный юридический текст |
+| [PrivacyPolicy.md](01_legal/PrivacyPolicy.md) | Privacy Policy v1.0 — полный юридический текст (GDPR · CCPA · PIPEDA) |
+| [CookiePolicy.md](01_legal/CookiePolicy.md) | Cookie Policy — типы cookie, экран Cookie Settings, Banner |
+
+---
+
+## 02_compliance — Аудиты и анализы
+
+> Проверки соответствия законам, чеклисты блокеров публикации.
+
+| Файл | Что внутри |
+|---|---|
+| [LegalComplianceSpec.md](02_compliance/LegalComplianceSpec.md) | 21 закон + 2 магазина, матрица 22×12, приоритеты |
+| [MasterComplianceAnalysis.md](02_compliance/MasterComplianceAnalysis.md) | Итоговый анализ: готовность, 9 критических пробелов |
+| [GDPRArt25Art17AuditSpec.md](02_compliance/GDPRArt25Art17AuditSpec.md) | Аудит GDPR Art.25 (Privacy by Default) + Art.17 (право на удаление) |
+| [AppStoreAuditSpec.md](02_compliance/AppStoreAuditSpec.md) | Аудит Apple App Store Review Guidelines (02.2026) |
+| [ComplianceClarifications.md](02_compliance/ComplianceClarifications.md) | Ответы на вопросы: возраст 18+ vs COPPA, субтитры, 13 критичных пунктов |
+| [PublicationPriorityPlan.md](02_compliance/PublicationPriorityPlan.md) | Что блокирует публикацию, 2-sprint план, статус 6 потоков |
+
+---
+
+## 03_settings — ТЗ настроек приложения
+
+> Технические задания для дизайнеров и разработчиков по всем 9 разделам Settings.
+
+| Файл | Что внутри |
+|---|---|
+| [SettingsOverview.md](03_settings/SettingsOverview.md) | **КАРТА:** обзор всех 9 разделов, структура L1 |
+| [ProfileSettingsFullSpec.md](03_settings/ProfileSettingsFullSpec.md) | **ГЛАВНЫЙ:** полная спецификация v2.0, 6 обязательных потоков, 40+ законов |
+| [SettingsTZ.md](03_settings/SettingsTZ.md) | ТЗ: таблицы 🔴/🟡/🟢, L1→L2→L3, variable names |
+| [SettingsMapping.md](03_settings/SettingsMapping.md) | Маппинг дизайнерских экранов к L1/L2/L3 |
+| [AccountSpec.md](03_settings/AccountSpec.md) | Раздел 1️⃣ Account: редактирование профиля |
+| [AccountDeletionSpec.md](03_settings/AccountDeletionSpec.md) | Удаление аккаунта: 4 сценария, 15 экранов, де-индексация, App Store чеклист |
+| [AccountPrivacySpec.md](03_settings/AccountPrivacySpec.md) | Юридический анализ блока Account Privacy, defaults по возрасту |
+| [PrivacyVisibilitySpec.md](03_settings/PrivacyVisibilitySpec.md) | Раздел 2️⃣ Privacy & Visibility: полная спецификация |
+| [PrivacyFieldsSpec.md](03_settings/PrivacyFieldsSpec.md) | 35 privacy-полей: defaults, матрица видимости, правовые основания |
+| [GDPRArt5SecuritySpec.md](03_settings/GDPRArt5SecuritySpec.md) | Раздел 3️⃣ Login & Security: 2FA, сессии, OAuth, GDPR Art.5 |
+| [NotificationsSpec.md](03_settings/NotificationsSpec.md) | Раздел 4️⃣ Notifications: 76 уведомлений в 15 группах |
+| [FriendsAndCommunitySpec.md](03_settings/FriendsAndCommunitySpec.md) | Раздел 5️⃣ Friends & Community |
+| [AccessibilitySpec.md](03_settings/AccessibilitySpec.md) | Раздел 8️⃣ Accessibility: 8 настроек, WCAG, EAA, кнопка Contact DPO |
+| [UserManualGuide.md](03_settings/UserManualGuide.md) | Нужно ли руководство пользователя: Help Center, Accessibility Statement |
+
+---
+
+## 04_moderation — Модерация UGC
+
+> Всё про жалобы и модерацию: и что видит пользователь, и что делает модератор.
+
+| Файл | Что внутри |
+|---|---|
+| [ReportAProblem.md](04_moderation/ReportAProblem.md) | Полная спецификация Report flow: 14 экранов, все категории, DM, AI-модерация |
+| [ModerationAdminGuide.md](04_moderation/ModerationAdminGuide.md) | Инструкция модератора: жизненный цикл тикета, страйки, CSAE протокол |
+| [ChildSafety.md](04_moderation/ChildSafety.md) | Экран Child Safety в приложении, NCMEC, требования Google Play |
+
+---
+
+## 05_admin_panel — Интерфейс бэкофиса
+
+> Спецификация веб-панели для команды модерации.
+
+| Файл | Что внутри |
+|---|---|
+| [AdminPanelSpec.md](05_admin_panel/AdminPanelSpec.md) | Роли (Moderator/Senior/Admin/Safety Officer/DPO), экраны Dashboard/Tickets/Appeals/CSAE/Statistics/Audit Log, матрица прав, API endpoints |
+
+---
+
+## 06_database — Схема базы данных
+
+> SQL-схемы всех таблиц с комментариями, индексы, политика хранения данных.
+
+| Файл | Что внутри |
+|---|---|
+| [DatabaseSchema.md](06_database/DatabaseSchema.md) | Таблицы: `users`, `user_profiles`, `user_sessions`, `consent_history`, `reports`, `moderation_tickets`, `moderation_log`, `strikes`, `appeals`, `blocked_users`, `notifications_log`, `data_deletion_requests` |
+
+---
+
+## 07_help_support — Help & Support (пользовательские экраны)
+
+> Только то, что видит пользователь в Settings → Help & Support.  
+> Terms и Privacy не дублируются — ссылки на `01_legal/`.
+
+| Файл | Что внутри |
+|---|---|
+| [HelpCenter_FAQ.md](07_help_support/HelpCenter_FAQ.md) | FAQ: частые вопросы и ответы |
+| [ContactSupport.md](07_help_support/ContactSupport.md) | Контакты поддержки: email, сроки ответа |
+| [OpenSourceLicenses.md](07_help_support/OpenSourceLicenses.md) | Лицензии open-source компонентов |
+| [AppVersion.md](07_help_support/AppVersion.md) | Экран версии приложения |
+
+---
+
+## diagrams — Схемы draw.io
+
+| Файл | Что внутри |
+|---|---|
+| [PersonalProfileSettings.drawio.html](diagrams/PersonalProfileSettings.drawio.html) | 260 ячеек, иерархия L1→L2→L3 настроек |
+| [SettingsArchitecture.drawio.html](diagrams/SettingsArchitecture.drawio.html) | 242 ячейки, архитектура Privacy & Visibility |
+| [ProfileSettings.drawio.html](diagrams/ProfileSettings.drawio.html) | Исходная архитектура настроек |
+
+---
+
+## Правило «один раз — одно место»
+
+| Что | Где живёт | Везде остальное |
 |---|---|---|
-| 1 | **[📄 ProfileSettingsFullSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ProfileSettingsFullSpec.md)** ← ГЛАВНЫЙ | Полная структура настроек профиля v2.0: 9 разделов, 6 обязательных потоков, чеклист публикации, таблица законов |
-| 2 | [📄 README.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/README.md) | Этот файл — список всех файлов со ссылками |
-| 3 | [📄 SettingsTZ.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsTZ.md) | ТЗ настроек: таблицы 🔴/🟡/🟢, L1→L2→L3, variable names, законы |
-| 4 | [📄 MasterComplianceAnalysis.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/MasterComplianceAnalysis.md) | Итоговый анализ: 78% готовности, 9 критических пробелов |
-| 5 | [📄 LegalComplianceSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/LegalComplianceSpec.md) | 21 закон + 2 магазина, матрица 22×12, приоритеты |
-| 6 | [📄 PrivacyFieldsSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PrivacyFieldsSpec.md) | 35 privacy-полей: defaults, матрица видимости, правовые основания |
-| 7 | [📄 NotificationsSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/NotificationsSpec.md) | 76 уведомлений в 15 группах, 29 обязательных по закону |
-| 8 | [📄 AccountPrivacySpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AccountPrivacySpec.md) | Юридический анализ блока Account Privacy, defaults по возрасту |
-| 9 | [📄 GDPRArt25Art17AuditSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/GDPRArt25Art17AuditSpec.md) | Аудит GDPR Art.25 + Art.17 пункт за пунктом |
-| 10 | [📄 AppStoreAuditSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AppStoreAuditSpec.md) | Аудит Apple App Store Review Guidelines (02.2026) |
-| 11 | **[📄 AccountDeletionSpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AccountDeletionSpec.md)** | ТЗ удаления аккаунта: 4 сценария, 15 экранов, сроки, де-индексация, взлом, App Store + Google Play чеклист |
-| 12 | **[📄 ComplianceClarifications.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ComplianceClarifications.md)** | Ответы на вопросы: возраст 18+ vs COPPA, субтитры/доступность в соцсети, план реализации 13 критичных пунктов |
-| 13 | **[📄 PublicationPriorityPlan.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PublicationPriorityPlan.md)** | 🔴 Что блокирует публикацию vs штрафные риски; статус 6 потоков; уточнение по субтитрам; 2-sprint план |
-| 14 | **[📄 AccessibilitySpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AccessibilitySpec.md)** ← НОВЫЙ | ♿ Полное ТЗ раздела Accessibility: 8 настроек с variable_name + WCAG + законы + ТЗ для iOS/Android/Backend; кнопка Contact DPO |
-| 15 | **[📄 GDPRArt5SecuritySpec.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/GDPRArt5SecuritySpec.md)** ← НОВЫЙ | 🔒 GDPR Art.5 ТЗ: 2FA, HTTPS/TLS, Session Management, Consent History, Audit Log, DPO; ответ — нужна ли веб-форма удаления отдельно от in-app |
-| 16 | **[📄 UserManualGuide.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/UserManualGuide.md)** ← НОВЫЙ | 📖 Нужно ли руководство пользователя: что обязательно для публикации, что писать в Help Center, Accessibility Statement шаблон |
-| 17 | [📄 SettingsMapping.md](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsMapping.md) | Маппинг дизайнерских экранов к L1/L2/L3 |
-| 18 | [🖼 PersonalProfileSettings.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/PersonalProfileSettings.drawio.html) | Диаграмма draw.io: 260 ячеек, полная иерархия L1→L2→L3 |
-| 19 | [🖼 SettingsArchitecture.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsArchitecture.drawio.html) | Диаграмма draw.io: 242 ячейки, архитектура Privacy & Visibility |
-| 20 | [🖼 ProfileSettings.drawio.html](https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ProfileSettings.drawio.html) | Диаграмма draw.io: исходная архитектура настроек |
+| Terms of Service (текст) | `01_legal/TermsOfService.md` | Ссылка |
+| Privacy Policy (текст) | `01_legal/PrivacyPolicy.md` | Ссылка |
+| Cookie Policy | `01_legal/CookiePolicy.md` | Ссылка |
+| Все 76 ключей уведомлений | `03_settings/NotificationsSpec.md` | Ссылка |
+| Report flow (пользователь) | `04_moderation/ReportAProblem.md` | Ссылка |
+| Инструкция модератора | `04_moderation/ModerationAdminGuide.md` | Ссылка |
+| DB схемы | `06_database/DatabaseSchema.md` | Ссылка |
 
 ---
 
-## 🔗 Прямые ссылки (скопируйте и вставьте в браузер)
-
-**Новый: ТЗ удаления аккаунта (4 сценария + де-индексация + взлом):**
-```
-https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/AccountDeletionSpec.md
-```
-
-**Главный файл — полная спецификация настроек:**
-```
-https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/ProfileSettingsFullSpec.md
-```
-
-**Итоговый анализ (что готово, что нет):**
-```
-https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/MasterComplianceAnalysis.md
-```
-
-**ТЗ настроек:**
-```
-https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/SettingsTZ.md
-```
-
-**Юридическая спецификация (21 закон):**
-```
-https://github.com/BasinMaria/Bestme-Settings/blob/copilot/design-settings-organization/LegalComplianceSpec.md
-```
-
-**Все файлы сразу (корень репозитория):**
-```
-https://github.com/BasinMaria/Bestme-Settings/tree/copilot/design-settings-organization
-```
-
----
-
-## ✅ Что было сделано — краткий итог
-
-### Новые файлы (созданы с нуля)
-1. **ProfileSettingsFullSpec.md** — полная спецификация настроек v2.0 (843 строки)
-2. **MasterComplianceAnalysis.md** — итоговый анализ соответствия 21 закону
-3. **LegalComplianceSpec.md** — расширен до v3.0: добавлены TCPA SMS consent и Google Play требования
-4. **GDPRArt25Art17AuditSpec.md** — детальный аудит GDPR Art.25 + Art.17
-5. **AppStoreAuditSpec.md** — аудит Apple App Store (февраль 2026)
-6. **AccountPrivacySpec.md** — юридический анализ блока приватности
-7. **PrivacyFieldsSpec.md** — спецификация 35 privacy-полей
-8. **NotificationsSpec.md** — спецификация 76 уведомлений
-9. **PersonalProfileSettings.drawio.html** — диаграмма иерархии настроек
-10. **SettingsArchitecture.drawio.html** — архитектурная диаграмма
-11. **SettingsTZ.md** — полное ТЗ настроек
-12. **SettingsMapping.md** — маппинг экранов
-13. **README.md** — этот файл-индекс
-
-### Что добавлено в ProfileSettingsFullSpec.md v2.0 (чего не было в v1.0)
-- GDPR Art.5 как фундаментальный раздел
-- **6 обязательных UI-потоков** (Onboarding, UGC ToS, ATT, TCPA SMS, Prominent Disclosure, Delete Modal)
-- Child Safety раздел (Google Play требование)
-- Кнопка «Do Not Sell My Personal Information» (CCPA)
-- Кнопки «Disconnect» для 3rd-party логинов (App Store требование)
-- Таблица политики хранения данных (GDPR Art.5(1)(e))
-- Email marketing checkboxes: пустые по умолчанию (CASL/ePrivacy)
-- Сводная таблица 40+ законов × настройки
-- Чеклист публикации 34 пункта (блокеры / важное / рекомендации)
-- Полный словарь variable_names + типы + defaults
-
----
-
-*README.md | Bestme Settings | март 2026*
+*README.md · Bestme Settings · май 2026*

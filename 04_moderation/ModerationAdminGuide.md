@@ -253,6 +253,6 @@ Blocked Accounts
 
 - [ReportAProblem.md](ReportAProblem.md) — экраны для пользователей
 - [ChildSafety.md](ChildSafety.md) — экран Child Safety в приложении
-- [ContactSupport.md](ContactSupport.md) — контакты поддержки
+- [ContactSupport.md](../07_help_support/ContactSupport.md) — контакты поддержки
 - `SettingsTZ.md` → раздел Privacy & Visibility → Blocked Accounts — спецификация блокировок
 - `NotificationsSpec.md` — все ключи уведомлений модерации

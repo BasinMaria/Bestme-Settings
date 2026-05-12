@@ -215,7 +215,7 @@ Settings → Friends & Community
 
 **Путь:** Settings → Your Data  
 **Правовое основание:** ⚖️ GDPR Art.15–22 · CCPA §1798.100–120 · PIPEDA · Quebec L25 · Israel PPL  
-**Подробный документ:** [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md)
+**Подробный документ:** [GDPRArt25Art17AuditSpec.md](../02_compliance/GDPRArt25Art17AuditSpec.md)
 
 **Что включает:**
 
@@ -415,7 +415,7 @@ Settings → Friends & Community
 | 4 | **Notifications** | 🔔 | GDPR Art.6/7 · App Store · Google Play · CASL · CAN-SPAM · TCPA | [NotificationsSpec.md](NotificationsSpec.md) |
 | 5 | **Friends & Community** | 👥 | GDPR Art.25 · DSA Art.14 | *(этот документ, §5)* |
 | 6 | **Content** | 📝 | DSA Art.14 · GDPR Art.25 · Google Play UGC · App Store §1.2 | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) |
-| 7 | **Your Data** | 📦 | GDPR Art.15–22 · CCPA §1798.100–120 · PIPEDA · Quebec L25 · Israel PPL | [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md) |
+| 7 | **Your Data** | 📦 | GDPR Art.15–22 · CCPA §1798.100–120 · PIPEDA · Quebec L25 · Israel PPL | [GDPRArt25Art17AuditSpec.md](../02_compliance/GDPRArt25Art17AuditSpec.md) |
 | 8 | **Accessibility** | ♿ | EAA 2019/882 · ADA · Israel Disability Law · AODA · CA Unruh · App Store §2.5.4 · Google Play | [AccessibilitySpec.md](AccessibilitySpec.md) |
 | 9 | **Help & Support** | ❓ | App Store · Google Play · DSA Art.14/17 · GDPR Art.13 | *(этот документ, §9)* |
 
@@ -468,4 +468,4 @@ Settings → Friends & Community
 ---
 
 *SettingsOverview.md v1.0 · Bestme · март 2026*  
-*Документы по разделам: [AccountSpec.md](AccountSpec.md) · [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md) · [NotificationsSpec.md](NotificationsSpec.md) · [AccessibilitySpec.md](AccessibilitySpec.md) · [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md) · [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md)*
+*Документы по разделам: [AccountSpec.md](AccountSpec.md) · [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md) · [NotificationsSpec.md](NotificationsSpec.md) · [AccessibilitySpec.md](AccessibilitySpec.md) · [GDPRArt25Art17AuditSpec.md](../02_compliance/GDPRArt25Art17AuditSpec.md) · [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md)*

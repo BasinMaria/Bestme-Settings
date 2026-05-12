@@ -189,7 +189,7 @@ bestme.app/help
 ---
 
 *UserManualGuide.md v1.2 · Bestme · март 2026*  
-*Смежные документы: [AccessibilitySpec.md](AccessibilitySpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [PrivacyPolicy.md](PrivacyPolicy.md), [TermsOfService.md](TermsOfService.md)*
+*Смежные документы: [AccessibilitySpec.md](AccessibilitySpec.md), [AccountDeletionSpec.md](AccountDeletionSpec.md), [PrivacyPolicy.md](../01_legal/PrivacyPolicy.md), [TermsOfService.md](../01_legal/TermsOfService.md)*
 
 ---
 
@@ -197,7 +197,7 @@ bestme.app/help
 
 > Этот раздел описывает **Privacy & Visibility** с точки зрения пользователя: что делает каждая настройка, зачем она нужна и как её изменить.  
 > **Путь в приложении:** Settings → Privacy & Visibility  
-> **Технические детали и правовые основания:** [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [PrivacyPolicy.md](PrivacyPolicy.md)
+> **Технические детали и правовые основания:** [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [PrivacyPolicy.md](../01_legal/PrivacyPolicy.md)
 
 ---
 
@@ -389,8 +389,8 @@ bestme.app/help
 ---
 
 > 📄 **Подробнее о том, какие именно данные мы собираем и как защищаем:**  
-> [Privacy Policy](PrivacyPolicy.md) — полное описание обработки данных  
-> [Terms of Service](TermsOfService.md) — ваши права и наши обязательства  
+> [Privacy Policy](../01_legal/PrivacyPolicy.md) — полное описание обработки данных  
+> [Terms of Service](../01_legal/TermsOfService.md) — ваши права и наши обязательства  
 > [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) — техническая спецификация для разработчиков
 
 ---
@@ -593,8 +593,8 @@ bestme.app/help
 ---
 
 > 📄 **Подробнее о том, какие данные собираются при входе:**  
-> [Privacy Policy §5](PrivacyPolicy.md) — Login & Security: данные которые мы обрабатываем  
-> [Terms of Service §4](TermsOfService.md) — Login & Security: ваши права  
+> [Privacy Policy §5](../01_legal/PrivacyPolicy.md) — Login & Security: данные которые мы обрабатываем  
+> [Terms of Service §4](../01_legal/TermsOfService.md) — Login & Security: ваши права  
 > [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md) — техническая спецификация для разработчиков
 
 ---
@@ -699,8 +699,8 @@ bestme.app/help
 ---
 
 > 📄 **Подробнее:**
-> [Privacy Policy §6](PrivacyPolicy.md) — Друзья и Сообщество: какие данные мы обрабатываем
-> [Terms of Service §5](TermsOfService.md) — Друзья и Сообщество: ваши права
+> [Privacy Policy §6](../01_legal/PrivacyPolicy.md) — Друзья и Сообщество: какие данные мы обрабатываем
+> [Terms of Service §5](../01_legal/TermsOfService.md) — Друзья и Сообщество: ваши права
 > [FriendsAndCommunitySpec.md](FriendsAndCommunitySpec.md) — техническая спецификация для разработчиков
 
 ---

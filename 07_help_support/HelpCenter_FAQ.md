@@ -69,7 +69,7 @@ Help Center / FAQ
 ## Ссылки из раздела
 
 - [Contact Support](ContactSupport.md)
-- [Report a Problem](ReportAProblem.md)
-- [Child Safety](ChildSafety.md)
-- [Privacy Policy](PrivacyPolicy.md)
-- [Terms of Service](TermsOfService.md)
+- [Report a Problem](../04_moderation/ReportAProblem.md)
+- [Child Safety](../04_moderation/ChildSafety.md)
+- [Privacy Policy](../01_legal/PrivacyPolicy.md)
+- [Terms of Service](../01_legal/TermsOfService.md)

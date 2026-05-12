@@ -347,7 +347,7 @@ A "restricted" user can see your public posts but their comments appear only to 
 ## 5. Login & Security — Data We Process for Account Protection
 
 > This section describes in detail what personal data BestMe processes for Login & Security features, the legal basis for each processing activity, and how long we keep this data.  
-> Full technical specification: [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md).
+> Full technical specification: [GDPRArt5SecuritySpec.md](../03_settings/GDPRArt5SecuritySpec.md).
 
 ---
 
@@ -618,7 +618,7 @@ BestMe is not directed at children under 13. We do not knowingly collect persona
 
 BestMe implements security measures consistent with GDPR Art.32 and NIST SP 800-63B:
 
-- **Passwords:** Hashed with bcrypt (industry standard — see [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md))
+- **Passwords:** Hashed with bcrypt (industry standard — see [GDPRArt5SecuritySpec.md](../03_settings/GDPRArt5SecuritySpec.md))
 - **Sessions:** Active session management with remote logout capability (Settings → Login & Security → Active Sessions)
 - **Login History:** 90-day log of all login events with geo-location (Settings → Login & Security → Login History)
 - **Two-Factor Authentication (2FA):** Available via Email Code or Authenticator App (Settings → Login & Security → Two-Factor Authentication)
@@ -662,4 +662,4 @@ If you believe we have not adequately addressed a privacy concern:
 ---
 
 *PrivacyPolicy.md v1.1 · BestMe · March 2026*  
-*Related documents: [TermsOfService.md](TermsOfService.md) · [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md) · [AccountDeletionSpec.md](AccountDeletionSpec.md)*
+*Related documents: [TermsOfService.md](TermsOfService.md) · [PrivacyVisibilitySpec.md](../03_settings/PrivacyVisibilitySpec.md) · [GDPRArt5SecuritySpec.md](../03_settings/GDPRArt5SecuritySpec.md) · [AccountDeletionSpec.md](../03_settings/AccountDeletionSpec.md)*

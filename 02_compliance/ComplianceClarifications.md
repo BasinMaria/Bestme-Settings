@@ -144,19 +144,19 @@ EAA (ЕС, с 28 июня 2025), ADA (США), AODA (Канада) и други
 
 | # | Пункт | Статус | В каком документе |
 |---|---|---|---|
-| 🔴 1 | Веб-форма удаления аккаунта | ✅ Описано | [AccountDeletionSpec.md §11](AccountDeletionSpec.md) |
-| 🔴 2 | Блок регистрации < 13 / < 18 лет | ✅ Описано (18+) | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) + этот документ §1 |
-| 🔴 3 | «Do Not Sell My Personal Information» | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 4 |
+| 🔴 1 | Веб-форма удаления аккаунта | ✅ Описано | [AccountDeletionSpec.md §11](../03_settings/AccountDeletionSpec.md) |
+| 🔴 2 | Блок регистрации < 13 / < 18 лет | ✅ Описано (18+) | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) + этот документ §1 |
+| 🔴 3 | «Do Not Sell My Personal Information» | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 4 |
 | 🔴 4 | Pre-checked boxes = пустые | ✅ Описано | [LegalComplianceSpec.md](LegalComplianceSpec.md) §2.10 |
-| 🔴 5 | Accessibility раздел | ✅ Описано | [SettingsTZ.md](SettingsTZ.md) §8 + этот документ §2 |
-| 🔴 6 | Art.17(2) де-индексация | ✅ Описано | [AccountDeletionSpec.md §10](AccountDeletionSpec.md) · [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md) |
-| 🔴 7 | Onboarding disclosure (18+, открытый профиль) | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 1 |
-| 🔴 8 | UGC ToS acceptance | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 2 |
-| 🔴 9 | Child Safety (Terms, Report, Email) | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) §Child Safety |
-| 🔴 10 | ATT диалог (iOS 14.5+) | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 3 |
-| 🔴 11 | Prominent Disclosure | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 5 |
+| 🔴 5 | Accessibility раздел | ✅ Описано | [SettingsTZ.md](../03_settings/SettingsTZ.md) §8 + этот документ §2 |
+| 🔴 6 | Art.17(2) де-индексация | ✅ Описано | [AccountDeletionSpec.md §10](../03_settings/AccountDeletionSpec.md) · [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md) |
+| 🔴 7 | Onboarding disclosure (18+, открытый профиль) | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 1 |
+| 🔴 8 | UGC ToS acceptance | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 2 |
+| 🔴 9 | Child Safety (Terms, Report, Email) | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) §Child Safety |
+| 🔴 10 | ATT диалог (iOS 14.5+) | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 3 |
+| 🔴 11 | Prominent Disclosure | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 5 |
 | 🔴 12 | SMS consent checkbox (TCPA) | ✅ Описано | [LegalComplianceSpec.md](LegalComplianceSpec.md) §2.10 |
-| 🔴 13 | Disconnect 3rd-party login | ✅ Описано | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) §Login&Security |
+| 🔴 13 | Disconnect 3rd-party login | ✅ Описано | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) §Login&Security |
 
 **Все 13 пунктов уже описаны в документах.** Что осталось — это реализация в коде приложения.
 
@@ -185,19 +185,19 @@ EAA (ЕС, с 28 июня 2025), ADA (США), AODA (Канада) и други
 | Задача | Описание | Ссылка на ТЗ |
 |---|---|---|
 | **Экран возрастной верификации** | При регистрации: поле «дата рождения», блок если < 18 лет | §1 этого документа |
-| **Кнопка «Delete Account» в настройках** | Личный профиль → Settings → Account → Delete Account | [AccountDeletionSpec.md §5](AccountDeletionSpec.md) |
-| **Веб-страница** `/account/delete` | HTML-форма на сайте с полем email и подтверждением | [AccountDeletionSpec.md §11](AccountDeletionSpec.md) |
-| **ATT диалог (iOS)** | `AppTrackingTransparency.framework`, запросить до инициализации любого аналитического SDK | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 3 |
-| **Disconnect 3rd-party** | Кнопка «Отключить» рядом с каждым привязанным провайдером (Google, Facebook, Apple) | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) §Login |
+| **Кнопка «Delete Account» в настройках** | Личный профиль → Settings → Account → Delete Account | [AccountDeletionSpec.md §5](../03_settings/AccountDeletionSpec.md) |
+| **Веб-страница** `/account/delete` | HTML-форма на сайте с полем email и подтверждением | [AccountDeletionSpec.md §11](../03_settings/AccountDeletionSpec.md) |
+| **ATT диалог (iOS)** | `AppTrackingTransparency.framework`, запросить до инициализации любого аналитического SDK | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 3 |
+| **Disconnect 3rd-party** | Кнопка «Отключить» рядом с каждым привязанным провайдером (Google, Facebook, Apple) | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) §Login |
 
 **Sprint 2 (1-2 недели)**
 
 | Задача | Описание | Ссылка на ТЗ |
 |---|---|---|
-| **UGC ToS modal** | Показать один раз при первом создании поста/комментария | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 2 |
-| **Onboarding disclosure** | Экран при первом входе: «Ваш профиль публичен. Вы можете изменить это в настройках» | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 1 |
-| **Prominent Disclosure** | Экран ДО запроса Push/Camera/Photos permissions: зачем нужно разрешение | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Flow 5 |
-| **Do Not Sell кнопка** | Settings → Your Data → «Do Not Sell My Personal Information» → toggle + подтверждение | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) |
+| **UGC ToS modal** | Показать один раз при первом создании поста/комментария | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 2 |
+| **Onboarding disclosure** | Экран при первом входе: «Ваш профиль публичен. Вы можете изменить это в настройках» | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 1 |
+| **Prominent Disclosure** | Экран ДО запроса Push/Camera/Photos permissions: зачем нужно разрешение | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Flow 5 |
+| **Do Not Sell кнопка** | Settings → Your Data → «Do Not Sell My Personal Information» → toggle + подтверждение | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) |
 | **SMS consent checkbox** | При добавлении телефона: обязательный чекбокс с текстом про STOP | [LegalComplianceSpec.md](LegalComplianceSpec.md) §2.10 |
 
 ### Приоритет 2: Юридические требования бэкенда
@@ -206,11 +206,11 @@ EAA (ЕС, с 28 июня 2025), ADA (США), AODA (Канада) и други
 
 | Задача | Описание | Ссылка на ТЗ |
 |---|---|---|
-| **Статусы аккаунта при удалении** | `PENDING_DELETION` → `DELETING` → `DELETED` → `PURGED` | [AccountDeletionSpec.md §9](AccountDeletionSpec.md) |
-| **Де-индексация при удалении** | Вызов Google Search Console API + Bing API + Yandex API | [AccountDeletionSpec.md §10](AccountDeletionSpec.md) |
-| **Email при удалении** | Отправить подтверждение удаления пользователю (T+0) | [AccountDeletionSpec.md §8](AccountDeletionSpec.md) |
+| **Статусы аккаунта при удалении** | `PENDING_DELETION` → `DELETING` → `DELETED` → `PURGED` | [AccountDeletionSpec.md §9](../03_settings/AccountDeletionSpec.md) |
+| **Де-индексация при удалении** | Вызов Google Search Console API + Bing API + Yandex API | [AccountDeletionSpec.md §10](../03_settings/AccountDeletionSpec.md) |
+| **Email при удалении** | Отправить подтверждение удаления пользователю (T+0) | [AccountDeletionSpec.md §8](../03_settings/AccountDeletionSpec.md) |
 | **Pre-checked = OFF** | Все email/push/SMS opt-in чекбоксы пустые по умолчанию | [LegalComplianceSpec.md](LegalComplianceSpec.md) §2.10 |
-| **Child Safety** | В Terms of Use запрет CSAE, в «Пожаловаться» категория «Детский контент», email `childsafety@bestme.app` | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) |
+| **Child Safety** | В Terms of Use запрет CSAE, в «Пожаловаться» категория «Детский контент», email `childsafety@bestme.app` | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) |
 
 ### Приоритет 3: Доступность
 

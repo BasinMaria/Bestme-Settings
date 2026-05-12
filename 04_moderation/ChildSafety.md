@@ -86,5 +86,5 @@ Child Safety
 ## Ссылки
 
 - [Report a Problem](ReportAProblem.md) — Report flow с категорией Child Safety
-- [Terms of Service](TermsOfService.md) — запрет CSAM
-- [Contact Support](ContactSupport.md) — childsafety@bestme.app
+- [Terms of Service](../01_legal/TermsOfService.md) — запрет CSAM
+- [Contact Support](../07_help_support/ContactSupport.md) — childsafety@bestme.app

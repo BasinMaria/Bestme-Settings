@@ -57,7 +57,7 @@ You may delete your account at any time via **Settings → Your Data → Delete 
 
 ## 3. Privacy & Visibility Settings — Your Rights and Controls
 
-> This section explains the privacy controls available to you in **Settings → Privacy & Visibility** and the legal framework governing them. Full technical specification: [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md).
+> This section explains the privacy controls available to you in **Settings → Privacy & Visibility** and the legal framework governing them. Full technical specification: [PrivacyVisibilitySpec.md](../03_settings/PrivacyVisibilitySpec.md).
 
 ### 3.1 Principle of Privacy by Default
 
@@ -206,7 +206,7 @@ To exercise any right, or to contact our Data Protection Officer: **dpo@bestme.a
 ## 4. Login & Security — Your Account Protection Rights
 
 > This section describes the security features available in **Settings → Login & Security**, your rights regarding account access control, and the legal obligations BestMe has to protect your credentials and authentication data.  
-> Full technical specification: [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md).
+> Full technical specification: [GDPRArt5SecuritySpec.md](../03_settings/GDPRArt5SecuritySpec.md).
 
 ---
 
@@ -512,4 +512,4 @@ We will notify you of material changes to these Terms via email or in-app notifi
 ---
 
 *TermsOfService.md v1.1 · BestMe · March 2026*  
-*Related documents: [PrivacyPolicy.md](PrivacyPolicy.md) · [PrivacyVisibilitySpec.md](PrivacyVisibilitySpec.md) · [AccountDeletionSpec.md](AccountDeletionSpec.md) · [GDPRArt5SecuritySpec.md](GDPRArt5SecuritySpec.md)*
+*Related documents: [PrivacyPolicy.md](PrivacyPolicy.md) · [PrivacyVisibilitySpec.md](../03_settings/PrivacyVisibilitySpec.md) · [AccountDeletionSpec.md](../03_settings/AccountDeletionSpec.md) · [GDPRArt5SecuritySpec.md](../03_settings/GDPRArt5SecuritySpec.md)*

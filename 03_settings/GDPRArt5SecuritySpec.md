@@ -7,7 +7,7 @@
 > **Смежные документы:**  
 > [AccountDeletionSpec.md](AccountDeletionSpec.md) — удаление аккаунта  
 > [AccessibilitySpec.md](AccessibilitySpec.md) — кнопка Contact DPO  
-> [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md) — GDPR Art.25 / Art.17 аудит
+> [GDPRArt25Art17AuditSpec.md](../02_compliance/GDPRArt25Art17AuditSpec.md) — GDPR Art.25 / Art.17 аудит
 
 ---
 
@@ -1724,7 +1724,7 @@ Legal
 ---
 
 *GDPRArt5SecuritySpec.md v2.2 · Bestme · март 2026*  
-*Смежные документы: [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt25Art17AuditSpec.md](GDPRArt25Art17AuditSpec.md), [AccessibilitySpec.md](AccessibilitySpec.md), [NotificationsSpec.md](NotificationsSpec.md)*
+*Смежные документы: [AccountDeletionSpec.md](AccountDeletionSpec.md), [GDPRArt25Art17AuditSpec.md](../02_compliance/GDPRArt25Art17AuditSpec.md), [AccessibilitySpec.md](AccessibilitySpec.md), [NotificationsSpec.md](NotificationsSpec.md)*
 
 > **Changelog v2.2:** §3.4 Active Sessions — переработан в полный детальный UX-поток: ASCII-wireframe (English, с CURRENT SESSION / OTHER SESSIONS / красной кнопкой), таблица логики Frontend (хранение токенов в Keychain/Keystore, UAParser.js для User-Agent, confirm-модалка при Terminate, Toast «All other devices logged out»). Требования к Backend (Supabase Dashboard): JWT 900 сек, Refresh Token 30 дней, Refresh token reuse interval, Sign out on password change. PostgreSQL RPC-функции: `get_active_sessions()` (SELECT из auth.sessions по auth.uid(), флаг is_current), геолокация по IP через Edge Function (только Страна/Город), `terminate_session(UUID)` (DELETE с защитой AND user_id = auth.uid()), `terminate_all_other_sessions()`, аудит-событие `session_terminated_remotely`. §3.5 Login History — переработан в полный детальный UX-поток: ASCII-wireframe (English) со всеми типами событий (✅⚠️🔒), таблица законов (GDPR Art.32, Art.15, Art.33), экстренный сценарий «Protect Account» с ASCII-wireframe модального окна 🛡️, шаг-за-шагом (RPC → инвалидация сессий → редирект на Change Password → Toast). Backend: таблица `user_login_history` (id, user_id, event_type, auth_method, ip_address, user_agent, location, created_at), RLS (SELECT only), PostgreSQL Trigger/Webhook для записи событий, Edge Function для геолокации IP, pg_cron авто-очистка через 90 дней, RPC `secure_compromised_account()` (DELETE сессий + email пользователю + audit). Версия: 2.1 → 2.2.
 

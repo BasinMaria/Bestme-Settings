@@ -648,7 +648,7 @@ My Content
 
 - [ModerationAdminGuide.md](ModerationAdminGuide.md) — процессы модератора, страйки, Trust Score, CSAE-протокол
 - [ChildSafety.md](ChildSafety.md) — отдельный экран Child Safety
-- [ContactSupport.md](ContactSupport.md) — контакты поддержки, сроки ответа
+- [ContactSupport.md](../07_help_support/ContactSupport.md) — контакты поддержки, сроки ответа
 - `NotificationsSpec.md` — все ключи уведомлений с каналами
 - `TermsOfService.md` → раздел 9 «Safety, Blocking, and Reporting»
 

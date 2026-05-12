@@ -26,18 +26,18 @@
 
 | # | Что требуется | Где реализовать | ТЗ |
 |---|---|---|---|
-| **1** | **Веб-форма удаления аккаунта** — страница `/account/delete` на сайте с полем email | Сайт bestme.app | [AccountDeletionSpec.md §11](AccountDeletionSpec.md) |
-| **9** | **Child Safety**: (a) запрет CSAE в Terms of Use; (b) категория «Child Safety» в «Пожаловаться»; (c) email `childsafety@bestme.app` в Help & Support | Приложение + сайт + Terms of Use | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) |
-| **11** | **Prominent Disclosure** — экран с объяснением ЗАЧЕМ нужны разрешения, показывается ДО запроса Push / Camera / Photos | Приложение (onboarding или перед первым запросом) | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Поток 3 |
-| **8** | **UGC ToS acceptance** — модаль «Принять правила сообщества» при первом создании контента (пост, комментарий, фото) | Приложение | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Поток 2 |
+| **1** | **Веб-форма удаления аккаунта** — страница `/account/delete` на сайте с полем email | Сайт bestme.app | [AccountDeletionSpec.md §11](../03_settings/AccountDeletionSpec.md) |
+| **9** | **Child Safety**: (a) запрет CSAE в Terms of Use; (b) категория «Child Safety» в «Пожаловаться»; (c) email `childsafety@bestme.app` в Help & Support | Приложение + сайт + Terms of Use | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) |
+| **11** | **Prominent Disclosure** — экран с объяснением ЗАЧЕМ нужны разрешения, показывается ДО запроса Push / Camera / Photos | Приложение (onboarding или перед первым запросом) | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Поток 3 |
+| **8** | **UGC ToS acceptance** — модаль «Принять правила сообщества» при первом создании контента (пост, комментарий, фото) | Приложение | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Поток 2 |
 
 ### A2. Apple App Store — обязательно к моменту сабмита
 
 | # | Что требуется | Где реализовать | ТЗ |
 |---|---|---|---|
-| **10** | **ATT диалог** (`AppTrackingTransparency.framework`) — показать ДО инициализации любого аналитического или рекламного SDK (Firebase, Amplitude, Facebook SDK и т.д.) | iOS только | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) Поток 4 |
-| **13** | **Кнопка «Отключить»** рядом с каждым привязанным 3rd-party провайдером (Google, Facebook, Apple) в Login & Security | Приложение (Settings → Login & Security) | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) §Login |
-| **1** | **Веб-страница удаления** — также требуется App Store Connect (поле Support URL должно вести к форме удаления) | Сайт | [AccountDeletionSpec.md §11](AccountDeletionSpec.md) |
+| **10** | **ATT диалог** (`AppTrackingTransparency.framework`) — показать ДО инициализации любого аналитического или рекламного SDK (Firebase, Amplitude, Facebook SDK и т.д.) | iOS только | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) Поток 4 |
+| **13** | **Кнопка «Отключить»** рядом с каждым привязанным 3rd-party провайдером (Google, Facebook, Apple) в Login & Security | Приложение (Settings → Login & Security) | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) §Login |
+| **1** | **Веб-страница удаления** — также требуется App Store Connect (поле Support URL должно вести к форме удаления) | Сайт | [AccountDeletionSpec.md §11](../03_settings/AccountDeletionSpec.md) |
 
 ### A3. Оба магазина
 
@@ -54,9 +54,9 @@
 
 | # | Что требуется | Закон | Штраф | ТЗ |
 |---|---|---|---|---|
-| **3** | Кнопка «Do Not Sell My Personal Information» в Settings → Your Data | CCPA/CPRA §1798.120 (Калифорния) | До $7 500 за нарушение | [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md) |
+| **3** | Кнопка «Do Not Sell My Personal Information» в Settings → Your Data | CCPA/CPRA §1798.120 (Калифорния) | До $7 500 за нарушение | [ProfileSettingsFullSpec.md](../03_settings/ProfileSettingsFullSpec.md) |
 | **4** | Все email/push/SMS opt-in чекбоксы пустые по умолчанию (не pre-checked) | CASL (Канада) · ePrivacy Directive Art.13 | До $10 млн CAD | [LegalComplianceSpec.md](LegalComplianceSpec.md) §2.10 |
-| **6** | При Delete Account: API-запрос удаления URL в Google Search Console + Bing + Yandex (если seo_indexable = ON) | GDPR Art.17(2) | До €20 млн | [AccountDeletionSpec.md §10](AccountDeletionSpec.md) |
+| **6** | При Delete Account: API-запрос удаления URL в Google Search Console + Bing + Yandex (если seo_indexable = ON) | GDPR Art.17(2) | До €20 млн | [AccountDeletionSpec.md §10](../03_settings/AccountDeletionSpec.md) |
 | **7** | Onboarding Disclosure — экран о публичности профиля **до** первого использования | GDPR Art.25(2) | До €20 млн | **✅ УЖЕ РЕАЛИЗОВАН** — см. скриншот «Welcome to BestMe» ниже |
 | **12** | SMS consent checkbox с текстом «Для отписки ответьте STOP» при добавлении телефона | TCPA 47 U.S.C. §227 | $1 500 за каждое SMS | [LegalComplianceSpec.md](LegalComplianceSpec.md) §2.10 |
 
