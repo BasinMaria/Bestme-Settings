@@ -184,26 +184,37 @@ Settings → Friends & Community
 ### 6️⃣ 📝 CONTENT
 
 **Путь:** Settings → Content  
-**Правовое основание:** ⚖️ DSA Art.14 · GDPR Art.25 · Google Play UGC Policy · App Store §1.2  
+**Правовое основание:** ⚖️ DSA Art.14/27 · GDPR Art.16/21/22/25 · AI Act Art.50 · Google Play UGC Policy · App Store §1.2  
 **Подробный документ:** [ProfileSettingsFullSpec.md](ProfileSettingsFullSpec.md)
 
 **Что включает:**
 
 | Блок | UI-название | Описание |
 |---|---|---|
+| **Feed & Content** | Feed & Content | Тип ленты по умолчанию, персонализация, сброс алгоритма, объяснение рекомендаций |
 | **Saved content** | Saved / Bookmarks | Контент, который пользователь сохранил («закладки») |
 | **Posted content** | My Posts | Управление опубликованным контентом |
 | **Content sharing** | Sharing | Настройки шеринга (внутри платформы и вовне) |
-| **Feed preferences** | Feed | Настройки алгоритма ленты (какой контент показывать) |
 | **Discussion settings** | Discussions | Участие в тематических дискуссиях по категориям |
 | **UGC Terms acceptance** | Community Guidelines | Принятие правил публикации контента |
 | **Archived posts** | Archive | Архив скрытых постов |
+
+**Feed & Content — настройки ленты:**
+
+```
+📋 Feed & Content
+│
+├── Default feed          [Smart Feed ▼]   ⚖️ DSA Art.27
+├── Opt out from recommendations   [OFF]   ⚖️ GDPR Art.22
+├── 🔄 Reset Smart Feed            [Reset] ⚖️ GDPR Art.16/21
+└── About recommendations          [→]     ⚖️ DSA Art.27 · AI Act Art.50
+```
 
 **Типы контента в BestMe:**
 - **Посты** в профиле с лайками, комментариями, оценками
 - **Шеринг** — поделиться контентом внутри системы и за её пределами
 - **Сохранение** — сохранить контент, чтобы не потерять
-- **Лента (Feed)** — алгоритм подбирает актуальный контент по Interests пользователя
+- **Лента (Feed)** — алгоритм подбирает актуальный контент по Interests пользователя (Smart Feed) или хронологически (Natural Feed)
 - **Дискуссии** — тематические страницы по каждой категории, где люди открывают публичные обсуждения, задают вопросы, делятся материалами; контент тематически отбирается по категории
 
 **Блокеры публикации:**

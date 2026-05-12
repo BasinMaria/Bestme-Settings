@@ -262,8 +262,11 @@
 
 | Пункт | Обязательно / Опционально | По закону ⚖️ |
 |---|---|---|
+| **Default feed** (`default_feed`) | **Обязательно** | ⚖️ DSA Art.27 · AI Act Art.50 |
+| **Opt out from recommendations** (`feed_personalization_opt_out`) | **Обязательно** | ⚖️ GDPR Art.22 · DSA Art.29 — право отказа от алгоритма |
+| **🔄 Reset Smart Feed** (action) | **Обязательно** | ⚖️ GDPR Art.16 · Art.21 — сброс алгоритмического профиля |
+| **About recommendations** (link → экран) | **Обязательно** | ⚖️ DSA Art.27 · AI Act Art.50 — прозрачность алгоритма |
 | Аудитория постов по умолчанию  (`default_post_visibility`) | **Обязательно** | ⚖️ GDPR Art.25 — Privacy by Default |
-| Алгоритм ленты (`recommendations_opt_out`) | Нужно с opt-out | ⚖️ GDPR Art.22 — право отказа от алгоритма |
 | Фильтр чувствительного контента | **Обязательно** | 📱 App Store / Google Play — для 17+ |
 | Разрешить репосты (`who_can_share`) | Опционально | — |
 | Настройки блога (заголовок, описание, URL) | Нужно для функции | — |

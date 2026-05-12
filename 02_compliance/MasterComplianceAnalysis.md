@@ -440,6 +440,7 @@
 - who_can_add_friends, friend_suggestions_enabled, mutual_friends_visible
 
 **6️⃣ Content**
+- **Feed & Content:** default_feed (SMART_FEED/NATURAL_FEED), feed_personalization_opt_out, Reset Smart Feed (action), About recommendations (screen)
 - default_post_audience, default_photo_audience, location_tagging_enabled, post_sharing_allowed
 - sensitive_content_filter, muted_words, comment_moderation, auto_archive, content_language_filter
 - Archive, Saved posts, Download content

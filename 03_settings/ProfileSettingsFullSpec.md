@@ -495,7 +495,117 @@ Bestme использует данные для улучшения
 
 ## 6. 📝 CONTENT & MODERATION — Контент и модерация
 
-**Обоснование:** ⚖️ DSA Art.14/17 · App Store §1.2 · Google Play UGC Policy · GDPR Art.25
+**Обоснование:** ⚖️ DSA Art.14/17 · GDPR Art.16/21/22 · DSA Art.27 · AI Act Art.50 · App Store §1.2 · Google Play UGC Policy · GDPR Art.25
+
+### 6.0 Feed & Content — Лента и контент
+
+> **Путь:** Settings → Content → Feed & Content  
+> Управляет алгоритмом ленты: тип по умолчанию, персонализация, объяснение алгоритма и сброс.  
+> **Синхронизация:** если пользователь переключает ленту на главном экране (Smart Feed ↔ Natural Feed), значение `default_feed` автоматически обновляется здесь и наоборот.
+
+```
+📋 Feed & Content
+│
+├── Default feed          [Smart Feed ▼]   ⚖️ DSA Art.27 · AI Act Art.50
+├── Opt out from recommendations   [OFF]   ⚖️ GDPR Art.22 · DSA Art.29
+├── 🔄 Reset Smart Feed            [Reset] ⚖️ GDPR Art.16 · Art.21
+└── About recommendations          [→]     ⚖️ DSA Art.27 · AI Act Art.50
+```
+
+#### Настройки Feed & Content
+
+| Настройка | variable_name | Тип | Default | ⚖️ | Закон |
+|---|---|---|---|---|---|
+| **Default feed** | `default_feed` | Dropdown / Bottom sheet | `SMART_FEED` | ⚖️ | DSA Art.27 · AI Act Art.50 |
+| **Opt out from recommendations** | `feed_personalization_opt_out` | Toggle | `false` (персонализация включена) | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
+| **🔄 Reset Smart Feed** | — | Button + Confirm dialog | — | ⚖️ | GDPR Art.16 · Art.21 |
+| **About recommendations** | — | Link → экран | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
+
+> 💬 **`default_feed`** — значения: `SMART_FEED` (персонализированная лента) / `NATURAL_FEED` (хронологическая).  
+> Кнопка раскрывает bottom sheet с двумя вариантами. Значение синхронизировано с переключателем ленты на главном экране: смена в одном месте сразу меняет другое.  
+>
+> 💬 **`feed_personalization_opt_out`** — тумблер «Не персонализировать мою ленту». По умолчанию `false` (персонализация включена — стандарт соцсетей). При `true` лента переходит в режим Natural Feed независимо от `default_feed`. Право отказа по GDPR Art.22 и DSA Art.29.  
+>
+> 💬 **Reset Smart Feed** — кнопка (не тумблер). Не удаляет аккаунт, посты или подписки. Только очищает данные алгоритма ленты и возвращает Cold Start фазу 0. Требует подтверждения в диалоге.  
+>
+> 💬 **About recommendations** — ссылка-стрелка [→] открывает экран с текстом «HOW YOUR FEED WORKS» + ссылкой на Terms of Service. Это механизм прозрачности, а НЕ тумблер.
+
+---
+
+#### Экран «About recommendations» — полный текст
+
+```
+HOW YOUR FEED WORKS
+
+Smart Feed ✨
+Your Smart Feed shows posts selected based on:
+• Your interests and wellness goals
+• Accounts you follow
+• Posts you've liked, commented on, or saved
+• How popular and recent a post is
+• Communities you've joined
+• Your language preferences
+
+We do NOT use your race, ethnicity, religion, political views,
+sexual orientation, or health conditions to rank content.
+
+Natural Feed 🍃
+Your Natural Feed shows all posts in order of publication time —
+newest first. No algorithm, no personalization.
+Filtered only by your language settings.
+
+You can switch between feeds at any time.
+
+YOUR CONTROLS
+• Change your interests: Settings → My Interests
+• Switch default feed: Settings → Feed & Content
+• Reset your feed: Settings → Feed & Content → Reset Smart Feed
+• Hide or report any post: tap ··· on any post
+
+[Terms of Service →]    [Privacy Policy →]
+```
+
+> ⚖️ **DSA Art.27**: обязательное объяснение параметров рекомендательного алгоритма.  
+> ⚖️ **AI Act Art.50**: обязательное раскрытие факта использования AI-системы при показе контента.
+
+---
+
+#### 🔄 Reset Smart Feed — полная спецификация
+
+**Юридическое основание:**
+- GDPR Art.16 — Право на исправление данных (алгоритмический профиль — это данные о пользователе)
+- GDPR Art.21 — Право на возражение против профилирования
+- Аналог «Reset Feed» в TikTok (добавлена под давлением европейских регуляторов)
+
+**UI — тексты и ключи перевода:**
+
+| Элемент | EN | RU | i18n-ключ |
+|---|---|---|---|
+| Кнопка | 🔄 Reset Smart Feed | 🔄 Сбросить умную ленту | `reset_feed_button` |
+| Описание под кнопкой | Your subscriptions and posts will stay, but the algorithm will forget your likes and viewing history. Your feed will start learning from scratch. | Ваши подписки и посты останутся, но алгоритм забудет историю лайков и просмотров. Лента начнёт обучаться с нуля. | `reset_feed_description` |
+| Диалог подтверждения | Are you sure? This cannot be undone. Your feed will show generic content until it learns your preferences again. | Вы уверены? Это нельзя отменить. Лента будет показывать общий контент, пока не узнает ваши предпочтения заново. | `reset_feed_confirm` |
+| Кнопка «OK» в диалоге | Reset | Сбросить | `reset_feed_confirm_ok` |
+| Кнопка «Cancel» в диалоге | Cancel | Отмена | `reset_feed_confirm_cancel` |
+| Успех (toast / banner) | Done! Your feed has been reset. | Готово! Ваша лента сброшена. | `reset_feed_success` |
+
+**Что происходит на бэкенде при нажатии Reset:**
+
+| # | Действие | Описание |
+|---|---|---|
+| 1 | Очистить `user_interaction_stats` | Удалить историю взаимодействий за 30 дней |
+| 2 | Очистить `feed_scores` | Удалить кэш скоров алгоритма |
+| 3 | Очистить `user_not_interested` | Удалить все отметки «не интересно» |
+| 4 | Вернуть Cold Start фазу 0 | Пользователь снова проходит фазы разогрева (0 → 1 → 2 → 3) |
+| 5 | НЕ удалять: подписки, посты, аккаунт, категории из онбординга | Подписки = явное действие пользователя, не «данные алгоритма» |
+| 6 | Логировать | `legal_consents_log`: action=`feed_reset`, timestamp |
+
+**API:**
+```
+POST /api/user/feed/reset
+Response: { "status": "ok", "cold_start_phase": 0 }
+```
+
+---
 
 ### 6.1 Content Creation Settings
 

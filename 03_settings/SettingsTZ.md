@@ -312,7 +312,18 @@
 ---
 
 ### 6️⃣ 📝 CONTENT — Контент и публикации
-**Обоснование:** ⚖️ DSA Art.14 · GDPR Art.25 · 💡 UX контроль
+**Обоснование:** ⚖️ DSA Art.14/27 · GDPR Art.16/21/22/25 · AI Act Art.50 · 💡 UX контроль
+
+#### L2: Feed & Content — Лента и контент
+
+> Синхронизировано с переключателем ленты на главном экране.
+
+| L3 — Настройка | variable_name | Default | ⚖️/💡 | Закон |
+|---|---|---|---|---|
+| **Default feed** | `default_feed` | `SMART_FEED` | ⚖️ | DSA Art.27 · AI Act Art.50 |
+| **Opt out from recommendations** | `feed_personalization_opt_out` | `false` (персонализация ON) | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
+| **🔄 Reset Smart Feed** | — (Action / Button) | — | ⚖️ | GDPR Art.16 · Art.21 |
+| **About recommendations** | — (Link → экран) | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
 
 #### L2: Настройки публикации по умолчанию
 
