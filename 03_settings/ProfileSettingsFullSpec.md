@@ -43,7 +43,7 @@
 | 3 | 🛡️ | Login & Security | Вход и безопасность | ⚖️ | GDPR Art.32 · App Store §4.8 |
 | 4 | 🔔 | Notifications | Уведомления | ⚖️ | GDPR · CASL · CAN-SPAM · TCPA |
 | 5 | 👥 | Friends | Друзья | 💡 | UX-норма соцсети |
-| 6 | 📝 | Content & Moderation | Контент и модерация | ⚖️ | DSA Art.14 · App Store §1.2 · Google Play UGC |
+| 6 | 📝 | Feed & Content | Лента и контент | ⚖️ | DSA Art.27 · App Store §1.2 · Google Play UGC |
 | 7 | 📦 | Your Data | Ваши данные | ⚖️ | GDPR Art.15–22 · CCPA §1798.100–120 · Quebec L25 |
 | 8 | ♿ | Accessibility | Доступность | ⚖️ | EAA 2019/882 · ADA · Israel Disability Law 5758-1998 · AODA · CA Unruh |
 | 9 | ❓ | Help & Support | Помощь и поддержка | ⚖️ | App Store §1.5 · Google Play · DSA Art.14 |
@@ -493,33 +493,41 @@ Bestme использует данные для улучшения
 
 ---
 
-## 6. 📝 CONTENT & MODERATION — Контент и модерация
+## 6. 📝 FEED & CONTENT — Лента и контент
 
-**Обоснование:** ⚖️ DSA Art.14/17 · GDPR Art.16/21/22 · DSA Art.27 · AI Act Art.50 · App Store §1.2 · Google Play UGC Policy · GDPR Art.25
+**Обоснование:** ⚖️ DSA Art.27 · GDPR Art.22 · DSA Art.29 · AI Act Art.50 · GDPR Art.25 · App Store §1.2 · Google Play UGC Policy
 
-### 6.0 Feed & Content — Лента и контент
-
-> **Путь:** Settings → Content → Feed & Content  
-> Управляет алгоритмом ленты: тип по умолчанию, персонализация, объяснение алгоритма и сброс.  
+> **Путь:** Settings → Feed & Content  
+> Один экран с плоской структурой. Управляет лентой, публикациями и фильтром контента.  
 > **Синхронизация:** если пользователь переключает ленту на главном экране (Smart Feed ↔ Natural Feed), значение `default_feed` автоматически обновляется здесь и наоборот.
 
 ```
-📋 Feed & Content
+FEED & CONTENT
 │
-├── Default feed          [Smart Feed ▼]   ⚖️ DSA Art.27 · AI Act Art.50
-├── Opt out from recommendations   [OFF]   ⚖️ GDPR Art.22 · DSA Art.29
-├── 🔄 Reset Smart Feed            [Reset] ⚖️ GDPR Art.16 · Art.21
-└── About recommendations          [→]     ⚖️ DSA Art.27 · AI Act Art.50
+├── FEED (Алгоритм и Лента)
+│   ├── Default feed               [Smart Feed ▼]  ⚖️ DSA Art.27 · AI Act Art.50
+│   ├── Opt out from recommendations       [ ◯ ]   ⚖️ GDPR Art.22 · DSA Art.29
+│   ├── 🔄 Reset Smart Feed            [ Reset ]   ⚖️ GDPR Art.16 · Art.21
+│   └── ℹ️ About recommendations            [ > ]   ⚖️ DSA Art.27 · AI Act Art.50
+│
+├── POST SETTINGS (Настройки публикаций)
+│   ├── Default audience               [Friends ▼]  ⚖️ GDPR Art.25
+│   └── Allow location tagging              [ ◯ ]   ⚖️ GDPR Art.25 · ePrivacy
+│
+└── SENSITIVE CONTENT (Чувствительный контент)
+    └── Safe Search / Content filter        [ ◉ ]   ⚖️ 🔴 App Store §1.2 · Google Play UGC
 ```
 
-#### Настройки Feed & Content
+---
+
+#### FEED — Алгоритм и Лента
 
 | Настройка | variable_name | Тип | Default | ⚖️ | Закон |
 |---|---|---|---|---|---|
 | **Default feed** | `default_feed` | Dropdown / Bottom sheet | `SMART_FEED` | ⚖️ | DSA Art.27 · AI Act Art.50 |
 | **Opt out from recommendations** | `feed_personalization_opt_out` | Toggle | `false` (персонализация включена) | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
 | **🔄 Reset Smart Feed** | — | Button + Confirm dialog | — | ⚖️ | GDPR Art.16 · Art.21 |
-| **About recommendations** | — | Link → экран | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
+| **ℹ️ About recommendations** | — | Link → экран | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
 
 > 💬 **`default_feed`** — значения: `SMART_FEED` (персонализированная лента) / `NATURAL_FEED` (хронологическая).  
 > Кнопка раскрывает bottom sheet с двумя вариантами. Значение синхронизировано с переключателем ленты на главном экране: смена в одном месте сразу меняет другое.  
@@ -607,51 +615,25 @@ Response: { "status": "ok", "cold_start_phase": 0 }
 
 ---
 
-### 6.1 Content Creation Settings
+#### POST SETTINGS — Настройки публикаций
 
 | Настройка | variable_name | Default | ⚖️ | Закон |
 |---|---|---|---|---|
-| Default post audience | `default_post_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 |
-| Default photo audience | `default_photo_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 |
-| Allow location tagging | `location_tagging_enabled` | **`false`** | ⚖️ | GDPR Art.25 · ePrivacy |
-| Safe Search / Content filter | `safe_search_enabled` | **`true`** | ⚖️ | App Store §1.2 · Google Play UGC |
+| **Default audience** | `default_post_audience` | `FRIENDS` (`PUBLIC` / `FRIENDS` / `PRIVATE`) | ⚖️ | GDPR Art.25 |
+| **Allow location tagging** | `location_tagging_enabled` | **`false`** | ⚖️ | GDPR Art.25 · ePrivacy |
 
-### 6.2 Moderation & Reports
+> 💬 **`default_post_audience`** — значения: `PUBLIC` (Everyone — все) / `FRIENDS` (Friends only — только друзья) / `PRIVATE` (Only me — только я). По умолчанию `FRIENDS` согласно GDPR Art.25 (Privacy by Default).  
+> 💬 **`location_tagging_enabled`** — по умолчанию `false`. Пользователь должен явно разрешить прикрепление геопозиции к постам (GDPR Art.25 · ePrivacy).
 
-| Функция | Описание | ⚖️ | Закон |
-|---|---|---|---|
-| **Report a post** | Кнопка «...» на каждом посте | ⚖️ 🔴 | **App Store §1.2** · **Google Play UGC** |
-| **Report a user** | Кнопка на профиле каждого пользователя | ⚖️ 🔴 | **App Store §1.2** · **Google Play UGC** |
-| **Report child exploitation (CSAE)** *(NEW)* | Отдельная категория в Report | ⚖️ 🔴 | **Google Play Child Safety Standards** · COPPA |
-| **Report AI-generated offensive content** *(NEW)* | Кнопка «Report AI content» | ⚖️ | **Google Play AI-Generated Content Policy** |
-| **Appeal moderation decision** | Форма апелляции | ⚖️ | DSA Art.20 |
-| **Moderation decision log** | История решений | ⚖️ | DSA Art.17 |
+---
 
-> **🔴 App Store §1.2**: 4 ОБЯЗАТЕЛЬНЫХ элемента: (1) фильтр контента, (2) механизм жалоб, (3) блокировка, (4) контактная информация. Без каждого из них — отказ.  
-> **🔴 Google Play Child Safety Standards**: отдельная категория «Child Safety / Exploitation» в форме жалоб — обязательна для соцсетей и dating-приложений.
+#### SENSITIVE CONTENT — Чувствительный контент
 
-### Категории жалоб (report categories) — ОБЯЗАТЕЛЬНЫЙ СПИСОК
+| Настройка | variable_name | Default | ⚖️ | Закон |
+|---|---|---|---|---|
+| **Safe Search / Content filter** | `safe_search_enabled` | **`true`** | ⚖️ 🔴 | App Store §1.2 · Google Play UGC |
 
-```
-Report content:
-├── Spam or fake content
-├── Hate speech or discrimination
-├── Violence or graphic content
-├── Nudity or sexual content
-├── Harassment or bullying
-├── Misinformation
-├── Intellectual property violation
-├── [🔴 NEW] Child Safety / Exploitation (CSAE)
-└── Other
-
-Report user:
-├── Fake account or impersonation
-├── Spam
-├── Harassment
-├── Hate speech
-├── [🔴 NEW] Exploiting a child (CSAE)
-└── Other
-```
+> 💬 **`safe_search_enabled`** — по умолчанию `true`. Скрывает контент 18+ и жёсткий контент. Обязательное требование App Store §1.2 для UGC-платформ.
 
 ---
 
@@ -727,17 +709,18 @@ Report user:
 
 ## 9. ❓ HELP & SUPPORT — Помощь и поддержка
 
-**Обоснование:** ⚖️ App Store §1.5 · Google Play · DSA Art.14 · **Google Play Child Safety Standards Policy**
+**Обоснование:** ⚖️ App Store §1.5 · App Store §1.2 · Google Play · DSA Art.14 · **Google Play Child Safety Standards Policy**
 
 ### 9.1 Структура Help & Support
 
 | Пункт | Описание | ⚖️ | Закон |
 |---|---|---|---|
-| Help Center / FAQ | Часто задаваемые вопросы | 💡 | — |
-| Report a problem | Жалоба на контент/пользователя | ⚖️ 🔴 | **App Store §1.2** · **Google Play UGC** |
-| **Child Safety** *(NEW)* | Отчёт о безопасности детей + контакт | ⚖️ 🔴 | **Google Play Child Safety Standards** |
-| Privacy & Legal | Ссылки на Privacy Policy, Terms, Cookie Policy | ⚖️ | GDPR Art.13 · App Store |
-| Contact support | Форма/email поддержки | ⚖️ | App Store §1.5 · DSA Art.14 |
+| **Help Center / FAQ** | Справка по приложению — часто задаваемые вопросы | 💡 | — |
+| **Contact Support** | Связь с поддержкой — форма/email | ⚖️ | App Store §1.5 · DSA Art.14 |
+| **Report History** *(NEW)* | История жалоб пользователя. Вкладки: My Reports / Appeals | ⚖️ | **DSA Art.14** · DSA Art.20 |
+| **Child Safety** *(NEW)* | Отдельный экран против эксплуатации детей, контакты NCMEC | ⚖️ 🔴 | **Google Play Child Safety Standards** |
+| **Blocked Accounts** *(NEW)* | Список заблокированных пользователей, перенесен из Privacy | ⚖️ | **App Store §1.2** · **Google Play UGC** |
+| **Legal Documents** | Privacy Policy, Terms of Service, Cookie Policy и др. | ⚖️ | GDPR Art.13 · **App Store §5.1.1(i)** · Google Play |
 | Contact DPO | Данные защиты персональных данных | ⚖️ | GDPR Art.37 · Quebec L25 Art.5 |
 | Delete account (web) *(NEW)* | Ссылка `https://bestme.com/account/delete` | ⚖️ 🔴 | **Google Play (URL в Play Console)** |
 | About Bestme | Версия, лицензии | 💡 | — |
@@ -802,8 +785,8 @@ RU:  МВД 102
 | **GDPR Art.25** | Privacy by Default | Privacy → все defaults |
 | **GDPR Art.32** | Безопасность данных | Login & Security |
 | **GDPR Art.37** | DPO | Help & Support → Contact DPO |
-| **DSA Art.14** | Жалобы на контент | Content & Moderation → Report |
-| **DSA Art.17–20** | Модерация + апелляции | Notifications (non-disable) · Content & Moderation |
+| **DSA Art.14** | Жалобы на контент | Help & Support → Report History |
+| **DSA Art.17–20** | Модерация + апелляции | Notifications (non-disable) · Help & Support → Report History |
 | **DSA Art.25–26** | Запрет на профилирование рекламы несовершеннолетних | age gate + Ad preferences |
 | **DSA Art.27** | Объяснение рекомендательного алгоритма | Privacy → Discoverability + label |
 | **DSA Art.28(3)(g)** | Закрытый профиль для несовершеннолетних | Н/П — Bestme только 18+ |
@@ -819,13 +802,13 @@ RU:  МВД 102
 | **Israel PPL** | email/phone скрыты · безопасность | Contact Info Privacy · Login & Security |
 | **EAA 2019/882** | WCAG 2.1 AA · мобильные приложения | Accessibility раздел |
 | **ADA / AODA** | Доступность | Accessibility раздел |
-| **App Store §1.2** | UGC: фильтр + жалобы + блокировка + контакт | Content & Moderation · Privacy → Blocked |
+| **App Store §1.2** | UGC: фильтр + жалобы + блокировка + контакт | Feed & Content · Help & Support → Blocked Accounts |
 | **App Store §4.5.4** | Push: opt-in · opt-out внутри | Notifications |
 | **App Store §4.8** | Sign in with Apple обязателен | Login & Security |
 | **App Store §5.1.1(i)** | Privacy Policy в приложении | Help & Support → Legal |
 | **App Store §5.1.1(v)** | Delete account + Disconnect 3rd-party | Account · Login & Security |
 | **App Store §5.1.2(i) ATT** | ATT диалог iOS | Поток 4 (ATT) |
-| **Google Play UGC** | Report + Block обязательны | Content & Moderation · Privacy → Blocked |
+| **Google Play UGC** | Report + Block обязательны | Help & Support → Report History · Blocked Accounts |
 | **Google Play Child Safety** | 5 обязательных пунктов | Help & Support → Child Safety |
 | **Google Play Account Deletion** | In-app + web URL | Account → Delete + `bestme.com/account/delete` |
 | **Google Play Prominent Disclosure** | Экран до запроса разрешений | Поток 3 (Prominent Disclosure) |
@@ -843,8 +826,8 @@ RU:  МВД 102
 | 3 | Sign in with Apple (если есть Google/Facebook) | ✅ | Login & Security |
 | 4 | Disconnect button для каждого 3rd-party login | ⚠️ Добавить | Login & Security |
 | 5 | Block user — функция | ✅ | Privacy → Blocked Accounts |
-| 6 | Report content / user — функция | ✅ | Content & Moderation |
-| 7 | Report: категория «Child Safety / CSAE» | ⚠️ Добавить | Content & Moderation → Report |
+| 6 | Report content / user — функция | ✅ | Help & Support → Report History |
+| 7 | Report: категория «Child Safety / CSAE» | ⚠️ Добавить | Help & Support → Child Safety |
 | 8 | childsafety@bestme.com публично | ⚠️ Добавить | Help & Support → Child Safety |
 | 9 | UGC ToS acceptance при первом контенте | ⚠️ Добавить | Поток 2 |
 | 10 | ATT диалог iOS | ⚠️ Подтвердить SDK | Поток 4 |
