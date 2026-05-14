@@ -702,3 +702,63 @@
 
 *Файл: `SettingsTZ.md` | Версия 1.1 | Юрисдикции: EU/EEA · Canada · Israel · California · USA · App Stores*
 *Полный юридический анализ → `LegalComplianceSpec.md` | Настройки по разделам → `ProfileSettingsFullSpec.md`*
+
+---
+
+### 🔴 UI-спецификации: Publishing Defaults (Content)
+
+1. Основной экран настроек (Раздел Content → Publishing Defaults)
+
+┌──────────────────────────────────────────────┐
+│  Publishing Defaults                         │ section_publishing_header
+│                                              │
+│  Default post privacy          [Friends ▾]   │ default_post_audience_label / val
+│  Who can see your new posts by default.      │ default_post_audience_desc
+│                                              │
+│  Default media privacy         [Friends ▾]   │ default_media_audience_label / val
+│  Who can see photos and videos you upload    │ default_media_audience_desc
+│  by default.                                 │
+│                                              │
+│  Location tagging                [ ○ OFF ]   │ location_tagging_label
+│  Automatically attach your location to       │ location_tagging_description
+│  new posts.                                  │
+└──────────────────────────────────────────────┘
+
+
+2. Всплывающее окно 1 (Открывается при клике на выбор для ПОСТОВ)
+
+┌─────────────────────────────────────────────┐
+│  Default post privacy                        │ audience_post_sheet_title
+│                                              │
+│  ( ) Public                                  │ audience_public_title
+│      All users can see your posts.           │ audience_public_post_desc
+│                                              │
+│  (•) Friends                                 │ audience_friends_title
+│      Only your friends can see your posts.   │ audience_friends_post_desc
+│                                              │
+│  ( ) Private / Only me                       │ audience_private_title
+│      Only you can see your posts.            │ audience_private_post_desc
+│                                              │
+│  [ Cancel ]                                  │ audience_sheet_cancel
+└──────────────────────────────────────────────┘
+
+
+3. Всплывающее окно 2 (Открывается при клике на выбор для МЕДИА)
+
+┌─────────────────────────────────────────────┐
+│  Default media privacy                       │ audience_media_sheet_title
+│                                              │
+│  ( ) Public                                  │ audience_public_title
+│      All users can see your photos and       │ audience_public_media_desc
+│      videos.                                 │
+│                                              │
+│  (•) Friends                                 │ audience_friends_title
+│      Only your friends can see your photos   │ audience_friends_media_desc
+│      and videos.                             │
+│                                              │
+│  ( ) Private / Only me                       │ audience_private_title
+│      Only you can see your photos and        │ audience_private_media_desc
+│      videos.                                 │
+│                                              │
+│  [ Cancel ]                                  │ audience_sheet_cancel
+└──────────────────────────────────────────────┘
