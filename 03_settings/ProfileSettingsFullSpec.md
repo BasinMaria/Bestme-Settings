@@ -2,7 +2,7 @@
 > **Версия:** 2.0 — полная перезапись с учётом ВСЕХ законов
 > **Дата:** март 2026
 > **Юрисдикции:** ЕС · США · Канада · Израиль · Калифорния
-> **Законы:** GDPR Art.5/7/8/13/15-22/25/32/33/37 · DSA Art.14/17/18/20/25-29 · ePrivacy · Apple App Store (02.2026) · Google Play (2024) · TCPA 47 U.S.C. §227 · CAN-SPAM · CASL · COPPA · CCPA/CPRA · Quebec L25 · Israel PPL · EAA 2019/882 · ADA · AODA
+> **Законы:** GDPR Art.5/7/8/13/15-22/25/32/33/37 · DSA Art.14/17/18/20/25-29 · ePrivacy · Apple App Store (02.2026) · Google Play (2024) · TCPA 47 U.S.C. §227 · CAN-SPAM · CASL · COPPA
 >
 > **Обозначения:**
 > ⚖️ = обязательно по закону (нарушение → штраф или отказ в публикации)
@@ -25,10 +25,10 @@
 | Принцип | GDPR Art.5(1) | Как реализован в настройках |
 |---|---|---|
 | **Законность, справедливость, прозрачность** | Art.5(1)(a) | Privacy Policy ссылка + Onboarding Disclosure + GDPR Art.13 уведомление при регистрации |
-| **Ограничение целей** | Art.5(1)(b) | Данные собираются только для указанных целей; запрет повторного использования без согласия |
+| **Ограничение целей** | Art.5(1)(b) | Данные собираются только для указанных целей; запрет повторного использования для AI без opt-in |
 | **Минимизация данных** | Art.5(1)(c) | Собираем только то, что нужно (имя, email, dob); телефон опционален |
 | **Точность** | Art.5(1)(d) | Пользователь может редактировать все данные своего профиля |
-| **Ограничение хранения** | Art.5(1)(e) | Политика хранения данных: 30 дней на восстановление после деактивации; немедленное удаление по запросу |
+| **Ограничение хранения** | Art.5(1)(e) | Политика хранения данных: 30 дней на восстановление после деактивации; немедленное удаление при Delete Account |
 | **Целостность и конфиденциальность** | Art.5(1)(f) | 2FA, шифрование в передаче (HTTPS), управление сессиями |
 | **Подотчётность** | Art.5(2) | DPO контакт, Privacy Policy, Consent History, аудит журнал |
 
@@ -52,7 +52,7 @@
 
 ## ОБЯЗАТЕЛЬНЫЕ ПОТОКИ (ONBOARDING / ПЕРВОЕ ИСПОЛЬЗОВАНИЕ)
 
-> Эти экраны НЕ являются частью меню Settings, но обязательны по закону и должны быть задокументированы здесь для разработки.
+> Эти экраны НЕ являются частью меню Settings, но обязательны по закону и должны быть задокументированы здесь для разработчиков и QA.
 
 ### 🔴 ПОТОК 1: Onboarding Disclosure — регистрация 18+ (GDPR Art.25(2)) NEW
 
@@ -242,18 +242,18 @@ Bestme использует данные для улучшения
 | Bio / About | `bio` | Текстовое поле | — | 💡 | — |
 | Website | `profile_website` | URL | — | 💡 | — |
 
-> **⚖️ Date of birth**: если пользователь указал возраст < 18 → **заблокировать регистрацию** с сообщением «К сожалению, Bestme доступен только с 18 лет».
+> **⚖️ Date of birth**: если пользователь указал возраст < 18 → **заблокировать регистрацию** с сообщением «К сожалению, вы не можете зарегистрироваться». Приложение только для взрослых (отсутствуют механизмы родительского контроля).
 
 ### L2: Управление аккаунтом
 
 | L3 — Пункт | Тип | ⚖️/💡 | Закон | Примечание |
 |---|---|---|---|---|
-| **Deactivate account** | Действие (временная деактивация) | ⚖️ | GDPR Art.17 | Данные сохраняются; доступ заморожен на срок до 30 дней; затем постоянное удаление |
-| **Delete account** *(🔴 ОБЯЗАТЕЛЬНО)* | Действие (постоянное удаление) | ⚖️ 🔴 | GDPR Art.17 · CCPA §1798.105 · **App Store §5.1.1(v)** · **Google Play** | Открывает Поток 6 (Delete Account Modal) |
+| **Deactivate account** | Действие (временная деактивация) | ⚖️ | GDPR Art.17 | Данные сохраняются; доступ заморожен на срок до возвращения пользователя. |
+| **Delete account** *(🔴 ОБЯЗАТЕЛЬНО)* | Действие (постоянное удаление) | ⚖️ 🔴 | GDPR Art.17 · CCPA §1798.105 · **App Store §5.1.1(v)** · **Google Play** | См. Поток 6 (Модальное окно). Требует пароль. |
 
 > **🔴 App Store §5.1.1(v)**: кнопка Delete account ОБЯЗАНА быть в настройках — без этого Apple отклонит приложение  
 > **🔴 Google Play**: кнопка Delete account в приложении + отдельная веб-форма `https://bestme.com/account/delete` (URL вносится в Play Console)  
-> **⚖️ GDPR Art.17(2)**: при удалении — backend автоматически вызывает Google Search Console API + Yandex.Webmaster API + Bing для де-индексации страницы профиля
+> **⚖️ GDPR Art.17(2)**: при удалении — backend автоматически вызывает Google Search Console API + Yandex.Webmaster API + Bing для де-индексации профиля, если профиль был `account_private=OFF`.
 
 ---
 
@@ -304,7 +304,7 @@ Bestme использует данные для улучшения
 | Who sees website | `website_visibility` | `PUBLIC` | 💡 | — |
 | Who sees social links | `social_links_visibility` | `PUBLIC` | 💡 | — |
 
-> **⚠️ TCPA §227**: телефон пользователя НИКОГДА не должен быть публично виден другим пользователям или третьим лицам без явного письменного согласия. `phone_visibility = ONLY_ME` строго обязателен и не может быть изменён на PUBLIC.  
+> **⚠️ TCPA §227**: телефон пользователя НИКОГДА не должен быть публично виден другим пользователям или третьим лицам без дополнительных согласий.
 > **⚠️ CAN-SPAM + GDPR**: email пользователя аналогично НИКОГДА не отображается публично.
 
 ---
@@ -313,8 +313,8 @@ Bestme использует данные для улучшения
 
 | Настройка | variable_name | Default | ⚖️ | Закон |
 |---|---|---|---|---|
-| Default post audience | `default_post_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 Privacy by Default |
-| Who sees my photos/gallery | `photos_visibility` | `FRIENDS` | ⚖️ | GDPR Art.25 |
+| Default post privacy | `default_post_privacy` | `FRIENDS` | ⚖️ | GDPR Art.25 Privacy by Default |
+| Default media privacy (Photos/Videos) | `default_media_privacy` | `FRIENDS` | ⚖️ | GDPR Art.25 |
 | Who sees my friends list | `friends_list_visibility` | `FRIENDS` | 💡 | — |
 | Who sees my activity feed | `activity_visibility` | `FRIENDS` | 💡 | — |
 | Who sees my likes/reactions | `likes_visibility` | `FRIENDS` | 💡 | — |
@@ -349,7 +349,7 @@ Bestme использует данные для улучшения
 | Appear in «People you may know» | `recommendations_opt_out` | `false` (в рекомендациях) | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
 | Algorithm explanation | — | Ссылка/кнопка | ⚖️ | **DSA Art.27 — «Почему вас рекомендуют»** NEW |
 
-> **⚠️ DSA Art.27**: рядом с `recommendations_opt_out` обязательна кнопка/ссылка «Почему я вижу этот контент?» с объяснением критериев рекомендательного алгоритма.
+> **⚠️ DSA Art.27**: рядом с `recommendations_opt_out` обязательна кнопка/ссылка «Почему я вижу этот контент?» с объяснением параметров алгоритма.
 
 ---
 
@@ -361,7 +361,7 @@ Bestme использует данные для улучшения
 | Заблокировать пользователя | Кнопка Block на профиле/в чате | ⚖️ | App Store §1.2 · Google Play UGC |
 | Разблокировать | Действие в списке | ⚖️ | — |
 
-> **🔴 App Store §1.2 + Google Play UGC**: функция блокировки пользователей — обязательное требование для соцсетей. Без неё — автоматический отказ в публикации.
+> **🔴 App Store §1.2 + Google Play UGC**: функция блокировки пользователей — обязательное требование для соцсетей. Без нее 100% отказ модерации.
 
 ---
 
@@ -372,7 +372,7 @@ Bestme использует данные для улучшения
 | Настройка / Действие | variable_name | Тип | Default | ⚖️ | Закон |
 |---|---|---|---|---|---|
 | **Change password** | — | Действие | — | ⚖️ | GDPR Art.32 |
-| **Two-factor authentication (2FA)** | `two_fa_enabled` | Toggle + тип (Email OTP · TOTP App; SMS — только если телефон добавлен в профиль) | `OFF` → рекомендовать включить | ⚖️ | GDPR Art.32 · Israel Data Security Regs |
+| **Two-factor authentication (2FA)** | `two_fa_enabled` | Toggle + тип (Email OTP · TOTP App; SMS — только если телефон добавлен в профиль) | `OFF` → рекомендуется | ⚖️ | GDPR Art.32 |
 | **Sign in with Apple** | — | Подключить/отключить | — | ⚖️ | **App Store §4.8 — ОБЯЗАТЕЛЬНО если есть Google/Facebook login** |
 | **Sign in with Google** | — | Подключить/отключить + кнопка «Отключить» | — | ⚖️ | **App Store §5.1.1(v) — кнопка Disconnect ОБЯЗАТЕЛЬНА** NEW |
 | **Sign in with Facebook** | — | Подключить/отключить + кнопка «Отключить» | — | ⚖️ | **App Store §5.1.1(v) — кнопка Disconnect ОБЯЗАТЕЛЬНА** NEW |
@@ -381,8 +381,8 @@ Bestme использует данные для улучшения
 | **Login activity log** | — | Журнал входов | — | ⚖️ | GDPR Art.32 · Israel Data Security Regs |
 | **Trusted devices** | — | Список + управление | — | 💡 | — |
 
-> **🔴 App Store §4.8**: если в приложении есть Google / Facebook / Twitter / любой social login → **Sign in with Apple ОБЯЗАТЕЛЕН** как эквивалентный вариант.  
-> **🔴 App Store §5.1.1(v)** NEW: для каждого подключённого стороннего провайдера (Google, Facebook и т.д.) должна быть отдельная кнопка **«Disconnect» / «Отключить»**, которая отзывает токен и разрывает связь с аккаунтом.
+> **🔴 App Store §4.8**: если в приложении есть Google / Facebook / Twitter / любой social login → **Sign in with Apple ОБЯЗАТЕЛЕН** как эквивалент.  
+> **🔴 App Store §5.1.1(v)** NEW: для каждого подключённого стороннего провайдера (Google, Facebook и т.д.) должна быть отдельная кнопка отключения/отзыва доступа.
 
 ---
 
@@ -472,7 +472,7 @@ Bestme использует данные для улучшения
 | Special offers & promotions | `email_marketing_promo` | **`false`** | ⚖️ | CASL · ePrivacy Art.13 |
 | Tips & best practices | `email_marketing_tips` | **`false`** | ⚖️ | CASL |
 
-> **⚠️ CASL + ePrivacy**: ВСЕ marketing email-подписки = пустые по умолчанию. Pre-checked = нарушение. Каждое письмо содержит рабочую ссылку отписки.  
+> **⚠️ CASL + ePrivacy**: ВСЕ marketing email-подписки = пустые по умолчанию. Pre-checked = нарушение. Каждое письмо содержит рабочую ссылку unsubscribe.
 > **⚠️ CAN-SPAM**: footer каждого email = физический адрес компании + unsubscribe link
 
 ---
@@ -489,7 +489,7 @@ Bestme использует данные для улучшения
 | Find friends (contacts import) | Синхронизация контактов | ⚖️ **GDPR Art.6 + App Store §5.1.2(iv) — запрос разрешения** |
 | Who can send friend requests | `who_can_friend_request` (ENUM: Everyone / FOAF / Nobody) | Default: `EVERYONE` | 💡 |
 
-> **⚠️ App Store §5.1.2(iv)**: синхронизация контактов телефона — только с явного разрешения пользователя; нельзя «Select All» по умолчанию.
+> **⚠️ App Store §5.1.2(iv)**: синхронизация контактов телефона — только с явного разрешения пользователя; нельзя «Silent upload».
 
 ---
 
@@ -499,454 +499,234 @@ Bestme использует данные для улучшения
 
 ### 6.0 Feed & Content — Лента и контент
 
-> **Путь:** Settings → Content → Feed & Content  
-> Управляет алгоритмом ленты: тип по умолчанию, персонализация, объяснение алгоритма и сброс.  
-> **Синхронизация:** если пользователь переключает ленту на главном экране (Smart Feed ↔ Natural Feed), значение `default_feed` автоматически обновляется здесь и наоборот.
-
-```
-📋 Feed & Content
-│
-├── Default feed          [Smart Feed ▼]   ⚖️ DSA Art.27 · AI Act Art.50
-├── Opt out from recommendations   [OFF]   ⚖️ GDPR Art.22 · DSA Art.29
-├── 🔄 Reset Smart Feed            [Reset] ⚖️ GDPR Art.16 · Art.21
-└── About recommendations          [→]     ⚖️ DSA Art.27 · AI Act Art.50
-```
-
-#### Настройки Feed & Content
-
-| Настройка | variable_name | Тип | Default | ⚖️ | Закон |
-|---|---|---|---|---|---|
-| **Default feed** | `default_feed` | Dropdown / Bottom sheet | `SMART_FEED` | ⚖️ | DSA Art.27 · AI Act Art.50 |
-| **Opt out from recommendations** | `feed_personalization_opt_out` | Toggle | `false` (персонализация включена) | ⚖️ | GDPR Art.22 · DSA Art.29 · CCPA §1798.121 |
-| **🔄 Reset Smart Feed** | — | Button + Confirm dialog | — | ⚖️ | GDPR Art.16 · Art.21 |
-| **About recommendations** | — | Link → экран | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
-
-> 💬 **`default_feed`** — значения: `SMART_FEED` (персонализированная лента) / `NATURAL_FEED` (хронологическая).  
-> Кнопка раскрывает bottom sheet с двумя вариантами. Значение синхронизировано с переключателем ленты на главном экране: смена в одном месте сразу меняет другое.  
->
-> 💬 **`feed_personalization_opt_out`** — тумблер «Не персонализировать мою ленту». По умолчанию `false` (персонализация включена — стандарт соцсетей). При `true` лента переходит в режим Natural Feed независимо от `default_feed`. Право отказа по GDPR Art.22 и DSA Art.29.  
->
-> 💬 **Reset Smart Feed** — кнопка (не тумблер). Не удаляет аккаунт, посты или подписки. Только очищает данные алгоритма ленты и возвращает Cold Start фазу 0. Требует подтверждения в диалоге.  
->
-> 💬 **About recommendations** — ссылка-стрелка [→] открывает экран с текстом «HOW YOUR FEED WORKS» + ссылкой на Terms of Service. Это механизм прозрачности, а НЕ тумблер.
-
----
+| Настройка | variable_name | Default | ⚖️ | Закон |
+|---|---|---|---|---|
+| Default feed | `default_feed` | `SMART_FEED` | ⚖️ | DSA Art.27 · AI Act Art.50 |
+| Opt out from recommendations | `feed_personalization_opt_out` | `false` | ⚖️ | GDPR Art.22 · DSA Art.29 |
+| **Reset Smart Feed (сброс алгоритма)** | — (Action) | — | ⚖️ | GDPR Art.16 / Art.21 |
+| About recommendations | — (Link) | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
 
 #### Экран «About recommendations» — полный текст
-
-```
-HOW YOUR FEED WORKS
-
-Smart Feed ✨
-Your Smart Feed shows posts selected based on:
-• Your interests and wellness goals
-• Accounts you follow
-• Posts you've liked, commented on, or saved
-• How popular and recent a post is
-• Communities you've joined
-• Your language preferences
-
-We do NOT use your race, ethnicity, religion, political views,
-sexual orientation, or health conditions to rank content.
-
-Natural Feed 🍃
-Your Natural Feed shows all posts in order of publication time —
-newest first. No algorithm, no personalization.
-Filtered only by your language settings.
-
-You can switch between feeds at any time.
-
-YOUR CONTROLS
-• Change your interests: Settings → My Interests
-• Switch default feed: Settings → Feed & Content
-• Reset your feed: Settings → Feed & Content → Reset Smart Feed
-• Hide or report any post: tap ··· on any post
-
-[Terms of Service →]    [Privacy Policy →]
-```
-
-> ⚖️ **DSA Art.27**: обязательное объяснение параметров рекомендательного алгоритма.  
-> ⚖️ **AI Act Art.50**: обязательное раскрытие факта использования AI-системы при показе контента.
-
----
+**Закон:** DSA Art.27 (Евросоюз) + AI Act Art.50 — прозрачность алгоритмов.
+*(Текст должен быть доступен по клику из настроек ленты)*:
+> "Лента рекомендаций Bestme использует алгоритмы для показа контента.  
+> **Главные факторы ранжирования:**  
+> 1. Ваше взаимодействие (лайки, комментарии, время просмотра).  
+> 2. Свежесть контента (дата публикации).  
+> 3. Общие друзья и сообщества с автором.  
+> Вы можете в любой момент сбросить алгоритм или полностью отключить персонализацию ленты."
 
 #### 🔄 Reset Smart Feed — полная спецификация
-
-**Юридическое основание:**
-- GDPR Art.16 — Право на исправление данных (алгоритмический профиль — это данные о пользователе)
-- GDPR Art.21 — Право на возражение против профилирования
-- Аналог «Reset Feed» в TikTok (добавлена под давлением европейских регуляторов)
-
-**UI — тексты и ключи перевода:**
-
-| Элемент | EN | RU | i18n-ключ |
-|---|---|---|---|
-| Кнопка | 🔄 Reset Smart Feed | 🔄 Сбросить умную ленту | `reset_feed_button` |
-| Описание под кнопкой | Your subscriptions and posts will stay, but the algorithm will forget your likes and viewing history. Your feed will start learning from scratch. | Ваши подписки и посты останутся, но алгоритм забудет историю лайков и просмотров. Лента начнёт обучаться с нуля. | `reset_feed_description` |
-| Диалог подтверждения | Are you sure? This cannot be undone. Your feed will show generic content until it learns your preferences again. | Вы уверены? Это нельзя отменить. Лента будет показывать общий контент, пока не узнает ваши предпочтения заново. | `reset_feed_confirm` |
-| Кнопка «OK» в диалоге | Reset | Сбросить | `reset_feed_confirm_ok` |
-| Кнопка «Cancel» в диалоге | Cancel | Отмена | `reset_feed_confirm_cancel` |
-| Успех (toast / banner) | Done! Your feed has been reset. | Готово! Ваша лента сброшена. | `reset_feed_success` |
-
-**Что происходит на бэкенде при нажатии Reset:**
-
-| # | Действие | Описание |
-|---|---|---|
-| 1 | Очистить `user_interaction_stats` | Удалить историю взаимодействий за 30 дней |
-| 2 | Очистить `feed_scores` | Удалить кэш скоров алгоритма |
-| 3 | Очистить `user_not_interested` | Удалить все отметки «не интересно» |
-| 4 | Вернуть Cold Start фазу 0 | Пользователь снова проходит фазы разогрева (0 → 1 → 2 → 3) |
-| 5 | НЕ удалять: подписки, посты, аккаунт, категории из онбординга | Подписки = явное действие пользователя, не «данные алгоритма» |
-| 6 | Логировать | `legal_consents_log`: action=`feed_reset`, timestamp |
-
-**API:**
-```
-POST /api/user/feed/reset
-Response: { "status": "ok", "cold_start_phase": 0 }
-```
-
----
+**Действие:** кнопка «Сбросить настройки ленты» (Reset Smart Feed).  
+**Юридическое основание:** GDPR Art.16 (право на исправление профиля) и Art.21 (право на возражение).  
+**Логика бэкенда при нажатии:**
+1. Очистить таблицу `user_interaction_scores` (веса лайков, интересов, dwell time).
+2. Сбросить категорийные теги (interest graphs).
+3. Перевести ленту в режим "Cold Start" (показывать общие популярные посты и только прямых друзей без ранжирования), пока алгоритм заново не обучится.
+4. **Не удалять:** историю поиска, сохранённые посты, подписки.
 
 ### 6.1 Content Creation Settings
 
 | Настройка | variable_name | Default | ⚖️ | Закон |
 |---|---|---|---|---|
-| Default post audience | `default_post_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 |
-| Default photo audience | `default_photo_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 |
+| Default post privacy | `default_post_privacy` | `FRIENDS` | ⚖️ | GDPR Art.25 |
+| Default media privacy | `default_media_privacy` | `FRIENDS` | ⚖️ | GDPR Art.25 |
 | Allow location tagging | `location_tagging_enabled` | **`false`** | ⚖️ | GDPR Art.25 · ePrivacy |
 | Safe Search / Content filter | `safe_search_enabled` | **`true`** | ⚖️ | App Store §1.2 · Google Play UGC |
 
+> **⚠️ GDPR Art.25 Privacy by Default**: геометки (location_tagging) СТРОГО выключены (`false`) по умолчанию. Перед включением — Prominent Disclosure (см. Поток 3).
+
 ### 6.2 Moderation & Reports
 
-| Функция | Описание | ⚖️ | Закон |
-|---|---|---|---|
-| **Report a post** | Кнопка «...» на каждом посте | ⚖️ 🔴 | **App Store §1.2** · **Google Play UGC** |
-| **Report a user** | Кнопка на профиле каждого пользователя | ⚖️ 🔴 | **App Store §1.2** · **Google Play UGC** |
-| **Report child exploitation (CSAE)** *(NEW)* | Отдельная категория в Report | ⚖️ 🔴 | **Google Play Child Safety Standards** · COPPA |
-| **Report AI-generated offensive content** *(NEW)* | Кнопка «Report AI content» | ⚖️ | **Google Play AI-Generated Content Policy** |
-| **Appeal moderation decision** | Форма апелляции | ⚖️ | DSA Art.20 |
-| **Moderation decision log** | История решений | ⚖️ | DSA Art.17 |
+**Закон:** EU DSA Art.14 (Notice and Action) · DSA Art.17 (Statement of Reasons) · Apple App Store §1.2  
 
-> **🔴 App Store §1.2**: 4 ОБЯЗАТЕЛЬНЫХ элемента: (1) фильтр контента, (2) механизм жалоб, (3) блокировка, (4) контактная информация. Без каждого из них — отказ.  
-> **🔴 Google Play Child Safety Standards**: отдельная категория «Child Safety / Exploitation» в форме жалоб — обязательна для соцсетей и dating-приложений.
+| Элемент | Логика / Требование |
+|---|---|
+| **Кнопка Report (Жалоба)** | Доступна на КАЖДОМ посте, профиле, комментарии, медиа-файле (в меню "⋮") |
+| **Блокировка** | Юзер должен иметь возможность заблокировать автора контента сразу после жалобы |
+| **Notice and Action (DSA)** | При отправке жалобы генерируется `report_id`. Юзер получает In-app/Email уведомление о решении. |
+| **Statement of Reasons** | Если модератор удаляет контент, автор удалённого контента получает Email с объяснением причины (со ссылкой на пункт правил) и кнопкой "Апелляция". |
+| **Апелляция (Appeal)** | Право на обжалование решения (DSA Art.20) — кнопка в уведомлении. |
 
 ### Категории жалоб (report categories) — ОБЯЗАТЕЛЬНЫЙ СПИСОК
+*(🔴 Требуется Google Play Child Safety Policy и DSA)*
 
-```
-Report content:
-├── Spam or fake content
-├── Hate speech or discrimination
-├── Violence or graphic content
-├── Nudity or sexual content
-├── Harassment or bullying
-├── Misinformation
-├── Intellectual property violation
-├── [🔴 NEW] Child Safety / Exploitation (CSAE)
-└── Other
-
-Report user:
-├── Fake account or impersonation
-├── Spam
-├── Harassment
-├── Hate speech
-├── [🔴 NEW] Exploiting a child (CSAE)
-└── Other
-```
+1. 🔴 **Child Safety / Exploitation (CSAE)** — *Critical, немедленный репорт в NCMEC*
+2. **Violence or Gore** (Насилие)
+3. **Hate Speech / Harassment** (Вражда / Травля)
+4. **Adult Content / Nudity** (Порнография)
+5. **Spam / Scam / Fraud** (Спам / Мошенничество)
+6. 🔴 **AI-Generated / Deepfake** (Немаркированный ИИ контент) — *Новое требование Google Play*
+7. **Terrorism / Extremism** (Терроризм)
+8. **Self-Harm / Suicide** (Призывы к суициду)
 
 ---
 
 ## 7. 📦 YOUR DATA — Ваши данные
 
-**Обоснование:** ⚖️ GDPR Art.15–22 · CCPA/CPRA §1798.100–120 · Quebec L25 · Israel PPL · GDPR Art.5(2) Accountability
+**Обоснование:** ⚖️ GDPR Art.15–22 · CCPA §1798.100–120 · PIPEDA · Quebec L25
 
 ### 7.1 Права субъекта данных
 
-| Право | Функция | variable_name/action | ⚖️ | Закон |
-|---|---|---|---|---|
-| **Right to Access (Art.15)** | Download my data | `download_data_json` / `download_data_csv` | ⚖️ | GDPR Art.15 · PIPEDA · CCPA §1798.100 |
-| **Right to Portability (Art.20)** | Export data (portable format) | `export_data_portable` | ⚖️ | GDPR Art.20 · Quebec L25 Art.27 |
-| **Right to Erasure (Art.17)** | Request data deletion | → Поток 6 (Delete account) | ⚖️ | GDPR Art.17 · CCPA §1798.105 |
-| **Right to Rectification (Art.16)** | Edit profile / correct data | → Account Settings | ⚖️ | GDPR Art.16 · GDPR Art.5(1)(d) Accuracy |
-| **Right to Restriction (Art.18)** | Restrict processing | `restrict_processing` (freeze w/o delete) | ⚖️ | GDPR Art.18 |
-| **Right to Object (Art.21)** | Opt-out from profiling | `profiling_opt_out` | ⚖️ | GDPR Art.21 · DSA Art.29 |
-| **Right not to be subject to automated decisions (Art.22)** | Request human review | `request_human_review` | ⚖️ | GDPR Art.22 · Quebec L25 Art.8.1 · CPRA |
-| **Withdraw consent (Art.7)** | Withdraw consent | `withdraw_consent` | ⚖️ | GDPR Art.7 · CASL |
-| **View consent history** | Consent log | `view_consent_history` | ⚖️ | GDPR Art.7 · CASL |
+Все эти права должны быть реализованы в виде кнопок / действий:
+
+| Право | Как реализовано | ⚖️ | Основание |
+|---|---|---|---|
+| **Right of Access** | Кнопка «Download my data». Бэкенд генерирует JSON/CSV файл. Уведомление на email при готовности. | ⚖️ | GDPR Art.15 · CCPA §1798.100 |
+| **Data Portability** | Часть «Download my data» (машиночитаемый формат JSON для миграции в другие соцсети). | ⚖️ | GDPR Art.20 · Quebec L25 |
+| **Right to Object** | Кнопка «Отказ от рекомендаций» и «Ad preferences (opt-out)». | ⚖️ | GDPR Art.21 |
+| **Right not to be subject to AI** | Кнопка «Запрос проверки решения человеком» (Human review) — например, для автоматического бана. | ⚖️ | GDPR Art.22 · Quebec L25 Art.8.1 |
+| **Restrict Processing** | Кнопка «Заморозить аккаунт / Ограничить обработку» (профиль скрыт, но данные не удаляются). | ⚖️ | GDPR Art.18 |
+| **Consent History** | Ссылка «История согласий» — лог: когда, с какого IP и на что юзер давал consent (Terms, Privacy, Ads). | ⚖️ | GDPR Art.7(1) — proof of consent |
+| **Right to Erasure** | Кнопка Delete Account + отдельный запрос удаления без закрытия аккаунта. | ⚖️ | GDPR Art.17 |
 
 ### 7.2 CCPA / CPRA (Калифорния)
 
-| Функция | Описание | ⚖️ | Закон |
-|---|---|---|---|
-| **Do Not Sell My Personal Information** *(NEW)* | Кнопка «Do Not Sell or Share» | ⚖️ 🔴 | **CCPA §1798.120 · CPRA** — ОБЯЗАТЕЛЬНА |
-| Right to Know categories | Список категорий данных, которые мы собираем | ⚖️ | CCPA §1798.100 |
-| Right to Correct | Редактирование данных | ⚖️ | CPRA §1798.106 |
-| Opt-out of targeted ads | Связан с «Do Not Sell» | ⚖️ | CCPA/CPRA |
+| Настройка | variable_name | Тип | Default | ⚖️ | Основание |
+|---|---|---|---|---|---|
+| **Do Not Sell My Personal Information** | `ccpa_do_not_sell` | Тумблер/Кнопка | `false` | ⚖️ | **CCPA §1798.120** |
+| Limit Use of Sensitive Personal Info | `ccpa_limit_sensitive` | Тумблер | `false` | ⚖️ | CPRA §1798.121 |
 
-> **🔴 CCPA §1798.120**: кнопка «Do Not Sell My Personal Information» (или «Do Not Share») обязательна для приложений с аудиторией в Калифорнии. Должна быть заметной и легко доступной.
+> **⚠️ CCPA**: Ссылка «Do Not Sell or Share My Personal Information» должна быть **явной и видимой** для пользователей из Калифорнии (США).
 
 ### 7.3 Политика хранения данных — GDPR Art.5(1)(e) Storage Limitation NEW
 
-| Состояние аккаунта | Срок хранения | Основание |
-|---|---|---|
-| Активный аккаунт | Пока аккаунт активен | GDPR Art.5(1)(e) |
-| Деактивированный аккаунт | 30 дней (восстановление) → затем удаление | GDPR Art.5(1)(e) |
-| После запроса на удаление | Немедленное удаление + 90 дней на anti-fraud/legal данные | GDPR Art.17 · Art.5(1)(e) |
-| После удаления (anti-fraud данные) | 90 дней | GDPR Art.17(3)(e) · CCPA |
-| Email для unsubscribe list | 3 года | CAN-SPAM · CASL (доказательство отписки) |
+> *Эта информация должна отображаться текстом в разделе Your Data.*
 
-> **⚠️ GDPR Art.5(1)(e)**: политика хранения должна быть явно указана в разделе «Your Data» и в Privacy Policy. Пользователь должен видеть, сколько хранятся его данные.
+* **Деактивированные аккаунты:** Хранятся бессрочно (или N лет по выбору), пока юзер не вернётся, НО скрыты от всех.
+* **Удалённые аккаунты:** 30 дней (Grace period), затем Hard Delete.
+* **Логи серверов / IP-адреса:** Удаляются или анонимизируются через 90 дней.
+* **Бэкапы БД:** Удаляются в рамках цикла ротации (обычно 30 дней).
 
 ### 7.4 Прочее
 
-| Функция | ⚖️ | Закон |
-|---|---|---|
-| Cookie settings | ⚖️ | GDPR · ePrivacy Art.5(3) |
-| Ad preferences & opt-out | ⚖️ | GDPR Art.21/22 · DSA Art.29 |
-| Contact DPO / Privacy Officer | ⚖️ | Quebec L25 Art.5 · GDPR Art.37 |
-| Privacy Policy link | ⚖️ | GDPR Art.13 · **App Store §5.1.1(i)** · **Google Play** |
-| Terms of Use link | ⚖️ | App Store · Google Play |
+| Пункт | Описание | ⚖️ | Основание |
+|---|---|---|---|
+| Cookie Preferences | Настройка аналитических и рекламных cookies | ⚖️ | ePrivacy Directive (EU) |
+| Clear Cache | Очистка кэша приложения на устройстве | 💡 | App Store Guidelines (Resource Mgmt) |
 
 ---
 
 ## 8. ♿ ACCESSIBILITY — Доступность
 
-**Обоснование:** ⚖️ **EAA 2019/882** (ЕС, с 28.06.2025) · **ADA** (США) · **Israel Disability Law 5758-1998** · **AODA** (Канада) · **California Unruh Civil Rights Act §51** · App Store §2.5.4 · Google Play
+**Обоснование:** ⚖️ European Accessibility Act 2019/882 (вступает 28.06.2025) · ADA · AODA · CA Unruh Civil Rights Act · **App Store §2.5.4**
 
-| Настройка | variable_name | Default | WCAG | Закон |
+| Настройка / Поддержка | variable_name | Тип | ⚖️ | Основание / Стандарт |
 |---|---|---|---|---|
-| Text size | `text_size` | `NORMAL` (ENUM: Small/Normal/Large/XL) | 1.4.4 | EAA · ADA · Israel |
-| Bold text | `bold_text_enabled` | `false` | 1.4.3 | EAA · ADA |
-| High contrast mode | `high_contrast_enabled` | `false` | 1.4.3 (4.5:1) | EAA · ADA |
-| Reduce motion | `reduce_motion_enabled` | `false` | 2.3.1 | EAA · ADA |
-| Closed captions (videos) | `captions_enabled` | **`true`** | 1.2.2 | EAA · ADA · AODA |
-| Auto-generate alt text | `alt_text_auto_enabled` | **`true`** | 1.1.1 | EAA · ADA · Israel |
-| Screen reader information | — | Ссылка/инфо | 4.1.3 | EAA · ADA · App Store §2.5.4 |
-| Keyboard navigation info | — | Ссылка/инфо | 2.1.1 | EAA · ADA |
+| **Text size / Dynamic Type** | `text_size` | Slider / System Sync | ⚖️ | EAA · ADA · WCAG 2.1 AA (1.4.4) |
+| **High contrast mode** | `high_contrast` | Toggle | ⚖️ | EAA · WCAG 2.1 AA (1.4.3) |
+| **Reduce motion** | `reduce_motion` | Toggle / System Sync | ⚖️ | EAA · ADA · WCAG 2.3 (Seizures) |
+| **VoiceOver / TalkBack** | — | System Support | ⚖️ | **App Store §2.5.4 — ОБЯЗАТЕЛЬНО** |
+| **Closed Captions (Video)** | `captions_enabled` | Toggle | ⚖️ | EAA · ADA · WCAG 2.1 AA (1.2.2) |
+| **Alt text for images** | `alt_text_enabled` | Toggle (default `true`) | ⚖️ | EAA · WCAG 2.1 AA (1.1.1) |
+
+> **🔴 App Store §2.5.4 + EAA**: Приложение обязано поддерживать системные экранные дикторы (VoiceOver на iOS / TalkBack на Android). Все кнопки и элементы интерфейса должны иметь осмысленные метки (`accessibilityLabel`). Это закон, а не просто пожелание магазинов.
 
 ---
 
 ## 9. ❓ HELP & SUPPORT — Помощь и поддержка
 
-**Обоснование:** ⚖️ App Store §1.5 · Google Play · DSA Art.14 · **Google Play Child Safety Standards Policy**
+**Обоснование:** ⚖️ DSA Art.14/16 · GDPR Art.37 · App Store §1.5
 
 ### 9.1 Структура Help & Support
 
-| Пункт | Описание | ⚖️ | Закон |
+| Пункт | Тип | ⚖️ | Основание |
 |---|---|---|---|
-| Help Center / FAQ | Часто задаваемые вопросы | 💡 | — |
-| Report a problem | Жалоба на контент/пользователя | ⚖️ 🔴 | **App Store §1.2** · **Google Play UGC** |
-| **Child Safety** *(NEW)* | Отчёт о безопасности детей + контакт | ⚖️ 🔴 | **Google Play Child Safety Standards** |
-| Privacy & Legal | Ссылки на Privacy Policy, Terms, Cookie Policy | ⚖️ | GDPR Art.13 · App Store |
-| Contact support | Форма/email поддержки | ⚖️ | App Store §1.5 · DSA Art.14 |
-| Contact DPO | Данные защиты персональных данных | ⚖️ | GDPR Art.37 · Quebec L25 Art.5 |
-| Delete account (web) *(NEW)* | Ссылка `https://bestme.com/account/delete` | ⚖️ 🔴 | **Google Play (URL в Play Console)** |
-| About Bestme | Версия, лицензии | 💡 | — |
+| Help Center / FAQ | Внешняя ссылка или In-app webview | 💡 | — |
+| Contact Support | Форма с полем email и категорией | ⚖️ | App Store §1.5 |
+| **Report a Problem (Bugs/Tech)** | Форма с логами (опционально) | 💡 | — |
+| **Privacy Policy** | Ссылка | ⚖️ | App Store · Google Play · GDPR Art.13 |
+| **Terms of Use** | Ссылка | ⚖️ | App Store · Google Play |
+| **Contact Data Protection Officer (DPO)** | Форма или email (privacy@) | ⚖️ | Quebec L25 Art.5 · GDPR Art.37 |
 
 ### 9.2 Child Safety Section (🔴 NEW — Google Play Child Safety Standards)
-
-```
-Help & Support → Child Safety
-
-Bestme строго запрещает контент, связанный
-с сексуальной эксплуатацией детей (CSAE/CSAM).
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Сообщить о небезопасном контенте:
-[Сообщить о нарушении — Child Safety]
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Child Safety Point of Contact:
-childsafety@bestme.com
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Если ребёнок в опасности — обратитесь
-в местные правоохранительные органы:
-
-USA: NCMEC — www.missingkids.org
-EU:  Missing Children Europe — www.missingchildreneurope.eu
-IL:  Police 100
-RU:  МВД 102
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-[Правила сообщества]  [Terms of Service]
-```
-
-> **🔴 Google Play Child Safety Standards Policy** (5 обязательных пунктов для соцсетей):
-> 1. ✅ **Published standards**: явный запрет CSAE в Terms of Service / Community Guidelines
-> 2. ✅ **In-app feedback mechanism**: категория «Child Safety» в форме жалоб
-> 3. ⚖️ **Address CSAM**: backend SLA — удалить CSAM в течение 24 часов + уведомить NCMEC/региональный орган
-> 4. ⚖️ **Comply with child safety laws**: процесс отчётности в NCMEC (USA) / соответствующий орган
-> 5. ✅ **Child Safety Point of Contact**: `childsafety@bestme.com` публично указан
+**Закон:** Google Play Developer Policy — Child Safety.
+Приложение 18+ (Social Media) обязано предоставлять быстрый, очевидный способ сообщить об эксплуатации детей (CSAE).
+*   В разделе Help & Support должна быть кнопка или email (например, `childsafety@bestme.com`).
+*   Форма репорта: «Report Child Exploitation / Safety Concern» — с приоритетной маршрутизацией.
 
 ---
 
 ## СВОДНАЯ ТАБЛИЦА ЗАКОНОВ × НАСТРОЙКИ
 
-| Закон | Основные требования | Где реализовано |
+| Закон / Директива | Требование | Где реализовано в Settings |
 |---|---|---|
-| **GDPR Art.5** | 7 принципов обработки данных | Все разделы (Privacy by Default) |
-| **GDPR Art.7** | Явное согласие + отзыв | Notifications · Your Data → Consent |
-| **GDPR Art.8/DSA Art.28** | Возраст 13+ · несовершеннолетние | Date of birth · age-specific defaults |
-| **GDPR Art.13** | Информирование при сборе данных | Onboarding Disclosure (Поток 1) |
-| **GDPR Art.15** | Право на доступ | Your Data → Download |
-| **GDPR Art.16** | Право на исправление | Account → Edit fields |
-| **GDPR Art.17(1)** | Право на удаление | Account → Delete account (Поток 6) |
-| **GDPR Art.17(2)** | Де-индексация при удалении | Backend API (Google/Yandex/Bing) + Поток 6 modal |
-| **GDPR Art.18** | Право на ограничение | Your Data → Restrict Processing |
-| **GDPR Art.20** | Право на переносимость | Your Data → Export |
-| **GDPR Art.21/22** | Возражение/автоматические решения | Your Data → Opt-out + Human review |
-| **GDPR Art.25** | Privacy by Default | Privacy → все defaults |
-| **GDPR Art.32** | Безопасность данных | Login & Security |
-| **GDPR Art.37** | DPO | Help & Support → Contact DPO |
-| **DSA Art.14** | Жалобы на контент | Content & Moderation → Report |
-| **DSA Art.17–20** | Модерация + апелляции | Notifications (non-disable) · Content & Moderation |
-| **DSA Art.25–26** | Запрет на профилирование рекламы несовершеннолетних | age gate + Ad preferences |
-| **DSA Art.27** | Объяснение рекомендательного алгоритма | Privacy → Discoverability + label |
-| **DSA Art.28(3)(g)** | Закрытый профиль для несовершеннолетних | Н/П — Bestme только 18+ |
-| **DSA Art.29** | Opt-out от рекомендаций | Privacy → Discoverability |
-| **ePrivacy Art.5(3)** | Cookies | Your Data → Cookie settings |
-| **ePrivacy Art.13** | Согласие на коммерческие сообщения | Notifications → Email Marketing (empty checkboxes) |
-| **TCPA 47 U.S.C. §227** | Prior express written consent для SMS | Поток 5 (SMS consent checkbox) · `phone_visibility=ONLY_ME` |
-| **CAN-SPAM** | Физ. адрес + unsubscribe в email | Email templates · Notifications footer |
-| **CASL** | Opt-in для marketing emails · пустые чекбоксы | Notifications → Email Marketing |
-| **COPPA** | Блок регистрации < 13 | Date of birth age gate |
-| **CCPA/CPRA §1798.100–120** | Права: знать/удалить/исправить/не продавать | Your Data → все права + «Do Not Sell» button |
-| **Quebec L25** | DPO контакт · PIA · portability | Help & Support + Your Data |
-| **Israel PPL** | email/phone скрыты · безопасность | Contact Info Privacy · Login & Security |
-| **EAA 2019/882** | WCAG 2.1 AA · мобильные приложения | Accessibility раздел |
-| **ADA / AODA** | Доступность | Accessibility раздел |
-| **App Store §1.2** | UGC: фильтр + жалобы + блокировка + контакт | Content & Moderation · Privacy → Blocked |
-| **App Store §4.5.4** | Push: opt-in · opt-out внутри | Notifications |
-| **App Store §4.8** | Sign in with Apple обязателен | Login & Security |
-| **App Store §5.1.1(i)** | Privacy Policy в приложении | Help & Support → Legal |
-| **App Store §5.1.1(v)** | Delete account + Disconnect 3rd-party | Account · Login & Security |
-| **App Store §5.1.2(i) ATT** | ATT диалог iOS | Поток 4 (ATT) |
-| **Google Play UGC** | Report + Block обязательны | Content & Moderation · Privacy → Blocked |
-| **Google Play Child Safety** | 5 обязательных пунктов | Help & Support → Child Safety |
-| **Google Play Account Deletion** | In-app + web URL | Account → Delete + `bestme.com/account/delete` |
-| **Google Play Prominent Disclosure** | Экран до запроса разрешений | Поток 3 (Prominent Disclosure) |
+| **GDPR Art. 17** | Право на удаление (Right to Erasure) | 1. Account → Delete account |
+| **GDPR Art. 25** | Privacy by Default | 2. Privacy (Всё выключено / Friends Only по умолчанию) |
+| **GDPR Art. 20** | Переносимость данных (Data Portability) | 7. Your Data → Download my data (JSON) |
+| **GDPR Art. 32** | Безопасность данных (Security) | 3. Login & Security (2FA, Sessions) |
+| **GDPR Art. 22** | Отказ от AI-решений | 6. Content → Opt out from recommendations |
+| **EU DSA Art. 14** | Механизм жалоб на контент | 6. Moderation → Кнопка Report на постах |
+| **EU DSA Art. 27** | Прозрачность алгоритмов | 6. Content → About recommendations |
+| **EU EAA 2019/882** | Цифровая доступность | 8. Accessibility |
+| **CCPA §1798.120** | Запрет продажи данных | 7. Your Data → Do Not Sell My Info (Калифорния) |
+| **TCPA / CAN-SPAM** | Согласие на коммуникацию | 1. Account (SMS checkbox) + 4. Notifications |
+| **Apple App Store** | Требования к публикации | Sign in with Apple, Delete Account, ATT, Block User, VoiceOver |
 
 ---
 
 ## ЧЕКЛИСТ ПУБЛИКАЦИИ — App Store + Google Play
 
 ### 🔴 БЛОКЕРЫ (без этого публикация невозможна)
-
-| # | Требование | Статус | Где |
-|---|---|---|---|
-| 1 | Delete account — in-app | ✅ | Account → Delete account |
-| 2 | Delete account — веб-форма `bestme.com/account/delete` | ⚠️ Нужно создать | Google Play Console → URL |
-| 3 | Sign in with Apple (если есть Google/Facebook) | ✅ | Login & Security |
-| 4 | Disconnect button для каждого 3rd-party login | ⚠️ Добавить | Login & Security |
-| 5 | Block user — функция | ✅ | Privacy → Blocked Accounts |
-| 6 | Report content / user — функция | ✅ | Content & Moderation |
-| 7 | Report: категория «Child Safety / CSAE» | ⚠️ Добавить | Content & Moderation → Report |
-| 8 | childsafety@bestme.com публично | ⚠️ Добавить | Help & Support → Child Safety |
-| 9 | UGC ToS acceptance при первом контенте | ⚠️ Добавить | Поток 2 |
-| 10 | ATT диалог iOS | ⚠️ Подтвердить SDK | Поток 4 |
-| 11 | Prominent Disclosure перед Push/Camera | ⚠️ Добавить | Поток 3 |
-| 12 | Блок регистрации < 13 лет | ⚠️ Добавить | Onboarding age gate |
-| 13 | SMS consent checkbox (TCPA) | ⚠️ Добавить | Поток 5 |
-| 14 | Onboarding Disclosure для 18+ (открытый профиль) | ⚠️ Добавить | Поток 1 |
-| 15 | «Do Not Sell My Personal Information» button | ⚠️ Добавить | Your Data |
-| 16 | Empty checkboxes для email opt-in (CASL) | ⚠️ Проверить | Notifications |
-| 17 | Accessibility раздел | ✅ | Accessibility |
-| 18 | Privacy Policy ссылка в приложении | ✅ | Help & Support → Legal |
-| 19 | `seo_indexable = false` по умолчанию | ✅ | Privacy → Discoverability |
-| 20 | `phone_visibility = ONLY_ME` по умолчанию | ✅ | Privacy → Contact Info |
+- [ ] Кнопка **Delete Account** есть в приложении.
+- [ ] Веб-форма **Delete Account** доступна по URL без входа в приложение (для Google Play).
+- [ ] Кнопки **Block User** и **Report Content** работают на UGC контенте.
+- [ ] EULA / Правила сообщества принимаются пользователем перед созданием первого поста.
+- [ ] Системный диалог **ATT** (iOS) реализован перед сбором данных.
+- [ ] **Prominent Disclosure** показано перед запросом геолокации и пушей.
+- [ ] **Sign in with Apple** внедрён (если есть Google/FB вход).
+- [ ] Для всех сторонних провайдеров входа (Google/FB) есть кнопка **Disconnect (Отключить)**.
+- [ ] Раздел **Child Safety** (жалобы) добавлен в Help & Support (Google Play).
 
 ### 🟡 ВАЖНО
-
-| # | Требование | Статус | Где |
-|---|---|---|---|
-| 21 | One-click unsubscribe в каждом email | ⚠️ В email templates | Email backend |
-| 22 | Физический адрес компании в footer email | ⚠️ В email templates | Email backend |
-| 23 | DSA Art.27 — объяснение алгоритма | ⚠️ Добавить | Privacy → Discoverability |
-| 24 | DPO контакт публично виден | ⚠️ Проверить | Help & Support |
-| 25 | GDPR Art.18 — Restrict Processing | ✅ | Your Data |
-| 26 | GDPR Art.17(2) — де-индексация при Delete (backend) | ⚠️ Backend задача | Backend API |
-| 27 | GDPR Art.25(2) — Storage period policy | ⚠️ Добавить | Your Data + Privacy Policy |
-| 28 | GDPR Art.22 — Human review request | ✅ | Your Data |
-| 29 | Quebec L25 Art.5 — CPO контакт | ⚠️ Проверить | Help & Support |
+- [ ] Privacy Nutrition Labels заполнены в App Store Connect.
+- [ ] Data Safety Form заполнена в Google Play Console.
+- [ ] Политика конфиденциальности содержит контакт DPO и срок хранения данных.
+- [ ] Добавлено объяснение алгоритма ленты («Почему я это вижу»).
 
 ### 🟢 РЕКОМЕНДАЦИИ
-
-| # | Требование |
-|---|---|
-| 30 | Privacy Nutrition Labels в App Store Connect |
-| 31 | Data Safety Form в Google Play Console |
-| 32 | DPO назначен официально |
-| 33 | Privacy Impact Assessment (PIA) для новых функций |
-| 34 | Регистрация базы данных в Израиле (Israel PPL Sec.8) |
+- [ ] Поддержка VoiceOver / TalkBack для всех важных кнопок.
+- [ ] JSON/CSV формат для экспорта данных (Data Portability).
 
 ---
 
 ## ТЕХНИЧЕСКИЙ СЛОВАРЬ ПЕРЕМЕННЫХ (variable_names)
 
+```json
+{
+  "account_private": false,
+  "profile_searchable": true,
+  "seo_indexable": false,
+  "online_status_visible": "FRIENDS",
+  "birthday_visibility": "FRIENDS_AGE",
+  "relationship_visible": "FRIENDS",
+  "email_visibility": "ONLY_ME",
+  "phone_visibility": "ONLY_ME",
+  "city_visibility": "FRIENDS",
+  "website_visibility": "PUBLIC",
+  "social_links_visibility": "PUBLIC",
+  "default_post_privacy": "FRIENDS",
+  "default_media_privacy": "FRIENDS",
+  "friends_list_visibility": "FRIENDS",
+  "activity_visibility": "FRIENDS",
+  "likes_visibility": "FRIENDS",
+  "who_can_message": "FRIENDS",
+  "who_can_comment": "FRIENDS",
+  "who_can_react": "EVERYONE",
+  "who_can_tag": "FRIENDS",
+  "tag_approval_required": true,
+  "recommendations_opt_out": false,
+  "two_fa_enabled": false,
+  "email_marketing_product": false,
+  "email_marketing_promo": false,
+  "email_marketing_tips": false,
+  "location_tagging_enabled": false,
+  "safe_search_enabled": true,
+  "ccpa_do_not_sell": false,
+  "text_size": "NORMAL",
+  "high_contrast": false,
+  "reduce_motion": false,
+  "captions_enabled": false,
+  "alt_text_enabled": true
+}
 ```
-ENUM visibility:
-  EVERYONE          — все пользователи и неавторизованные
-  FRIENDS           — только друзья
-  FRIENDS_OF_FRIENDS — друзья друзей
-  ONLY_ME           — только я
-  NOBODY            — никто
-
-ENUM post audience:
-  EVERYONE / FRIENDS / FRIENDS_OF_FRIENDS / ONLY_ME
-
-Profile:
-  account_private           bool   false (открытый — законно для 18+)
-  seo_indexable             bool   false (СТРОГО)
-  profile_searchable        bool   true
-  online_status_visible     bool   true → Friends only / false → Nobody
-  email_visibility          ENUM   ONLY_ME
-  phone_visibility          ENUM   ONLY_ME
-  city_visibility           ENUM   FRIENDS
-  website_visibility        ENUM   PUBLIC
-  social_links_visibility   ENUM   PUBLIC
-  birthday_visibility       ENUM   FRIENDS_AGE
-  relationship_visible      ENUM   FRIENDS
-  default_post_audience     ENUM   FRIENDS
-  default_photo_audience    ENUM   FRIENDS
-  photos_visibility         ENUM   FRIENDS
-  friends_list_visibility   ENUM   FRIENDS
-  activity_visibility       ENUM   FRIENDS
-  likes_visibility          ENUM   FRIENDS
-  challenges_visibility     ENUM   FRIENDS
-  rewards_visibility        ENUM   FRIENDS
-  who_can_message           ENUM   FRIENDS
-  who_can_comment           ENUM   FRIENDS
-  who_can_react             ENUM   EVERYONE
-  who_can_tag               ENUM   FRIENDS
-  tag_approval_required     bool   true
-  auto_filter_comments      bool   true
-  location_tagging_enabled  bool   false
-  recommendations_opt_out   bool   false (в рекомендациях по умолчанию)
-
-Security:
-  two_fa_enabled            bool   false (рекомендовать включить)
-
-Notifications:
-  email_marketing_product   bool   false (пустой чекбокс)
-  email_marketing_promo     bool   false
-  email_marketing_tips      bool   false
-  sms_consent               bool   false (пустой чекбокс при добавлении телефона)
-
-Accessibility:
-  text_size                 ENUM   NORMAL
-  bold_text_enabled         bool   false
-  high_contrast_enabled     bool   false
-  reduce_motion_enabled     bool   false
-  captions_enabled          bool   true
-  alt_text_auto_enabled     bool   true
-```
-
----
-
-*Файл: `ProfileSettingsFullSpec.md` | Версия 2.0 | Дата: март 2026*  
-*Юрисдикции: EU/EEA · USA · Canada · Israel · California*  
-*Законы: GDPR · DSA · ePrivacy · TCPA · CAN-SPAM · CASL · COPPA · CCPA/CPRA · Quebec L25 · Israel PPL · EAA · ADA · AODA · App Store (02.2026) · Google Play (2024)*
