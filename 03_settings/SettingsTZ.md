@@ -16,18 +16,18 @@
 
 | # | Что добавить | Закон / Правило |
 |---|---|---|
-| 🔴 1 | **Веб-форма удаления аккаунта** (не только in-app, отдельная страница на сайте) | Google Play Developer Policy (обязательно с 2024) |
+| 🔴 1 | **Веб-форма удаления аккаунта** (не только in-app, отдельная страница на сайте) | Google Play Developer Policy (обязательно) |
 | 🔴 2 | **Блок регистрации для пользователей < 13 лет** (жёсткая возрастная верификация при signup) | COPPA (США) · DSA Art.28 (ЕС) |
 | 🔴 3 | **Кнопка «Do Not Sell My Personal Information»** в разделе Your Data | CCPA/CPRA §1798.120 (Калифорния) |
 | 🔴 4 | **Pre-checked boxes = пустые** во всех формах opt-in (email, push, SMS) | CASL (Канада) · ePrivacy Directive Art.13 (ЕС) |
-| 🔴 5 | **Accessibility раздел** в настройках (текст, контраст, субтитры, screen reader) | EAA Directive 2019/882 (ЕС, с 28 июня 2025) · ADA (США) · Israel Disability Law 5758-1998 · AODA (Канада) · App Store 2.5.4 · Google Play |
-| 🔴 6 | **Art.17(2) де-индексация**: при Delete account — автоматический запрос удаления URL в Google Search Console + Yandex.Webmaster + Bing (если был seo_indexable = ON) | GDPR Art.17(2) (ЕС) — штраф до 20 млн € |
-| 🔴 7 | **Onboarding disclosure**: при регистрации взрослых (18+) — явное уведомление о том, что профиль будет публичным | GDPR Art.25(2) (ЕС) — условие законности открытого профиля по умолчанию |
-| 🔴 8 | **UGC ToS acceptance**: модаль «Принять правила сообщества» при первом создании контента (пост, комментарий, загрузка фото) | Google Play UGC Policy · Apple App Store §1.2 |
-| 🔴 9 | **Child Safety Standards**: (a) запрет CSAE в Terms of Use/Community Guidelines; (b) категория «Child Safety» в Report a problem; (c) публичный email childsafety@bestme.com в Help & Support | Google Play Child Safety Standards Policy (5 обязательных пунктов) · COPPA |
-| 🔴 10 | **App Tracking Transparency (ATT) диалог** (iOS 14.5+) — если используются аналитические или рекламные SDK | Apple App Store §5.1.2(i) — без этого автоматический отказ в ревью |
-| 🔴 11 | **Prominent Disclosure**: in-app экран объяснения сбора данных ДО запроса Push / Camera / Photos (не только в Privacy Policy) | Google Play User Data Policy — Prominent Disclosure & Consent |
-| 🔴 12 | **SMS consent checkbox** (при добавлении телефона): явный текст «Я соглашаюсь получать SMS от Bestme... Для отписки ответьте STOP» | TCPA 47 U.S.C. §227 — штраф $1 500 за каждое SMS без письменного согласия |
+| 🔴 5 | **Accessibility раздел** в настройках (текст, контраст, субтитры, screen reader) | EAA Directive 2019/882 (ЕС, с 28 июня 2025) · ADA (США) |
+| 🔴 6 | **Art.17(2) де-индексация**: при Delete account — автоматический запрос удаления URL в Google Search Console + Yandex.Webmaster + Bing (если профиль был открыт) | GDPR Art.17(2) (ЕС) |
+| 🔴 7 | **Onboarding disclosure**: при регистрации взрослых (18+) — явное уведомление о том, что профиль будет публичным | GDPR Art.25(2) (ЕС) |
+| 🔴 8 | **UGC ToS acceptance**: модаль «Принять правила сообщества» при первом создании контента (пост, комментарий, загрузка) | Apple App Store §1.2 |
+| 🔴 9 | **Child Safety Standards**: (a) запрет CSAE в Terms of Use/Community Guidelines; (b) категория «Child Safety» в Report a problem; (c) публичный email childsafety@ | Google Play Child Safety Standards |
+| 🔴 10 | **App Tracking Transparency (ATT) диалог** (iOS 14.5+) — если используются аналитические или рекламные SDK | Apple App Store §5.1.2(i) — ATT |
+| 🔴 11 | **Prominent Disclosure**: in-app экран объяснения сбора данных ДО запроса Push / Camera / Photos (не только в Privacy Policy) | Google Play User Data Policy |
+| 🔴 12 | **SMS consent checkbox** (при добавлении телефона): явный текст «Я соглашаюсь получать SMS от Bestme... Для отписки ответьте STOP» | TCPA 47 U.S.C. §227(b) (США) |
 | 🔴 13 | **Кнопка «Отключить»** для каждого 3rd-party login-провайдера (Google, Facebook и т.д.) в Login & Security | Apple App Store §5.1.1(v) |
 
 ### 🟡 Важно — до первого значительного роста аудитории
@@ -86,9 +86,9 @@
 | **Delete account** | Действие (постоянное удаление + подтверждение) | ⚖️ | GDPR Art.17 · CCPA §1798.105 · App Store 5.1.1(v) · Google Play |
 | Switch to Business profile | Действие | 💡 | — |
 
-> ⚠️ **App Store + Google Play**: ссылка на удаление аккаунта должна быть доступна ПРЯМО из настроек — без этого отказ в публикации
+> ⚠️ **App Store + Google Play**: ссылка на удаление аккаунта должна быть доступна ПРЯМО из настроек — без этого отказ в публикации.
 > ⚠️ **Google Play** (дополнительно): должна существовать **веб-форма** удаления аккаунта (не только in-app)
-> ❌ **GDPR Art.17(2)** — при Delete account: необходимо автоматически запросить де-индексацию в Google Search Console + Yandex.Webmaster + Bing (если `seo_indexable` был включён). UX: модальное окно при удалении должно содержать пояснение «Ваш профиль будет удалён из поисковых систем в течение 30 дней». Подробнее → `GDPRArt25Art17AuditSpec.md` §2.2
+> ❌ **GDPR Art.17(2)** — при Delete account: необходимо автоматически запросить де-индексацию в Google Search Console + Yandex.Webmaster + Bing (если профиль был открыт)
 
 ---
 
@@ -174,7 +174,7 @@
 | L3 — Пункт | Тип | ⚖️/💡 | Закон |
 |---|---|---|---|
 | Change password | Действие (с подтверждением текущего) | ⚖️ | GDPR Art.32 |
-| **Two-factor authentication (2FA)** | Toggle + выбор метода (Email OTP · TOTP App; SMS — только если добавлен телефон в профиль) | ⚖️ | GDPR Art.32 · Israel Data Security Regs 5777-2017 |
+| **Two-factor authentication (2FA)** | Toggle + выбор метода (Email OTP · TOTP App; SMS — только если добавлен телефон в профиль) | ⚖️ | GDPR Art.32 |
 | Login methods | Список (Google / Apple / Email) | ⚖️ | App Store 5.1.3 — Sign in with Apple обязателен |
 | **Sign in with Apple** | Метод входа | ⚖️ | **App Store 5.1.3** — обязателен если есть вход через Google/Facebook |
 
@@ -275,15 +275,15 @@
 |---|---|---|
 | Rewards (3 ключа) | `reward_badge_earned`, `reward_points_added`, `reward_challenge_completed` | ✅ ON |
 | Blogs (5 ключей) | `blog_new_comment`, `blog_reply`, `blog_reaction`, `blog_published`, `blog_mentioned` | ✅ ON |
-| Community (8 ключей) | `community_new_post`, `community_mention`, `community_role_changed`, `community_invite`, `community_post_approved`, `community_post_rejected`, `community_member_joined`, `community_announcement` | ✅ ON |
+| Community (8 ключей) | `community_new_post`, `community_mention`, `community_role_changed`, `community_invite`, `community_post_approved`, `community_post_rejected`, `community_member_joined`, `community_member_left` | ✅ ON |
 | Challenge (1 ключ) | `challenge_new_participant` | ✅ ON |
 
 ---
 
-### 5️⃣ 👥 FRIENDS — Друзья
-**Обоснование:** 💡 UX-норма социальной сети · ⚖️ GDPR Art.25 (видимость списка друзей)
+### 5️⃣ 👥 FRIENDS & COMMUNITY — Друзья и сообщества
+**Обоснование:** 💡 UX-норма социальной сети · ⚖️ GDPR Art.17/25 · DSA Art.16
 
-#### L2: Список друзей
+#### L2: Список друзей (Friends)
 
 | L3 — Элемент | Тип | ⚖️/💡 |
 |---|---|---|
@@ -308,6 +308,23 @@
 | Who can send friend requests | `who_can_add_friends` | `EVERYONE` | 💡 | — |
 | Friend suggestions | `friend_suggestions_enabled` | `true` | 💡 | — |
 | Mutual friends visible | `mutual_friends_visible` | `FRIENDS` | ⚖️ | GDPR Art.25 |
+| Why am I seeing this? (Recommendations) | — | — | ⚖️ | DSA Art.27 |
+
+#### L2: Подписки (Subscriptions)
+
+| L3 — Элемент | Тип | ⚖️/💡 | Закон |
+|---|---|---|---|
+| Blogs & Business Profiles | Список | 💡 | — |
+| Unsubscribe (Отписаться) | Действие | ⚖️ | GDPR Art.17 |
+
+#### L2: Сообщества (Communities)
+
+| L3 — Элемент | Тип | ⚖️/💡 | Закон |
+|---|---|---|---|
+| My Groups / Subscriptions | Списки | 💡 | — |
+| **Leave Community (Покинуть группу)** | Действие | ⚖️ 🔴 | GDPR Art.17 |
+| **Delete Group (Удалить группу)** | Действие | ⚖️ 🔴 | GDPR Art.17 |
+| **Report (Жалоба на пост/группу)** | Действие | ⚖️ 🔴 | DSA Art.16 · App Store §1.2 |
 
 ---
 
@@ -325,24 +342,68 @@
 | **🔄 Reset Smart Feed** | — (Action / Button) | — | ⚖️ | GDPR Art.16 · Art.21 |
 | **About recommendations** | — (Link → экран) | — | ⚖️ | DSA Art.27 · AI Act Art.50 |
 
-#### L2: Настройки публикации по умолчанию
+#### L2: Posts settings (Настройки публикаций)
 
-| L3 — Настройка | variable_name | Default | ⚖️/💡 | Закон |
+Здесь настраивается поведение при создании новых постов. 
+**Юридическое основание:** ⚖️ GDPR Art.25 (Privacy by Default).
+
+**UX-каркас — Posts settings**
+```text
+┌──────────────────────────────────────────────┐
+│  Posts settings                              │ settings_post_settings
+│  ──────────────────────────────────────────  │
+│  Default post privacy           [ Friends ▼] │ post_default_privacy_title
+│  Choose who can see your new posts by        │ post_default_audience_desc
+│  default.                                    │
+│                                              │
+│  Allow location tagging            [ ○ OFF ] │ location_tagging_title
+│  Automatically attach your location to       │ location_tagging_desc
+│  new posts.                                  │
+└──────────────────────────────────────────────┘
+```
+
+| Пункт / Ключ | Тип | Default | По закону ⚖️ | Логика |
 |---|---|---|---|---|
-| Default post audience | `default_post_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 · Quebec L25 Art.8 |
-| Default photo audience | `default_photo_audience` | `FRIENDS` | ⚖️ | GDPR Art.25 |
-| Location tagging | `location_tagging_enabled` | `false` | ⚖️ | GDPR Art.25 (Privacy by Default = OFF) |
-| Allow sharing of my posts | `post_sharing_allowed` | `FRIENDS` | 💡 | — |
+| `post_default_privacy_title` | Dropdown | `FRIENDS` | ⚖️ GDPR Art.25 | Устанавливает "замочек" по умолчанию для экрана создания нового поста. |
+| `location_tagging_title` | Toggle | `OFF` | ⚖️ GDPR Art.25 | **Строго OFF.** Если юзер включает (OFF → ON), показываем модалку `location_alert_title` (ниже) до системного запроса GPS. |
 
-#### L2: Фильтрация и модерация контента
+**UX-каркас — Location Alert (Модалка подтверждения геолокации)**
+*Появляется только при попытке включить тумблер (OFF → ON).*
+```text
+┌──────────────────────────────────────────────┐
+│  Enable location tagging?                    │ location_alert_title
+│                                              │
+│  Bestme needs access to your device's        │ location_alert_message
+│  location to automatically attach your city  │ 
+│  or place to your new posts.                 │
+│                                              │
+│  [ Cancel ]          [ Enable ]              │ location_alert_cancel / location_alert_enable
+└──────────────────────────────────────────────┘
+```
 
-| L3 — Настройка | variable_name | Default | ⚖️/💡 | Закон |
+#### L2: Safe Search (Фильтр чувствительного контента)
+
+**Юридическое основание:** ⚖️ App Store §1.2 · Google Play UGC. Модерация контента (18+, насилие) включена по умолчанию.
+
+**UX-каркас — Safe Search Alert**
+*Появляется при попытке выключить безопасный поиск (ON → OFF).*
+```text
+┌──────────────────────────────────────────────┐
+│  Turn off Safe Search?                       │ safe_search_alert_title
+│                                              │
+│  You may see content that contains graphic   │ safe_search_alert_message
+│  violence, adult themes, or other sensitive  │
+│  material.                                   │
+│                                              │
+│  [ Cancel ]          [ Turn Off ]            │ safe_search_alert_cancel / safe_search_alert_turn_off
+└──────────────────────────────────────────────┘
+```
+
+| Пункт / Ключ | Тип | Default | По закону ⚖️ | Логика |
 |---|---|---|---|---|
-| Sensitive content filter | `sensitive_content_filter` | `MODERATE` | ⚖️ | DSA Art.14 |
-| Muted words list | `muted_words` | [] | 💡 | — |
-| Auto-moderate comments | `comment_moderation` | `OFF` | 💡 | — |
-| Auto-archive old posts | `auto_archive_posts` | `OFF` | 💡 | — |
-| Content language filter | `content_language_filter` | System | 💡 | — |
+| `safe_search_title` | Toggle | `ON` | ⚖️ App Store §1.2 | **Строго ON.** Защищает юзера от шок-контента. При попытке выключить показываем алерт-предупреждение. |
+| Muted words list | Список | `[]` | 💡 | — |
+| Auto-moderate comments | Toggle | `OFF` | 💡 | — |
 
 #### L2: История и архив
 
@@ -384,7 +445,7 @@
 ---
 
 ### 8️⃣ ♿ ACCESSIBILITY — Доступность
-**Обоснование:** ⚖️ **по закону** — EU EAA 2019/882 · ADA (США) · Israel Disability Law 5758-1998 · AODA (Канада) · California Unruh Act · **App Store 2.5.4 · Google Play**
+**Обоснование:** ⚖️ **по закону** — EU EAA 2019/882 · ADA (США) · Israel Disability Law 5758-1998 · AODA (Канада) · California Unruh Act · **App Store 2.5.4**
 
 > ⚠️ **КРИТИЧНО**: Accessibility — это НЕ только требование магазинов. Это **закон** в нескольких юрисдикциях:
 >
@@ -393,7 +454,7 @@
 > | 🇪🇺 ЕС / ЕЭЗ | **EAA — European Accessibility Act** (Directive 2019/882) — мобильные приложения | **28 июня 2025** |
 > | 🇺🇸 США | **ADA** (Americans with Disabilities Act) + **Section 508** (WCAG 2.1 AA) | Сейчас |
 > | 🇮🇱 Израиль | **Equal Rights for Persons with Disabilities Law** 5758-1998 + Regulations 5763-2003 | Сейчас |
-> | 🇨🇦 Канада | **AODA** (Accessibility for Ontarians with Disabilities Act) + **Accessible Canada Act** 2019 | Сейчас |
+> | 🇨🇦 Канада | **AODA** (Accessibility for Ontarians fixed) + **Accessible Canada Act** 2019 | Сейчас |
 > | 🇺🇸 Калифорния | **Unruh Civil Rights Act** (§51 Civil Code) — цифровая доступность | Сейчас |
 > | 📱 App Store | Guidelines 2.5.4 — VoiceOver совместимость | Сейчас |
 > | 🤖 Google Play | Accessibility guidelines | Сейчас |
@@ -469,7 +530,7 @@
 | 2 | Privacy & Visibility | 🔒 | ⚖️ | GDPR Art.25 · DSA Art.14 · Quebec L25 Art.8 · Israel PPL |
 | 3 | Login & Security | 🛡️ | ⚖️ | GDPR Art.32 · App Store 5.1.3 · Israel Data Security Regs |
 | 4 | Notifications | 🔔 | ⚖️ | GDPR Art.6/7 · CASL · CAN-SPAM · App Store · DSA Art.17 |
-| 5 | Friends | 👥 | 💡/⚖️ | GDPR Art.25 (видимость списка) |
+| 5 | Friends & Community | 👥 | 💡/⚖️ | GDPR Art.17/25 · DSA Art.16 (сообщества, отписки) |
 | 6 | Content | 📝 | ⚖️/💡 | GDPR Art.25 · DSA Art.14 · Quebec L25 Art.8 |
 | 7 | Your Data | 📦 | ⚖️ | GDPR Art.15–22 · CCPA §1798.100–120 · PIPEDA · Quebec L25 · Israel PPL |
 | 8 | Accessibility | ♿ | ⚖️ | **EAA 2019/882** · ADA · Israel Disability Law 5758-1998 · AODA · App Store 2.5.4 |
@@ -568,24 +629,26 @@
 │   ├── Community 💡
 │   └── Challenge 💡
 │
-├── 5️⃣ 👥 Friends 💡
+├── 5️⃣ 👥 Friends & Community ⚖️
 │   ├── Friends list (с поиском)
-│   ├── Incoming requests
-│   ├── Outgoing requests
-│   └── Settings
-│       ├── Who can add me [Everyone]
-│       ├── Friend suggestions [ON]
-│       └── Mutual friends visible [Friends] ⚖️ GDPR
+│   ├── Incoming / Outgoing requests
+│   ├── Recommendations (Why am I seeing this? ⚖️ DSA)
+│   ├── Subscriptions (Unsubscribe ⚖️ GDPR)
+│   └── Communities
+│       ├── Leave Community ⚖️ GDPR
+│       ├── Delete Group ⚖️ GDPR
+│       └── Report ⚖️ DSA
 │
 ├── 6️⃣ 📝 Content ⚖️/💡 DSA·GDPR
-│   ├── Default post audience [Friends] ⚖️ GDPR Art.25
-│   ├── Default photo audience [Friends] ⚖️
-│   ├── Location tagging [OFF] ⚖️ GDPR Art.25
-│   ├── Allow post sharing [Friends]
-│   ├── Sensitive content filter [Moderate] ⚖️ DSA Art.14
+│   ├── Feed & Content
+│   │   ├── Default feed (Smart/Natural)
+│   │   ├── Opt out from recommendations
+│   │   └── Reset Smart Feed ⚖️ GDPR
+│   ├── Posts settings
+│   │   ├── Default post privacy [Friends] ⚖️ GDPR Art.25
+│   │   └── Allow location tagging [OFF] ⚖️ GDPR Art.25 (Modal Alert)
+│   ├── Safe Search [ON] ⚖️ App Store (Modal Alert)
 │   ├── Muted words
-│   ├── Auto-moderate comments [OFF]
-│   ├── Auto-archive posts [OFF]
 │   └── Archive / Saved posts
 │
 ├── 7️⃣ 📦 Your Data ⚖️ GDPR Art.15–22
@@ -637,5 +700,5 @@
 
 ---
 
-*Файл: `SettingsTZ.md` | Версия 1.0 | Юрисдикции: EU/EEA · Canada · Israel · California · USA · App Stores*
+*Файл: `SettingsTZ.md` | Версия 1.1 | Юрисдикции: EU/EEA · Canada · Israel · California · USA · App Stores*
 *Полный юридический анализ → `LegalComplianceSpec.md` | Настройки по разделам → `ProfileSettingsFullSpec.md`*
